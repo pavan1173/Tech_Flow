@@ -1,0 +1,6 @@
+{
+  "name": "TeachFlow",
+  "description": "TeachFlow is your go-to platform for fresh tech opportunities and career preparation. Discover curated DSA sheets, 45+ company interview question sets, 20 essential coding patterns, role-wise roadmaps, SQL sheets, system design, and resume templates.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

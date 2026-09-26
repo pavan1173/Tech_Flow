@@ -1,0 +1,584 @@
+import React, { useState } from 'react';
+import {
+  LayoutDashboard,
+  FileCode,
+  Building2,
+  Sparkles,
+  CircleDollarSign,
+  Database,
+  Layers,
+  Youtube,
+  BookMarked,
+  Network,
+  Users,
+  HelpCircle,
+  MessageSquareQuote,
+  Mail,
+  FileText,
+  Scroll,
+  Menu,
+  X,
+  ChevronDown,
+  ChevronRight,
+  Tv
+} from 'lucide-react';
+
+interface SidebarProps {
+  currentPath: string;
+  navigate: (to: string) => void;
+  collapsed?: boolean;
+}
+
+export const PreparationSidebar: React.FC<SidebarProps> = ({
+  currentPath,
+  navigate,
+  collapsed = false,
+}) => {
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  // Accordion state for DSA Sheets
+  const [dsaSheetsExpanded, setDsaSheetsExpanded] = useState<boolean>(() => {
+    return currentPath.includes('/preparation/dsa-sheets');
+  });
+
+  // Accordion state for Core Subjects matching screenshot
+  const [coreSubjectsExpanded, setCoreSubjectsExpanded] = useState<boolean>(() => {
+    return (
+      currentPath.includes('/preparation/dbms-playlists') ||
+      currentPath.includes('/preparation/os-playlists') ||
+      currentPath.includes('/preparation/oops-playlists') ||
+      true // Default expanded as in screenshot
+    );
+  });
+
+  const dsaSubSheets = [
+    { label: "Striver's A2Z DSA Sheet", href: '/preparation/dsa-sheets/striver-a2z-dsa-sheet' },
+    { label: 'Love Babbar DSA Sheet', href: '/preparation/dsa-sheets/love-babbar-dsa-sheet' },
+    { label: 'Shradha Didi DSA Sheet', href: '/preparation/dsa-sheets/shradha-khapra-dsa-sheet' },
+    { label: 'Rohit Negi DSA Sheet', href: '/preparation/dsa-sheets/rohit-negi-dsa-sheet' },
+    { label: 'Arsh Goyal DSA Sheet', href: '/preparation/dsa-sheets/arsh-goyal-dsa-sheet' },
+    { label: 'Fraz DSA Sheet', href: '/preparation/dsa-sheets/fraz-dsa-sheet' },
+    { label: 'Neetcode 150 DSA Sheet', href: '/preparation/dsa-sheets/neetcode-dsa-sheet' },
+  ];
+
+  const handleNav = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    navigate(href);
+    setMobileOpen(false);
+  };
+
+  const navContent = (
+    <div className="flex flex-col gap-5 py-4 px-3 text-zinc-300 font-lexend">
+      {/* Brand Header */}
+      <div className="px-3 py-2 flex items-center justify-between border-b border-zinc-900 pb-3">
+        <a
+          href="/"
+          onClick={(e) => handleNav(e, '/')}
+          className="flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl bg-[#141416] border border-zinc-800/80 hover:border-zinc-700 transition-all cursor-pointer group"
+        >
+          <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 p-0.5 flex items-center justify-center shrink-0">
+            <div className="w-full h-full bg-[#121216] rounded-[5px] flex items-center justify-center">
+              <span className="font-mono font-extrabold text-[10px] text-violet-300">
+                TF
+              </span>
+            </div>
+          </div>
+          <span className="font-extrabold text-lg text-white tracking-tight">
+            TeachFlow
+          </span>
+        </a>
+      </div>
+
+      {/* Overview Group: Dashboard */}
+      <div>
+        <a
+          href="/preparation"
+          onClick={(e) => handleNav(e, '/preparation')}
+          className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all ${
+            currentPath === '/preparation'
+              ? 'bg-zinc-800/80 text-white font-semibold'
+              : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+          }`}
+        >
+          <LayoutDashboard className="w-4 h-4 text-zinc-400 shrink-0" />
+          <span>Dashboard</span>
+        </a>
+      </div>
+
+      {/* Sheets Group */}
+      <div>
+        <div className="px-3 pb-2 text-[11px] font-bold uppercase tracking-wider text-zinc-500">
+          SHEETS
+        </div>
+        <div className="space-y-1">
+          {/* DSA Sheets (Expandable) */}
+          <div>
+            <div
+              className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all cursor-pointer ${
+                currentPath.startsWith('/preparation/dsa-sheets')
+                  ? 'bg-zinc-800/60 text-white font-semibold'
+                  : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+              }`}
+              onClick={() => setDsaSheetsExpanded(!dsaSheetsExpanded)}
+            >
+              <a
+                href="/preparation/dsa-sheets"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleNav(e, '/preparation/dsa-sheets');
+                }}
+                className="flex items-center gap-2.5 flex-1"
+              >
+                <FileCode className="w-4 h-4 text-zinc-400 shrink-0" />
+                <span>DSA Sheets</span>
+              </a>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setDsaSheetsExpanded(!dsaSheetsExpanded);
+                }}
+                className="p-0.5 text-zinc-400 hover:text-white"
+              >
+                <ChevronDown
+                  className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                    dsaSheetsExpanded ? 'rotate-180' : ''
+                  }`}
+                />
+              </button>
+            </div>
+
+            {/* Sub items */}
+            {dsaSheetsExpanded && (
+              <div className="pl-8 pr-2 py-1 space-y-1">
+                {dsaSubSheets.map((sub) => {
+                  const isSubActive = currentPath === sub.href;
+                  return (
+                    <a
+                      key={sub.href}
+                      href={sub.href}
+                      onClick={(e) => handleNav(e, sub.href)}
+                      className={`block py-1.5 px-2 rounded-lg text-xs truncate transition-colors ${
+                        isSubActive
+                          ? 'text-white font-bold bg-zinc-800/80'
+                          : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60'
+                      }`}
+                    >
+                      {sub.label}
+                    </a>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          <a
+            href="/preparation/company-wise-dsa-sheet"
+            onClick={(e) => handleNav(e, '/preparation/company-wise-dsa-sheet')}
+            className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all ${
+              currentPath.startsWith('/preparation/company-wise-dsa-sheet')
+                ? 'bg-zinc-800/80 text-white font-semibold'
+                : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+            }`}
+          >
+            <Building2 className="w-4 h-4 text-zinc-400 shrink-0" />
+            <span>Company Wise DSA</span>
+          </a>
+
+          <a
+            href="/preparation/20-essential-dsa-patterns"
+            onClick={(e) => handleNav(e, '/preparation/20-essential-dsa-patterns')}
+            className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all ${
+              currentPath === '/preparation/20-essential-dsa-patterns'
+                ? 'bg-zinc-800/80 text-white font-semibold'
+                : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+            }`}
+          >
+            <Sparkles className="w-4 h-4 text-zinc-400 shrink-0" />
+            <span>20 DSA Patterns</span>
+          </a>
+
+          <a
+            href="/preparation/package-wise-dsa-sheet"
+            onClick={(e) => handleNav(e, '/preparation/package-wise-dsa-sheet')}
+            className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all ${
+              currentPath === '/preparation/package-wise-dsa-sheet'
+                ? 'bg-zinc-800/80 text-white font-semibold'
+                : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+            }`}
+          >
+            <CircleDollarSign className="w-4 h-4 text-zinc-400 shrink-0" />
+            <span>Package Wise DSA</span>
+          </a>
+
+          <a
+            href="/preparation/sql-sheet"
+            onClick={(e) => handleNav(e, '/preparation/sql-sheet')}
+            className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all ${
+              currentPath === '/preparation/sql-sheet'
+                ? 'bg-zinc-800/80 text-white font-semibold'
+                : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+            }`}
+          >
+            <Database className="w-4 h-4 text-zinc-400 shrink-0" />
+            <span>SQL Sheet</span>
+          </a>
+
+          <a
+            href="/preparation/system-design-sheet"
+            onClick={(e) => handleNav(e, '/preparation/system-design-sheet')}
+            className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all ${
+              currentPath === '/preparation/system-design-sheet'
+                ? 'bg-zinc-800/80 text-white font-semibold'
+                : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+            }`}
+          >
+            <Layers className="w-4 h-4 text-zinc-400 shrink-0" />
+            <span>System Design Sheet</span>
+          </a>
+        </div>
+      </div>
+
+      {/* Start Learning Group matching screenshot */}
+      <div>
+        <div className="px-3 pb-2 text-[11px] font-bold uppercase tracking-wider text-zinc-500">
+          START LEARNING
+        </div>
+        <div className="space-y-1">
+          {/* DSA Playlists */}
+          <a
+            href="/preparation/dsa-playlists"
+            onClick={(e) => handleNav(e, '/preparation/dsa-playlists')}
+            className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all ${
+              currentPath === '/preparation/dsa-playlists'
+                ? 'bg-zinc-800/80 text-white font-semibold'
+                : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+            }`}
+          >
+            <div className="flex items-center gap-2.5">
+              <Tv className="w-4 h-4 text-zinc-400 shrink-0" />
+              <span>DSA Playlists</span>
+            </div>
+            <ChevronRight className="w-3.5 h-3.5 text-zinc-500" />
+          </a>
+
+          {/* Core Subjects Expandable matching screenshot */}
+          <div>
+            <div
+              className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all cursor-pointer ${
+                currentPath.includes('/dbms-playlists') ||
+                currentPath.includes('/os-playlists') ||
+                currentPath.includes('/oops-playlists')
+                  ? 'bg-zinc-800/60 text-white font-semibold'
+                  : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+              }`}
+              onClick={() => setCoreSubjectsExpanded(!coreSubjectsExpanded)}
+            >
+              <a
+                href="/preparation/dbms-playlists"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleNav(e, '/preparation/dbms-playlists');
+                }}
+                className="flex items-center gap-2.5 flex-1"
+              >
+                <BookMarked className="w-4 h-4 text-zinc-400 shrink-0" />
+                <span>Core Subjects</span>
+              </a>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setCoreSubjectsExpanded(!coreSubjectsExpanded);
+                }}
+                className="p-0.5 text-zinc-400 hover:text-white"
+              >
+                <ChevronDown
+                  className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                    coreSubjectsExpanded ? 'rotate-180' : ''
+                  }`}
+                />
+              </button>
+            </div>
+
+            {/* Core Subjects Sub Hierarchy matching screenshot */}
+            {coreSubjectsExpanded && (
+              <div className="pl-6 pr-2 py-1 space-y-3 mt-1">
+                {/* 1. DBMS Playlists */}
+                <div>
+                  <a
+                    href="/preparation/dbms-playlists"
+                    onClick={(e) => handleNav(e, '/preparation/dbms-playlists')}
+                    className="block text-[11px] font-bold text-zinc-400 hover:text-white px-2 py-1 uppercase tracking-wider"
+                  >
+                    DBMS Playlists
+                  </a>
+                  <div className="space-y-0.5 pl-2">
+                    <a
+                      href="/preparation/dbms-playlists/love-babbar-dbms"
+                      onClick={(e) => handleNav(e, '/preparation/dbms-playlists/love-babbar-dbms')}
+                      className={`block py-1 px-2 rounded-lg text-xs truncate transition-colors ${
+                        currentPath === '/preparation/dbms-playlists/love-babbar-dbms'
+                          ? 'text-white font-bold bg-zinc-800/80'
+                          : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60'
+                      }`}
+                    >
+                      Love Babbar DBMS
+                    </a>
+                    <a
+                      href="/preparation/dbms-playlists/riti-kumari-dbms"
+                      onClick={(e) => handleNav(e, '/preparation/dbms-playlists/riti-kumari-dbms')}
+                      className={`block py-1 px-2 rounded-lg text-xs truncate transition-colors ${
+                        currentPath === '/preparation/dbms-playlists/riti-kumari-dbms'
+                          ? 'text-white font-bold bg-zinc-800/80'
+                          : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60'
+                      }`}
+                    >
+                      Riti Kumari DBMS
+                    </a>
+                  </div>
+                </div>
+
+                {/* 2. Operating Systems */}
+                <div>
+                  <a
+                    href="/preparation/os-playlists"
+                    onClick={(e) => handleNav(e, '/preparation/os-playlists')}
+                    className="block text-[11px] font-bold text-zinc-400 hover:text-white px-2 py-1 uppercase tracking-wider"
+                  >
+                    Operating Systems
+                  </a>
+                  <div className="space-y-0.5 pl-2">
+                    <a
+                      href="/preparation/os-playlists/love-babbar-os"
+                      onClick={(e) => handleNav(e, '/preparation/os-playlists/love-babbar-os')}
+                      className={`block py-1 px-2 rounded-lg text-xs truncate transition-colors ${
+                        currentPath === '/preparation/os-playlists/love-babbar-os'
+                          ? 'text-white font-bold bg-zinc-800/80'
+                          : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60'
+                      }`}
+                    >
+                      Love Babbar OS
+                    </a>
+                    <a
+                      href="/preparation/os-playlists/riti-kumari-os"
+                      onClick={(e) => handleNav(e, '/preparation/os-playlists/riti-kumari-os')}
+                      className={`block py-1 px-2 rounded-lg text-xs truncate transition-colors ${
+                        currentPath === '/preparation/os-playlists/riti-kumari-os'
+                          ? 'text-white font-bold bg-zinc-800/80'
+                          : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60'
+                      }`}
+                    >
+                      Riti Kumari OS
+                    </a>
+                    <a
+                      href="/preparation/os-playlists/vivek-gupta-os"
+                      onClick={(e) => handleNav(e, '/preparation/os-playlists/vivek-gupta-os')}
+                      className={`block py-1 px-2 rounded-lg text-xs truncate transition-colors ${
+                        currentPath === '/preparation/os-playlists/vivek-gupta-os'
+                          ? 'text-white font-bold bg-zinc-800/80'
+                          : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60'
+                      }`}
+                    >
+                      Vivek Gupta OS
+                    </a>
+                    <a
+                      href="/preparation/os-playlists/neso-academy-os"
+                      onClick={(e) => handleNav(e, '/preparation/os-playlists/neso-academy-os')}
+                      className={`block py-1 px-2 rounded-lg text-xs truncate transition-colors ${
+                        currentPath === '/preparation/os-playlists/neso-academy-os'
+                          ? 'text-white font-bold bg-zinc-800/80'
+                          : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60'
+                      }`}
+                    >
+                      Neso Academy OS
+                    </a>
+                  </div>
+                </div>
+
+                {/* 3. OOPS Playlists */}
+                <div>
+                  <a
+                    href="/preparation/oops-playlists"
+                    onClick={(e) => handleNav(e, '/preparation/oops-playlists')}
+                    className="block text-[11px] font-bold text-zinc-400 hover:text-white px-2 py-1 uppercase tracking-wider"
+                  >
+                    OOPS Playlists
+                  </a>
+                  <div className="space-y-0.5 pl-2">
+                    <a
+                      href="/preparation/oops-playlists/code-with-harry-oop"
+                      onClick={(e) => handleNav(e, '/preparation/oops-playlists/code-with-harry-oop')}
+                      className={`block py-1 px-2 rounded-lg text-xs truncate transition-colors ${
+                        currentPath === '/preparation/oops-playlists/code-with-harry-oop'
+                          ? 'text-white font-bold bg-zinc-800/80'
+                          : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60'
+                      }`}
+                    >
+                      Code With Harry OOP
+                    </a>
+                    <a
+                      href="/preparation/oops-playlists/rohit-negi-oop"
+                      onClick={(e) => handleNav(e, '/preparation/oops-playlists/rohit-negi-oop')}
+                      className={`block py-1 px-2 rounded-lg text-xs truncate transition-colors ${
+                        currentPath === '/preparation/oops-playlists/rohit-negi-oop'
+                          ? 'text-white font-bold bg-zinc-800/80'
+                          : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60'
+                      }`}
+                    >
+                      Rohit Negi OOP
+                    </a>
+                    <a
+                      href="/preparation/oops-playlists/kunal-kushwaha-oop"
+                      onClick={(e) => handleNav(e, '/preparation/oops-playlists/kunal-kushwaha-oop')}
+                      className={`block py-1 px-2 rounded-lg text-xs truncate transition-colors ${
+                        currentPath === '/preparation/oops-playlists/kunal-kushwaha-oop'
+                          ? 'text-white font-bold bg-zinc-800/80'
+                          : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60'
+                      }`}
+                    >
+                      Kunal Kushwaha OOP
+                    </a>
+                    <a
+                      href="/preparation/oops-playlists/jennys-oop"
+                      onClick={(e) => handleNav(e, '/preparation/oops-playlists/jennys-oop')}
+                      className={`block py-1 px-2 rounded-lg text-xs truncate transition-colors ${
+                        currentPath === '/preparation/oops-playlists/jennys-oop'
+                          ? 'text-white font-bold bg-zinc-800/80'
+                          : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60'
+                      }`}
+                    >
+                      Jenny's OOP
+                    </a>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Resources Group */}
+      <div>
+        <div className="px-3 pb-2 text-[11px] font-bold uppercase tracking-wider text-zinc-500">
+          RESOURCES
+        </div>
+        <div className="space-y-1">
+          <a
+            href="/preparation/role-wise"
+            onClick={(e) => handleNav(e, '/preparation/role-wise')}
+            className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all ${
+              currentPath === '/preparation/role-wise'
+                ? 'bg-zinc-800/80 text-white font-semibold'
+                : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+            }`}
+          >
+            <Users className="w-4 h-4 text-zinc-400 shrink-0" />
+            <span>Role Wise Questions</span>
+          </a>
+
+          <a
+            href="/preparation/most-asked-questions"
+            onClick={(e) => handleNav(e, '/preparation/most-asked-questions')}
+            className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all ${
+              currentPath === '/preparation/most-asked-questions'
+                ? 'bg-zinc-800/80 text-white font-semibold'
+                : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+            }`}
+          >
+            <HelpCircle className="w-4 h-4 text-zinc-400 shrink-0" />
+            <span>Most Asked Questions</span>
+          </a>
+
+          <a
+            href="/preparation/hr-questions"
+            onClick={(e) => handleNav(e, '/preparation/hr-questions')}
+            className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all ${
+              currentPath === '/preparation/hr-questions'
+                ? 'bg-zinc-800/80 text-white font-semibold'
+                : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+            }`}
+          >
+            <MessageSquareQuote className="w-4 h-4 text-zinc-400 shrink-0" />
+            <span>HR Interview Questions</span>
+          </a>
+
+          <a
+            href="/preparation/cold-email-templates"
+            onClick={(e) => handleNav(e, '/preparation/cold-email-templates')}
+            className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all ${
+              currentPath === '/preparation/cold-email-templates'
+                ? 'bg-zinc-800/80 text-white font-semibold'
+                : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+            }`}
+          >
+            <Mail className="w-4 h-4 text-zinc-400 shrink-0" />
+            <span>Cold Email Templates</span>
+          </a>
+
+          <a
+            href="/preparation/resume-templates"
+            onClick={(e) => handleNav(e, '/preparation/resume-templates')}
+            className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all ${
+              currentPath === '/preparation/resume-templates'
+                ? 'bg-zinc-800/80 text-white font-semibold'
+                : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+            }`}
+          >
+            <FileText className="w-4 h-4 text-zinc-400 shrink-0" />
+            <span>Resume Templates</span>
+          </a>
+
+          <a
+            href="/preparation/notes"
+            onClick={(e) => handleNav(e, '/preparation/notes')}
+            className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all ${
+              currentPath === '/preparation/notes'
+                ? 'bg-zinc-800/80 text-white font-semibold'
+                : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+            }`}
+          >
+            <Scroll className="w-4 h-4 text-zinc-400 shrink-0" />
+            <span>My Saved Notes</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <>
+      {/* Mobile menu button */}
+      <div className="lg:hidden fixed top-3 left-4 z-50">
+        <button
+          onClick={() => setMobileOpen(!mobileOpen)}
+          className="p-2 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 shadow-md"
+        >
+          {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+        </button>
+      </div>
+
+      {/* Mobile Drawer */}
+      {mobileOpen && (
+        <div className="lg:hidden fixed inset-0 z-40 flex">
+          <div
+            className="fixed inset-0 bg-black/80 backdrop-blur-xs"
+            onClick={() => setMobileOpen(false)}
+          />
+          <div className="relative w-72 max-w-[80vw] bg-[#07090e] border-r border-zinc-900 h-full overflow-y-auto">
+            {navContent}
+          </div>
+        </div>
+      )}
+
+      {/* Desktop Persistent Sidebar */}
+      <aside
+        className={`hidden lg:block shrink-0 h-screen sticky top-0 overflow-y-auto border-r border-[#161c28] bg-[#07090e] transition-all ${
+          collapsed ? 'w-16' : 'w-64'
+        }`}
+      >
+        {navContent}
+      </aside>
+    </>
+  );
+};
