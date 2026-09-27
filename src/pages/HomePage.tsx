@@ -351,7 +351,7 @@ export const HomePage: React.FC<HomePageProps> = ({ navigate }) => {
             {currentQuestions.map((q: any, idx: number) => {
               const isOpen = openFaqIndex === idx;
               return (
-                <div key={q.question} className="py-4 first:pt-0 last:pb-0">
+                <div key={`${q.question}-${idx}`} className="py-4 first:pt-0 last:pb-0">
                   <button
                     onClick={() => setOpenFaqIndex(isOpen ? null : idx)}
                     className="w-full flex items-center justify-between text-left gap-4 font-semibold text-sm sm:text-base text-zinc-900 dark:text-zinc-100 hover:text-[#6C47FF] dark:hover:text-[#9c81ff] transition-colors"

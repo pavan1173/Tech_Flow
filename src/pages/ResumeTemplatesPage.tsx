@@ -62,7 +62,7 @@ export const ResumeTemplatesPage: React.FC<ResumeTemplatesPageProps> = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {displayTemplates.map((t: any, idx: number) => (
           <div
-            key={t.title || idx}
+            key={`${t.id || t.title || 'template'}-${idx}`}
             className="p-6 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 flex flex-col justify-between hover:border-zinc-300 dark:hover:border-zinc-700 transition-all shadow-xs"
           >
             <div>

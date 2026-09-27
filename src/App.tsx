@@ -23,6 +23,7 @@ import { OopsPlaylistsPage } from './pages/OopsPlaylistsPage';
 import { PlaylistDetailPage } from './pages/PlaylistDetailPage';
 import { RoleWisePage } from './pages/RoleWisePage';
 import { MostAskedQuestionsPage } from './pages/MostAskedQuestionsPage';
+import { MostAskedDetailPage } from './pages/MostAskedDetailPage';
 import { HrQuestionsPage } from './pages/HrQuestionsPage';
 import { ColdEmailPage } from './pages/ColdEmailPage';
 import { NotesPage } from './pages/NotesPage';
@@ -68,6 +69,12 @@ export default function App() {
       return <PlaylistDetailPage slug={slug} subjectType="oops" navigate={navigate} />;
     }
 
+    // Individual Most Asked Question Subject Detail:
+    if (currentPath.startsWith('/preparation/most-asked-questions/')) {
+      const slug = currentPath.replace('/preparation/most-asked-questions/', '');
+      return <MostAskedDetailPage slug={slug} navigate={navigate} />;
+    }
+
     if (currentPath === '/preparation/dsa-sheets') {
       return <DsaSheetsPage navigate={navigate} />;
     }
@@ -103,6 +110,10 @@ export default function App() {
     }
     if (currentPath === '/preparation/role-wise') {
       return <RoleWisePage navigate={navigate} />;
+    }
+    if (currentPath.startsWith('/preparation/role-wise/')) {
+      const slug = currentPath.replace('/preparation/role-wise/', '');
+      return <RoleWisePage roleSlug={slug} navigate={navigate} />;
     }
     if (currentPath === '/preparation/most-asked-questions') {
       return <MostAskedQuestionsPage navigate={navigate} />;

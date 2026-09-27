@@ -59,7 +59,7 @@ export const HrQuestionsPage: React.FC<HrQuestionsPageProps> = () => {
 
           return (
             <div
-              key={q.question || idx}
+              key={`${q.id || ''}-${idx}`}
               className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 overflow-hidden shadow-xs"
             >
               <div className="px-5 py-4 flex items-center justify-between bg-zinc-50/50 dark:bg-zinc-800/40">

@@ -52,7 +52,7 @@ export const NotesPage: React.FC<NotesPageProps> = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredNotes.map((note: any, idx: number) => (
           <div
-            key={note.title || idx}
+            key={`${note.id || note.title || 'note'}-${idx}`}
             className="p-6 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 flex flex-col justify-between hover:border-zinc-300 dark:hover:border-zinc-700 transition-all duration-300 shadow-xs"
           >
             <div>

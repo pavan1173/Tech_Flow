@@ -69,8 +69,26 @@ export const PreparationTopBar: React.FC<PreparationTopBarProps> = ({
     if (currentPath === '/preparation/role-wise') {
       return [{ label: 'Preparation', href: '/preparation' }, { label: 'Role Wise Questions' }];
     }
+    if (currentPath.startsWith('/preparation/role-wise/')) {
+      const slug = currentPath.replace('/preparation/role-wise/', '');
+      const roleName = slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+      return [
+        { label: 'Preparation', href: '/preparation' },
+        { label: 'Role Wise Questions', href: '/preparation/role-wise' },
+        { label: roleName },
+      ];
+    }
     if (currentPath === '/preparation/most-asked-questions') {
       return [{ label: 'Preparation', href: '/preparation' }, { label: 'Most Asked Questions' }];
+    }
+    if (currentPath.startsWith('/preparation/most-asked-questions/')) {
+      const slug = currentPath.replace('/preparation/most-asked-questions/', '');
+      const topicName = slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+      return [
+        { label: 'Preparation', href: '/preparation' },
+        { label: 'Most Asked Questions', href: '/preparation/most-asked-questions' },
+        { label: topicName },
+      ];
     }
     if (currentPath === '/preparation/hr-questions') {
       return [{ label: 'Preparation', href: '/preparation' }, { label: 'HR Questions' }];

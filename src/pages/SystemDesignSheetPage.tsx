@@ -59,7 +59,7 @@ export const SystemDesignSheetPage: React.FC<SystemDesignSheetPageProps> = () =>
 
           return (
             <div
-              key={q.title || idx}
+              key={`${q.id || ''}-${q.index || ''}-${idx}`}
               className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 overflow-hidden shadow-xs"
             >
               <div className="px-5 py-4 flex items-center justify-between bg-zinc-50/50 dark:bg-zinc-800/40">
