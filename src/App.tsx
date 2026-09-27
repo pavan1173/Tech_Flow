@@ -4,6 +4,7 @@ import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { PreparationSidebar } from './components/PreparationSidebar';
 import { PreparationTopBar } from './components/PreparationTopBar';
+import { AuthModal } from './components/AuthModal';
 
 // Preparation Hub Pages
 import { PreparationDashboardPage } from './pages/PreparationDashboardPage';
@@ -207,6 +208,7 @@ export default function App() {
   return (
     <div className="min-h-screen flex flex-col bg-[#07090e] text-zinc-100 font-sans selection:bg-blue-500/30 selection:text-blue-200">
       {renderContent()}
+      <AuthModal />
     </div>
   );
 }

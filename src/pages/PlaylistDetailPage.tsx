@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { coreSubjectsData, CoreSubjectPlaylist, VideoLecture } from '../data/coreSubjectsData';
 import { useProgress } from '../context/ProgressContext';
 import {
@@ -13,7 +13,12 @@ import {
   ExternalLink,
   ChevronRight,
   Share2,
-  Download
+  Download,
+  Search,
+  ChevronLeft,
+  Maximize2,
+  Check,
+  ListVideo
 } from 'lucide-react';
 
 interface PlaylistDetailPageProps {
@@ -29,9 +34,9 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
 }) => {
   const { isSolved, toggleSolved } = useProgress();
 
-  // Find the playlist
+  // Find playlist across all datasets
   const list = coreSubjectsData[subjectType] || [];
-  const playlist: CoreSubjectPlaylist | undefined =
+  const playlist: CoreSubjectPlaylist =
     list.find((p) => p.slug === slug) ||
     coreSubjectsData.dbms.find((p) => p.slug === slug) ||
     coreSubjectsData.os.find((p) => p.slug === slug) ||
@@ -40,6 +45,10 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
 
   const lectures = playlist?.lectures || [];
   const [activeLectureIndex, setActiveLectureIndex] = useState(0);
+  const [lectureSearch, setLectureSearch] = useState('');
+  const [copiedLink, setCopiedLink] = useState(false);
+  const [mobileTab, setMobileTab] = useState<'player' | 'list'>('player');
+
   const currentLecture: VideoLecture | undefined = lectures[activeLectureIndex] || lectures[0];
 
   const handleNav = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
@@ -48,21 +57,56 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
   };
 
   const getParentHref = () => {
-    if (subjectType === 'os') return '/preparation/os-playlists';
-    if (subjectType === 'oops') return '/preparation/oops-playlists';
+    if (playlist.subject === 'OS') return '/preparation/os-playlists';
+    if (playlist.subject === 'OOPS') return '/preparation/oops-playlists';
     return '/preparation/dbms-playlists';
   };
 
   const getParentTitle = () => {
-    if (subjectType === 'os') return 'Operating Systems';
-    if (subjectType === 'oops') return 'OOPS Playlists';
+    if (playlist.subject === 'OS') return 'Operating Systems';
+    if (playlist.subject === 'OOPS') return 'OOPS Playlists';
     return 'DBMS Playlists';
   };
 
+  // Filter lectures by search
+  const filteredLectures = useMemo(() => {
+    if (!lectureSearch) return lectures;
+    return lectures.filter((l) =>
+      l.title.toLowerCase().includes(lectureSearch.toLowerCase()) ||
+      (l.tags || []).some((t) => t.toLowerCase().includes(lectureSearch.toLowerCase()))
+    );
+  }, [lectures, lectureSearch]);
+
+  // Calculate lecture progress
+  const completedCount = useMemo(() => {
+    return lectures.filter((l) => isSolved(`lecture-${playlist.slug}-${l.id}`)).length;
+  }, [lectures, isSolved, playlist.slug]);
+
+  const completionPercent =
+    lectures.length > 0 ? Math.round((completedCount / lectures.length) * 100) : 0;
+
+  const handlePrev = () => {
+    if (activeLectureIndex > 0) {
+      setActiveLectureIndex(activeLectureIndex - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (activeLectureIndex < lectures.length - 1) {
+      setActiveLectureIndex(activeLectureIndex + 1);
+    }
+  };
+
+  const handleShare = () => {
+    navigator.clipboard?.writeText(window.location.href);
+    setCopiedLink(true);
+    setTimeout(() => setCopiedLink(false), 2000);
+  };
+
   return (
-    <div className="min-h-screen bg-[#07090e] text-zinc-100 p-4 sm:p-6 lg:p-8 font-lexend space-y-6 max-w-7xl mx-auto">
+    <div className="min-h-screen bg-[#07090e] text-zinc-100 p-3 sm:p-6 lg:p-8 font-lexend space-y-5 max-w-7xl mx-auto">
       {/* Breadcrumb Navigation */}
-      <div className="flex items-center gap-2 text-xs text-zinc-400">
+      <div className="flex items-center gap-2 text-xs text-zinc-400 flex-wrap">
         <a
           href="/preparation"
           onClick={(e) => handleNav(e, '/preparation')}
@@ -70,7 +114,7 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
         >
           Preparation
         </a>
-        <ChevronRight className="w-3.5 h-3.5 text-zinc-600" />
+        <ChevronRight className="w-3.5 h-3.5 text-zinc-600 shrink-0" />
         <a
           href={getParentHref()}
           onClick={(e) => handleNav(e, getParentHref())}
@@ -78,58 +122,121 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
         >
           {getParentTitle()}
         </a>
-        <ChevronRight className="w-3.5 h-3.5 text-zinc-600" />
-        <span className="text-white font-medium truncate max-w-xs">{playlist.instructor}</span>
+        <ChevronRight className="w-3.5 h-3.5 text-zinc-600 shrink-0" />
+        <span className="text-white font-medium truncate max-w-[200px] sm:max-w-xs">
+          {playlist.instructor}
+        </span>
       </div>
 
-      {/* Playlist Header Banner */}
-      <div className="rounded-2xl bg-[#0c1017] border border-[#1b2230] p-5 sm:p-6 space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="space-y-1.5">
-            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 text-xs font-semibold">
-              <Sparkles className="w-3 h-3" />
-              <span>{playlist.badge}</span>
-              <span>•</span>
-              <span>{playlist.totalVideos} Lectures</span>
+      {/* Playlist Top Header Banner */}
+      <div className="rounded-2xl bg-[#0c1017] border border-[#1b2230] p-4 sm:p-6 space-y-4">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div className="space-y-2 flex-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 text-xs font-semibold">
+                {playlist.badge}
+              </span>
+              <span className="text-xs text-zinc-400 font-medium">
+                {playlist.totalVideos} Lectures • {playlist.totalDuration}
+              </span>
+              <span className="text-xs font-bold text-amber-400">
+                ★ {playlist.rating}
+              </span>
             </div>
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-white">
+
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-white tracking-tight">
               {playlist.title}
             </h1>
-            <p className="text-xs sm:text-sm text-zinc-400 max-w-3xl leading-relaxed">
+
+            <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed max-w-4xl font-normal">
               {playlist.description}
             </p>
           </div>
 
+          {/* Action Buttons */}
           <div className="flex items-center gap-2.5 shrink-0 flex-wrap">
             {playlist.notesUrl && (
               <a
                 href={playlist.notesUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-bold transition-all shadow-xs"
+                className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-bold transition-all shadow-xs"
               >
                 <Download className="w-3.5 h-3.5" />
-                <span>Download Notes</span>
+                <span>Notes</span>
               </a>
             )}
+
+            <button
+              onClick={handleShare}
+              className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#141b28] hover:bg-[#1a2334] border border-[#1f293d] text-zinc-300 hover:text-white text-xs font-bold transition-all cursor-pointer"
+            >
+              <Share2 className="w-3.5 h-3.5" />
+              <span>{copiedLink ? 'Copied!' : 'Share'}</span>
+            </button>
 
             <a
               href={playlist.playlistUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-bold transition-all shadow-xs"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-bold transition-all shadow-md shadow-red-900/20"
             >
               <Youtube className="w-4 h-4 fill-current" />
-              <span>Open on YouTube</span>
+              <span>YouTube</span>
             </a>
+          </div>
+        </div>
+
+        {/* Progress Bar in Header */}
+        <div className="pt-2 border-t border-[#18202d] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div className="flex items-center gap-3">
+            <div className="w-32 sm:w-48 h-2 rounded-full bg-[#18202d] overflow-hidden">
+              <div
+                className="h-full rounded-full bg-emerald-500 transition-all duration-300"
+                style={{ width: `${completionPercent}%` }}
+              />
+            </div>
+            <span className="text-xs font-semibold text-zinc-300">
+              {completedCount}/{lectures.length} Completed ({completionPercent}%)
+            </span>
+          </div>
+
+          <div className="text-[11px] text-zinc-500 font-medium">
+            Instructor: <span className="text-zinc-300 font-semibold">{playlist.instructor}</span> • Channel: <span className="text-zinc-300 font-semibold">{playlist.channel}</span>
           </div>
         </div>
       </div>
 
-      {/* Main Video & Lecture Grid */}
+      {/* Mobile Tab Switcher */}
+      <div className="lg:hidden flex items-center bg-[#0c1017] p-1 rounded-xl border border-[#1b2230]">
+        <button
+          onClick={() => setMobileTab('player')}
+          className={`flex-1 py-2 rounded-lg text-xs font-bold transition-colors flex items-center justify-center gap-2 ${
+            mobileTab === 'player'
+              ? 'bg-blue-600 text-white shadow-xs'
+              : 'text-zinc-400 hover:text-white'
+          }`}
+        >
+          <Play className="w-3.5 h-3.5" />
+          <span>Video Player</span>
+        </button>
+        <button
+          onClick={() => setMobileTab('list')}
+          className={`flex-1 py-2 rounded-lg text-xs font-bold transition-colors flex items-center justify-center gap-2 ${
+            mobileTab === 'list'
+              ? 'bg-blue-600 text-white shadow-xs'
+              : 'text-zinc-400 hover:text-white'
+          }`}
+        >
+          <ListVideo className="w-3.5 h-3.5" />
+          <span>Lectures ({lectures.length})</span>
+        </button>
+      </div>
+
+      {/* Main Player & Curriculum Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left 2 Cols: Embedded Player or Video Info */}
-        <div className="lg:col-span-2 space-y-4">
+        {/* Left 2 Columns: Video Player */}
+        <div className={`lg:col-span-2 space-y-4 ${mobileTab === 'list' ? 'hidden lg:block' : 'block'}`}>
           {currentLecture ? (
             <div className="space-y-4">
               {/* Responsive Video Container */}
@@ -138,119 +245,192 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
                   className="w-full h-full"
                   src={`https://www.youtube-nocookie.com/embed/${currentLecture.youtubeId}?autoplay=0&rel=0`}
                   title={currentLecture.title}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   allowFullScreen
                 />
               </div>
 
-              {/* Lecture Title & Quick Meta */}
-              <div className="p-4 rounded-xl bg-[#0c1017] border border-[#1b2230] space-y-2">
-                <div className="flex items-start justify-between gap-3">
-                  <h2 className="font-bold text-base sm:text-lg text-white">
-                    {currentLecture.title}
-                  </h2>
+              {/* Player Bottom Control & Meta Bar */}
+              <div className="p-4 sm:p-5 rounded-2xl bg-[#0c1017] border border-[#1b2230] space-y-3.5">
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                  <div className="space-y-1 min-w-0 flex-1">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-blue-400 font-mono">
+                      Lecture {activeLectureIndex + 1} of {lectures.length}
+                    </span>
+                    <h2 className="font-bold text-base sm:text-lg text-white leading-snug">
+                      {currentLecture.title}
+                    </h2>
+                  </div>
+
                   <button
                     onClick={() => toggleSolved(`lecture-${playlist.slug}-${currentLecture.id}`)}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors shrink-0 cursor-pointer ${
+                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer shadow-xs ${
                       isSolved(`lecture-${playlist.slug}-${currentLecture.id}`)
-                        ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                        : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
+                        ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40'
+                        : 'bg-zinc-800 text-zinc-200 hover:bg-zinc-700'
                     }`}
                   >
-                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    <CheckCircle2 className="w-4 h-4" />
                     <span>
                       {isSolved(`lecture-${playlist.slug}-${currentLecture.id}`)
                         ? 'Completed'
-                        : 'Mark Done'}
+                        : 'Mark as Completed'}
                     </span>
                   </button>
                 </div>
 
-                <div className="flex items-center gap-2 flex-wrap text-xs text-zinc-400 pt-1">
-                  <span className="flex items-center gap-1">
-                    <Clock className="w-3.5 h-3.5" />
-                    {currentLecture.duration}
-                  </span>
-                  <span>•</span>
-                  <span>Instructor: {playlist.instructor}</span>
-                  {currentLecture.tags && (
-                    <div className="flex items-center gap-1.5 ml-2 flex-wrap">
-                      {currentLecture.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="px-2 py-0.5 rounded-md bg-zinc-800 text-zinc-300 text-[10px] font-medium"
-                        >
-                          #{tag}
-                        </span>
-                      ))}
-                    </div>
-                  )}
+                {/* Tags & Controls */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-[#18202d]">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="flex items-center gap-1.5 text-xs text-zinc-400">
+                      <Clock className="w-3.5 h-3.5" />
+                      {currentLecture.duration}
+                    </span>
+                    {currentLecture.tags && (
+                      <div className="flex items-center gap-1.5 ml-2 flex-wrap">
+                        {currentLecture.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="px-2.5 py-0.5 rounded-full bg-[#131a26] border border-[#1f293d] text-zinc-300 text-[10px] font-semibold"
+                          >
+                            #{tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Previous / Next Lecture Switcher */}
+                  <div className="flex items-center gap-2 self-end sm:self-auto">
+                    <button
+                      onClick={handlePrev}
+                      disabled={activeLectureIndex === 0}
+                      className="p-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 disabled:opacity-40 disabled:pointer-events-none text-zinc-200 transition-colors cursor-pointer"
+                      title="Previous Lecture"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                    </button>
+                    <span className="text-xs font-mono text-zinc-400 px-1">
+                      {activeLectureIndex + 1} / {lectures.length}
+                    </span>
+                    <button
+                      onClick={handleNext}
+                      disabled={activeLectureIndex === lectures.length - 1}
+                      className="p-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 disabled:opacity-40 disabled:pointer-events-none text-zinc-200 transition-colors cursor-pointer"
+                      title="Next Lecture"
+                    >
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
           ) : (
-            <div className="p-12 text-center text-zinc-500">
-              No lecture selected.
+            <div className="p-12 text-center text-zinc-500 bg-[#0c1017] rounded-2xl border border-[#1b2230]">
+              No lectures available for this playlist.
             </div>
           )}
         </div>
 
-        {/* Right 1 Col: Lecture List Breakdown */}
-        <div className="rounded-2xl bg-[#0c1017] border border-[#1b2230] overflow-hidden flex flex-col h-[620px]">
-          <div className="p-4 border-b border-[#1b2230] bg-[#0e131d] flex items-center justify-between">
-            <div>
-              <h3 className="font-bold text-sm text-white">Course Lectures</h3>
-              <span className="text-[11px] text-zinc-400">
-                {lectures.length} video lectures
+        {/* Right 1 Column: Complete Lecture Curriculum List */}
+        <div
+          className={`rounded-2xl bg-[#0c1017] border border-[#1b2230] overflow-hidden flex flex-col h-[650px] shadow-lg ${
+            mobileTab === 'player' ? 'hidden lg:flex' : 'flex'
+          }`}
+        >
+          {/* List Header & Search */}
+          <div className="p-3.5 sm:p-4 border-b border-[#1b2230] bg-[#0e131d] space-y-3">
+            <div className="flex items-center justify-between">
+              <h3 className="font-bold text-sm text-white flex items-center gap-2">
+                <ListVideo className="w-4 h-4 text-blue-400" />
+                <span>Course Lectures</span>
+              </h3>
+              <span className="text-[11px] font-mono font-semibold text-zinc-400">
+                {completedCount}/{lectures.length} Done
               </span>
+            </div>
+
+            {/* Quick Filter Search Input */}
+            <div className="relative">
+              <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                placeholder="Search lectures or topics..."
+                value={lectureSearch}
+                onChange={(e) => setLectureSearch(e.target.value)}
+                className="w-full pl-8 pr-3 py-1.5 rounded-xl bg-[#07090e] border border-[#1e2433] text-xs text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              />
             </div>
           </div>
 
-          <div className="overflow-y-auto divide-y divide-[#171f2d] flex-1 p-1">
-            {lectures.map((lec, idx) => {
-              const isCurrent = idx === activeLectureIndex;
-              const isDone = isSolved(`lecture-${playlist.slug}-${lec.id}`);
+          {/* Scrollable Lecture Items */}
+          <div className="overflow-y-auto divide-y divide-[#151c2a] flex-1 p-2 space-y-1">
+            {filteredLectures.length === 0 ? (
+              <div className="p-8 text-center text-xs text-zinc-500">
+                No matching lectures found.
+              </div>
+            ) : (
+              filteredLectures.map((lec) => {
+                const originalIndex = lectures.findIndex((l) => l.id === lec.id);
+                const isCurrent = originalIndex === activeLectureIndex;
+                const isDone = isSolved(`lecture-${playlist.slug}-${lec.id}`);
 
-              return (
-                <button
-                  key={lec.id}
-                  onClick={() => setActiveLectureIndex(idx)}
-                  className={`w-full p-3 text-left flex items-start gap-3 rounded-xl transition-all cursor-pointer ${
-                    isCurrent
-                      ? 'bg-blue-600/15 border border-blue-500/30 text-white'
-                      : 'hover:bg-zinc-800/40 text-zinc-300'
-                  }`}
-                >
-                  <div
-                    className={`w-6 h-6 rounded-md flex items-center justify-center text-xs font-bold shrink-0 mt-0.5 ${
-                      isDone
-                        ? 'bg-emerald-500 text-white'
-                        : isCurrent
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-zinc-800 text-zinc-400'
+                return (
+                  <button
+                    key={lec.id}
+                    onClick={() => {
+                      setActiveLectureIndex(originalIndex);
+                      if (window.innerWidth < 1024) {
+                        setMobileTab('player');
+                      }
+                    }}
+                    className={`w-full p-2.5 sm:p-3 text-left flex items-start gap-3 rounded-xl transition-all cursor-pointer ${
+                      isCurrent
+                        ? 'bg-blue-600/15 border border-blue-500/30 text-white shadow-xs'
+                        : 'hover:bg-zinc-800/50 text-zinc-300'
                     }`}
                   >
-                    {isDone ? <CheckCircle2 className="w-3.5 h-3.5" /> : idx + 1}
-                  </div>
-
-                  <div className="min-w-0 flex-1">
-                    <p
-                      className={`text-xs font-semibold line-clamp-2 ${
-                        isCurrent ? 'text-blue-300' : 'text-zinc-200'
+                    {/* Index or Checkmark Indicator */}
+                    <div
+                      className={`w-6 h-6 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 mt-0.5 transition-colors ${
+                        isDone
+                          ? 'bg-emerald-500 text-white'
+                          : isCurrent
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-zinc-800 text-zinc-400'
                       }`}
                     >
-                      {lec.title}
-                    </p>
-                    <div className="flex items-center gap-2 mt-1 text-[10px] text-zinc-500">
-                      <span className="flex items-center gap-1">
-                        <Clock className="w-3 h-3" />
-                        {lec.duration}
-                      </span>
+                      {isDone ? <Check className="w-3.5 h-3.5 stroke-[3]" /> : originalIndex + 1}
                     </div>
-                  </div>
-                </button>
-              );
-            })}
+
+                    <div className="min-w-0 flex-1">
+                      <p
+                        className={`text-xs font-semibold leading-snug line-clamp-2 ${
+                          isCurrent ? 'text-blue-300 font-bold' : 'text-zinc-200'
+                        }`}
+                      >
+                        {lec.title}
+                      </p>
+
+                      <div className="flex items-center gap-2 mt-1.5 text-[10px] text-zinc-400">
+                        <span className="flex items-center gap-1 font-mono">
+                          <Clock className="w-3 h-3" />
+                          {lec.duration}
+                        </span>
+                        {lec.tags && lec.tags[0] && (
+                          <>
+                            <span>•</span>
+                            <span className="text-zinc-400 truncate">
+                              #{lec.tags[0]}
+                            </span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </button>
+                );
+              })
+            )}
           </div>
         </div>
       </div>
