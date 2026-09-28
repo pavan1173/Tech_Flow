@@ -1,95 +1,90 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%" fill="none">
   <defs>
-    <!-- Background Space Gradient -->
-    <radialGradient id="tfBgDark" cx="50%" cy="38%" r="65%">
-      <stop offset="0%" stop-color="#0c1527"/>
-      <stop offset="45%" stop-color="#060b17"/>
-      <stop offset="80%" stop-color="#020409"/>
-      <stop offset="100%" stop-color="#000104"/>
+    <!-- Background Gradient -->
+    <radialGradient id="bgGlow" cx="50%" cy="40%" r="65%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="40%" stop-color="#070d1d"/>
+      <stop offset="80%" stop-color="#02040a"/>
+      <stop offset="100%" stop-color="#000000"/>
     </radialGradient>
 
-    <!-- Outer Squircle Neon Glow Gradient -->
-    <linearGradient id="tfNeonBorder" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#00d2ff"/>
-      <stop offset="30%" stop-color="#38bdf8"/>
-      <stop offset="60%" stop-color="#2563eb"/>
-      <stop offset="85%" stop-color="#1d4ed8"/>
-      <stop offset="100%" stop-color="#00d2ff"/>
-    </linearGradient>
-
-    <!-- Letter T Top Bar Gradients -->
-    <linearGradient id="tBarFront" x1="0%" y1="0%" x2="100%" y2="50%">
+    <!-- Outer Squircle Border Glow Gradient -->
+    <linearGradient id="squircleBorder" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#38bdf8"/>
-      <stop offset="40%" stop-color="#0284c7"/>
-      <stop offset="80%" stop-color="#0369a1"/>
-      <stop offset="100%" stop-color="#1e40af"/>
+      <stop offset="30%" stop-color="#3b82f6"/>
+      <stop offset="60%" stop-color="#6366f1"/>
+      <stop offset="85%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
     </linearGradient>
 
-    <linearGradient id="tBarTopHighlight" x1="0%" y1="0%" x2="100%" y2="0%">
+    <!-- T Gradients -->
+    <linearGradient id="tTopBar" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#67e8f9"/>
+      <stop offset="35%" stop-color="#38bdf8"/>
+      <stop offset="75%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#0369a1"/>
+    </linearGradient>
+
+    <linearGradient id="tTopHighlight" x1="0%" y1="0%" x2="100%" y2="0%">
       <stop offset="0%" stop-color="#e0f2fe"/>
-      <stop offset="35%" stop-color="#7dd3fc"/>
-      <stop offset="70%" stop-color="#38bdf8"/>
+      <stop offset="40%" stop-color="#7dd3fc"/>
       <stop offset="100%" stop-color="#0284c7"/>
     </linearGradient>
 
-    <linearGradient id="tBarUnderside" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#0369a1"/>
-      <stop offset="100%" stop-color="#0f172a"/>
-    </linearGradient>
-
-    <!-- Letter T Stem Gradients -->
     <linearGradient id="tStemFront" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#38bdf8"/>
-      <stop offset="30%" stop-color="#0ea5e9"/>
-      <stop offset="65%" stop-color="#0284c7"/>
-      <stop offset="100%" stop-color="#1d4ed8"/>
+      <stop offset="0%" stop-color="#00d2ff"/>
+      <stop offset="35%" stop-color="#0284c7"/>
+      <stop offset="70%" stop-color="#0369a1"/>
+      <stop offset="100%" stop-color="#075985"/>
     </linearGradient>
 
-    <linearGradient id="tStemLeftBevel" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#bae6fd" stop-opacity="0.95"/>
-      <stop offset="40%" stop-color="#38bdf8" stop-opacity="0.6"/>
-      <stop offset="100%" stop-color="#0284c7" stop-opacity="0"/>
+    <linearGradient id="tStemBevel" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#67e8f9" stop-opacity="0.9"/>
+      <stop offset="45%" stop-color="#0284c7" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#082f49" stop-opacity="0"/>
     </linearGradient>
 
-    <!-- Letter F Gradients -->
-    <linearGradient id="fTopWingFront" x1="0%" y1="0%" x2="100%" y2="50%">
+    <!-- F Gradients -->
+    <linearGradient id="fFront" x1="0%" y1="0%" x2="80%" y2="100%">
       <stop offset="0%" stop-color="#ffffff"/>
-      <stop offset="45%" stop-color="#f8fafc"/>
-      <stop offset="75%" stop-color="#e2e8f0"/>
-      <stop offset="100%" stop-color="#cbd5e1"/>
+      <stop offset="30%" stop-color="#f8fafc"/>
+      <stop offset="60%" stop-color="#e2e8f0"/>
+      <stop offset="85%" stop-color="#cbd5e1"/>
+      <stop offset="100%" stop-color="#94a3b8"/>
     </linearGradient>
 
-    <linearGradient id="fWingCrestHighlight" x1="0%" y1="0%" x2="100%" y2="20%">
-      <stop offset="0%" stop-color="#ffffff"/>
-      <stop offset="60%" stop-color="#ffffff"/>
-      <stop offset="90%" stop-color="#f1f5f9"/>
-      <stop offset="100%" stop-color="#e2e8f0"/>
-    </linearGradient>
-
-    <linearGradient id="fMiddleBarFront" x1="0%" y1="0%" x2="100%" y2="50%">
+    <linearGradient id="fTopFlare" x1="0%" y1="0%" x2="100%" y2="40%">
       <stop offset="0%" stop-color="#ffffff"/>
       <stop offset="50%" stop-color="#f8fafc"/>
       <stop offset="85%" stop-color="#e2e8f0"/>
-      <stop offset="100%" stop-color="#93c5fd"/>
+      <stop offset="100%" stop-color="#c7d2fe"/>
     </linearGradient>
 
-    <linearGradient id="fMiddleBarUnderside" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#1d4ed8"/>
-      <stop offset="60%" stop-color="#1e3a8a"/>
-      <stop offset="100%" stop-color="#0f172a"/>
-    </linearGradient>
-
-    <linearGradient id="fStemFront" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="fMiddleBar" x1="0%" y1="0%" x2="100%" y2="50%">
       <stop offset="0%" stop-color="#ffffff"/>
-      <stop offset="25%" stop-color="#e2e8f0"/>
-      <stop offset="55%" stop-color="#93c5fd"/>
-      <stop offset="85%" stop-color="#38bdf8"/>
-      <stop offset="100%" stop-color="#0284c7"/>
+      <stop offset="60%" stop-color="#f1f5f9"/>
+      <stop offset="100%" stop-color="#cbd5e1"/>
     </linearGradient>
 
-    <!-- Filters for Neon Lighting -->
-    <filter id="neonHalo" x="-30%" y="-30%" width="160%" height="160%">
-      <feGaussianBlur stdDeviation="15" result="blur1"/>
+    <linearGradient id="fPurpleShade" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c4b5fd" stop-opacity="0.95"/>
+      <stop offset="50%" stop-color="#818cf8" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.1"/>
+    </linearGradient>
+
+    <!-- Orbital Swoosh Gradient -->
+    <linearGradient id="swooshGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00f5ff"/>
+      <stop offset="30%" stop-color="#38bdf8"/>
+      <stop offset="55%" stop-color="#60a5fa"/>
+      <stop offset="75%" stop-color="#a855f7"/>
+      <stop offset="90%" stop-color="#c084fc"/>
+      <stop offset="100%" stop-color="#f472b6"/>
+    </linearGradient>
+
+    <!-- Filters -->
+    <filter id="neonGlowOuter" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="14" result="blur1"/>
       <feGaussianBlur stdDeviation="6" result="blur2"/>
       <feMerge>
         <feMergeNode in="blur1"/>
@@ -98,117 +93,118 @@
       </feMerge>
     </filter>
 
-    <filter id="emblemDropShadow" x="-25%" y="-25%" width="150%" height="150%">
-      <feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#000000" flood-opacity="0.9"/>
-    </filter>
-
-    <filter id="specularGlow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="3" result="blur"/>
+    <filter id="swooshGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="9" result="blur1"/>
+      <feGaussianBlur stdDeviation="3.5" result="blur2"/>
       <feMerge>
-        <feMergeNode in="blur"/>
+        <feMergeNode in="blur1"/>
+        <feMergeNode in="blur2"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
+
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000000" flood-opacity="0.85"/>
+    </filter>
   </defs>
 
-  <!-- 1. Ambient Outer Neon Glow -->
-  <rect x="48" y="48" width="416" height="416" rx="100" fill="none" stroke="url(#tfNeonBorder)" stroke-width="12" opacity="0.45" filter="url(#neonHalo)"/>
+  <!-- 1. Ambient Background Glow Behind Icon -->
+  <rect x="52" y="52" width="408" height="408" rx="100" fill="none" stroke="url(#squircleBorder)" stroke-width="12" opacity="0.45" filter="url(#neonGlowOuter)"/>
 
-  <!-- 2. Dark Squircle Canvas -->
-  <rect x="50" y="50" width="412" height="412" rx="98" fill="url(#tfBgDark)"/>
+  <!-- 2. Dark Squircle Body -->
+  <rect x="54" y="54" width="404" height="404" rx="98" fill="url(#bgGlow)"/>
 
-  <!-- Glowing Bezel Borders -->
-  <rect x="50" y="50" width="412" height="412" rx="98" fill="none" stroke="url(#tfNeonBorder)" stroke-width="4"/>
-  <rect x="52" y="52" width="408" height="408" rx="96" fill="none" stroke="#38bdf8" stroke-width="1" opacity="0.6"/>
+  <!-- Glowing Borders -->
+  <rect x="54" y="54" width="404" height="404" rx="98" fill="none" stroke="url(#squircleBorder)" stroke-width="4.5"/>
+  <rect x="56" y="56" width="400" height="400" rx="96" fill="none" stroke="#38bdf8" stroke-width="1.2" opacity="0.6"/>
 
-  <!-- Subsurface Cyan Light Pool -->
-  <circle cx="256" cy="250" r="140" fill="#0284c7" opacity="0.14" filter="url(#neonHalo)"/>
+  <!-- 3. Ambient Lighting Glow Behind Monogram -->
+  <circle cx="230" cy="245" r="140" fill="#0284c7" opacity="0.16" filter="url(#neonGlowOuter)"/>
+  <circle cx="340" cy="275" r="110" fill="#a855f7" opacity="0.14" filter="url(#neonGlowOuter)"/>
 
   <!-- ========================================================= -->
-  <!-- 3. MONOGRAM "TF" (CLEAN 3D EMBLEM WITHOUT SWOOSH) -->
+  <!-- 4. MONOGRAM GROUP (TF) - CLEAN FINAL VERSION -->
   <!-- ========================================================= -->
-  <g filter="url(#emblemDropShadow)">
+  <g filter="url(#softShadow)">
 
-    <!-- ======================================================= -->
+    <!-- BACK PORTION OF ORBITAL SWOOSH (behind T) -->
+    <path d="M 124 316 C 96 280 96 230 134 212 C 160 200 178 206 186 218" 
+          stroke="url(#swooshGrad)" 
+          stroke-width="14" 
+          stroke-linecap="round" 
+          opacity="0.9" 
+          filter="url(#swooshGlow)"/>
+
+    <!-- ========================================================= -->
     <!-- LETTER "T" -->
-    <!-- ======================================================= -->
+    <!-- ========================================================= -->
+    <!-- T - Top Horizontal Bar 3D Body -->
+    <path d="M 104 194 C 112 162 136 148 184 146 L 278 146 C 284 156 276 172 264 182 C 248 194 234 196 218 196 L 172 196 C 142 196 120 198 104 194 Z"
+          fill="url(#tTopBar)"/>
 
-    <!-- T - Top Bar 3D Base -->
-    <path d="M 102 196 C 114 160 144 140 196 138 L 314 138 C 316 154 306 172 292 182 C 268 196 244 196 226 196 L 176 196 C 146 196 122 198 102 196 Z"
-          fill="url(#tBarFront)"/>
+    <!-- T - Top Bevel Highlight Sheen -->
+    <path d="M 110 188 C 120 158 144 148 186 147 L 274 147 C 262 158 248 168 224 168 L 172 168 C 136 168 120 176 110 188 Z"
+          fill="url(#tTopHighlight)"
+          opacity="0.45"/>
 
-    <!-- T - Top Crest Specular Highlight Line -->
-    <path d="M 108 190 C 122 154 150 140 198 139 L 312 139 C 298 152 284 166 256 166 L 176 166 C 138 166 120 176 108 190 Z"
-          fill="url(#tBarTopHighlight)"
-          opacity="0.95"
-          filter="url(#specularGlow)"/>
-
-    <!-- T - Top Left Flare Wingtip Catchlight -->
-    <path d="M 104 194 C 116 164 138 144 180 140 C 152 144 130 162 118 194 Z"
-          fill="#ffffff"
-          opacity="0.8"/>
-
-    <!-- T - Top Bar Underside 3D Shading -->
-    <path d="M 226 182 C 248 182 272 180 292 172 C 302 176 308 182 308 186 C 290 198 262 198 226 196 Z"
-          fill="url(#tBarUnderside)"
-          opacity="0.6"/>
-
-    <!-- T - Vertical Stem Front Face with Shield Point at Bottom -->
-    <path d="M 176 196 L 226 196 L 226 398 C 226 404 220 404 216 400 L 176 348 C 176 340 176 210 176 196 Z"
+    <!-- T - Vertical Stem -->
+    <path d="M 170 196 L 218 196 L 218 360 C 218 376 198 392 178 386 C 172 384 170 374 170 364 L 170 196 Z"
           fill="url(#tStemFront)"/>
 
-    <!-- T - Left Bevel Light Reflection -->
-    <path d="M 176 196 L 188 196 L 188 354 L 176 340 Z"
-          fill="url(#tStemLeftBevel)"/>
+    <!-- T - Left Bevel Edge Highlight -->
+    <path d="M 170 196 L 182 196 L 182 372 C 174 366 170 358 170 348 Z"
+          fill="#67e8f9"
+          opacity="0.75"/>
 
-    <!-- T - Crisp Specular Spine along Stem -->
-    <path d="M 186 196 L 190 196 L 190 358 L 186 354 Z"
+    <!-- T - Stem Inner 3D Gradient Overlay -->
+    <path d="M 170 196 L 218 196 L 218 360 C 218 376 198 392 178 386 C 172 384 170 374 170 364 L 170 196 Z"
+          fill="url(#tStemBevel)"/>
+
+    <!-- ========================================================= -->
+    <!-- LETTER "F" - CLEAN AERODYNAMIC WING (NO CAP) -->
+    <!-- ========================================================= -->
+    <!-- F - Main Sweeping 3D Body -->
+    <path d="M 238 214 C 238 184 260 166 294 158 C 334 148 378 152 414 134 C 418 152 402 186 384 202 C 354 226 314 228 286 230 L 286 256 L 374 256 C 390 256 392 274 378 286 C 362 298 338 298 316 298 L 286 298 L 286 364 C 286 384 266 400 248 394 C 240 390 238 380 238 368 L 238 214 Z"
+          fill="url(#fFront)"/>
+
+    <!-- F - Top Swept Aerodynamic Wing Crest Highlight -->
+    <path d="M 294 158 C 334 148 378 152 414 134 C 408 154 394 178 376 194 C 346 218 308 220 286 220 C 280 196 284 172 294 158 Z"
+          fill="url(#fTopFlare)"/>
+
+    <!-- F - Top Gloss Specular Highlight Line -->
+    <path d="M 296 160 C 336 150 380 154 412 137 C 396 160 372 180 344 192 C 314 204 298 198 296 160 Z"
           fill="#ffffff"
-          opacity="0.4"/>
-
-    <!-- ======================================================= -->
-    <!-- LETTER "F" -->
-    <!-- ======================================================= -->
-
-    <!-- F - Main Sweeping 3D Body with Clean Matching Tapered Point -->
-    <path d="M 242 208 C 242 176 268 154 306 144 C 348 134 394 140 422 168 C 418 188 402 214 382 226 C 350 244 316 244 286 244 L 286 264 L 386 264 C 392 278 382 296 364 306 C 344 316 318 316 286 316 L 286 348 L 246 398 C 242 402 242 396 242 388 L 242 208 Z"
-          fill="url(#fStemFront)"/>
-
-    <!-- F - Top Wing Aerodynamic Sweep (Pure White to Silver) -->
-    <path d="M 242 208 C 242 176 268 154 306 144 C 348 134 394 140 422 168 C 418 188 402 214 382 226 C 350 244 316 244 286 244 C 286 222 284 192 300 176 C 314 162 338 156 372 154 C 330 162 292 180 286 216 L 286 244 Z"
-          fill="url(#fTopWingFront)"/>
-
-    <!-- F - Top Wing Crest Brilliant White Specular Glint -->
-    <path d="M 306 144 C 348 134 394 140 422 168 C 406 182 388 200 360 210 C 330 220 306 200 306 144 Z"
-          fill="url(#fWingCrestHighlight)"
-          filter="url(#specularGlow)"/>
-
-    <!-- F - Top Feather Wingtip Edge Highlight -->
-    <path d="M 352 140 C 382 144 412 152 422 168 C 414 176 400 186 384 192 C 398 174 402 164 394 156 C 382 148 368 144 352 140 Z"
-          fill="#ffffff"
-          opacity="0.9"/>
-
-    <!-- F - Middle Arm 3D Body -->
-    <path d="M 286 264 L 386 264 C 392 278 382 296 364 306 C 344 316 318 316 286 316 Z"
-          fill="url(#fMiddleBarFront)"/>
-
-    <!-- F - Middle Arm Top Specular Highlight Edge -->
-    <path d="M 286 264 L 384 264 C 388 270 384 278 376 282 L 286 282 Z"
-          fill="#ffffff"
-          opacity="0.85"/>
-
-    <!-- F - Middle Arm Underside Sapphire Shadow -->
-    <path d="M 286 286 L 372 286 C 362 298 344 308 318 312 L 286 312 Z"
-          fill="url(#fMiddleBarUnderside)"
-          opacity="0.7"/>
-
-    <!-- F - Bottom Stem Light Catching Gradient Sheen -->
-    <path d="M 242 300 L 286 300 L 286 348 L 246 398 C 242 402 242 396 242 388 Z"
-          fill="url(#fStemFront)"/>
-
-    <!-- Central Symmetrical V-Point Accent at Bottom -->
-    <path d="M 216 400 L 226 398 L 242 398 L 246 398 L 234 404 Z"
-          fill="#0284c7"
           opacity="0.6"/>
+
+    <!-- F - Middle Horizontal Bar Highlight -->
+    <path d="M 286 256 L 374 256 C 390 256 392 274 378 286 C 362 298 338 298 316 298 L 286 298 Z"
+          fill="url(#fMiddleBar)"/>
+
+    <path d="M 286 258 L 370 258 C 382 260 384 270 374 278 L 286 278 Z"
+          fill="#ffffff"
+          opacity="0.35"/>
+
+    <!-- F - Lower Stem Ambient Purple/Violet Reflection -->
+    <path d="M 238 298 L 286 298 L 286 364 C 286 384 266 400 248 394 C 240 390 238 380 238 368 Z"
+          fill="url(#fPurpleShade)"/>
+
+    <!-- ========================================================= -->
+    <!-- 5. FRONT PORTION OF ORBITAL SWOOSH -->
+    <!-- ========================================================= -->
+    <!-- Dynamic looping glowing ribbon crossing in front of T and looping around F -->
+    <path d="M 104 274 C 120 220 180 236 244 286 C 298 326 348 358 376 344 C 392 334 394 308 372 284"
+          stroke="url(#swooshGrad)" 
+          stroke-width="14" 
+          stroke-linecap="round" 
+          fill="none"
+          filter="url(#swooshGlow)"/>
+
+    <!-- Inner Core White Hot Specular Line on Swoosh -->
+    <path d="M 108 270 C 124 224 178 238 244 286 C 298 326 348 358 374 344 C 388 336 390 314 372 290"
+          stroke="#ffffff" 
+          stroke-width="4.5" 
+          stroke-linecap="round" 
+          fill="none"
+          opacity="0.9"/>
   </g>
 </svg>
