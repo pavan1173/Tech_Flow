@@ -57,11 +57,29 @@ export const PreparationTopBar: React.FC<PreparationTopBarProps> = ({
     if (currentPath === '/preparation/system-design-sheet') {
       return [{ label: 'Preparation', href: '/preparation' }, { label: 'System Design Sheet' }];
     }
+    if (currentPath.startsWith('/preparation/dsa-playlists/')) {
+      const slug = currentPath.replace('/preparation/dsa-playlists/', '');
+      const plName = slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+      return [
+        { label: 'Preparation', href: '/preparation' },
+        { label: 'DSA Playlists', href: '/preparation/dsa-playlists' },
+        { label: plName },
+      ];
+    }
     if (currentPath === '/preparation/dsa-playlists') {
       return [{ label: 'Preparation', href: '/preparation' }, { label: 'DSA Playlists' }];
     }
     if (currentPath === '/preparation/dbms-playlists') {
       return [{ label: 'Preparation', href: '/preparation' }, { label: 'Core Subjects' }];
+    }
+    if (currentPath.startsWith('/preparation/system-design-playlists/')) {
+      const slug = currentPath.replace('/preparation/system-design-playlists/', '');
+      const plName = slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+      return [
+        { label: 'Preparation', href: '/preparation' },
+        { label: 'System Design Playlists', href: '/preparation/system-design-playlists' },
+        { label: plName },
+      ];
     }
     if (currentPath === '/preparation/system-design-playlists') {
       return [{ label: 'Preparation', href: '/preparation' }, { label: 'System Design Playlists' }];
@@ -92,6 +110,15 @@ export const PreparationTopBar: React.FC<PreparationTopBarProps> = ({
     }
     if (currentPath === '/preparation/hr-questions') {
       return [{ label: 'Preparation', href: '/preparation' }, { label: 'HR Questions' }];
+    }
+    if (currentPath.startsWith('/preparation/cold-email-templets/') || currentPath.startsWith('/preparation/cold-email-templates/')) {
+      const slug = currentPath.split('/').pop() || '';
+      const templateName = slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+      return [
+        { label: 'Preparation', href: '/preparation' },
+        { label: 'Cold Email Templates', href: '/preparation/cold-email-templets' },
+        { label: templateName },
+      ];
     }
     if (currentPath.includes('cold-email')) {
       return [{ label: 'Preparation', href: '/preparation' }, { label: 'Cold Email Templates' }];

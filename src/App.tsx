@@ -20,6 +20,8 @@ import { PlaylistsPage } from './pages/PlaylistsPage';
 import { DbmsPlaylistsPage } from './pages/DbmsPlaylistsPage';
 import { OsPlaylistsPage } from './pages/OsPlaylistsPage';
 import { OopsPlaylistsPage } from './pages/OopsPlaylistsPage';
+import { SystemDesignPlaylistsPage } from './pages/SystemDesignPlaylistsPage';
+import { DsaPlaylistsPage } from './pages/DsaPlaylistsPage';
 import { PlaylistDetailPage } from './pages/PlaylistDetailPage';
 import { RoleWisePage } from './pages/RoleWisePage';
 import { MostAskedQuestionsPage } from './pages/MostAskedQuestionsPage';
@@ -94,7 +96,17 @@ export default function App() {
       return <SystemDesignSheetPage navigate={navigate} />;
     }
     if (currentPath === '/preparation/dsa-playlists') {
-      return <PlaylistsPage initialTab="dsa" navigate={navigate} />;
+      return <DsaPlaylistsPage navigate={navigate} />;
+    }
+    if (currentPath.startsWith('/preparation/dsa-playlists/')) {
+      const slug = currentPath.replace('/preparation/dsa-playlists/', '');
+      return (
+        <PlaylistDetailPage
+          slug={slug}
+          subjectType="dsa"
+          navigate={navigate}
+        />
+      );
     }
     if (currentPath === '/preparation/dbms-playlists') {
       return <DbmsPlaylistsPage navigate={navigate} />;
@@ -106,7 +118,17 @@ export default function App() {
       return <OopsPlaylistsPage navigate={navigate} />;
     }
     if (currentPath === '/preparation/system-design-playlists') {
-      return <PlaylistsPage initialTab="systemDesign" navigate={navigate} />;
+      return <SystemDesignPlaylistsPage navigate={navigate} />;
+    }
+    if (currentPath.startsWith('/preparation/system-design-playlists/')) {
+      const slug = currentPath.replace('/preparation/system-design-playlists/', '');
+      return (
+        <PlaylistDetailPage
+          slug={slug}
+          subjectType="systemDesign"
+          navigate={navigate}
+        />
+      );
     }
     if (currentPath === '/preparation/role-wise') {
       return <RoleWisePage navigate={navigate} />;
@@ -123,6 +145,14 @@ export default function App() {
     }
     if (currentPath === '/preparation/cold-email-templets' || currentPath === '/preparation/cold-email-templates') {
       return <ColdEmailPage navigate={navigate} />;
+    }
+    if (currentPath.startsWith('/preparation/cold-email-templets/')) {
+      const slug = currentPath.replace('/preparation/cold-email-templets/', '');
+      return <ColdEmailPage templateSlug={slug} navigate={navigate} />;
+    }
+    if (currentPath.startsWith('/preparation/cold-email-templates/')) {
+      const slug = currentPath.replace('/preparation/cold-email-templates/', '');
+      return <ColdEmailPage templateSlug={slug} navigate={navigate} />;
     }
     if (currentPath === '/preparation/notes') {
       return <NotesPage navigate={navigate} />;

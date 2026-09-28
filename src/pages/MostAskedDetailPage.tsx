@@ -87,8 +87,26 @@ export const MostAskedDetailPage: React.FC<MostAskedDetailPageProps> = ({ slug, 
     });
   }, [topic.questions, activeFilter, bookmarkedIds, searchQuery]);
 
+  // Calculate counts dynamically from available questions or fallback
+  const counts = useMemo(() => {
+    let easy = 0;
+    let medium = 0;
+    let hard = 0;
+    topic.questions.forEach((q) => {
+      if (q.level === 'Easy') easy++;
+      else if (q.level === 'Medium') medium++;
+      else if (q.level === 'Hard') hard++;
+    });
+    return {
+      easy: Math.max(easy, topic.easyCount),
+      medium: Math.max(medium, topic.mediumCount),
+      hard: Math.max(hard, topic.hardCount),
+      total: Math.max(topic.questions.length, topic.totalQuestions)
+    };
+  }, [topic]);
+
   // Overall progress
-  const totalInTopic = topic.totalQuestions;
+  const totalInTopic = counts.total;
   const solvedCount = useMemo(() => {
     return topic.questions.filter((q) => isSolved(`most_asked_${topic.slug}_${q.id}`)).length;
   }, [topic, isSolved]);
@@ -187,7 +205,7 @@ export const MostAskedDetailPage: React.FC<MostAskedDetailPageProps> = ({ slug, 
           >
             <span>All</span>
             <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-zinc-700/60 text-zinc-300">
-              {topic.totalQuestions}
+              {counts.total}
             </span>
           </button>
 
@@ -204,7 +222,7 @@ export const MostAskedDetailPage: React.FC<MostAskedDetailPageProps> = ({ slug, 
           >
             <span>Easy</span>
             <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-zinc-800 text-emerald-400">
-              {topic.easyCount}
+              {counts.easy}
             </span>
           </button>
 
@@ -221,7 +239,7 @@ export const MostAskedDetailPage: React.FC<MostAskedDetailPageProps> = ({ slug, 
           >
             <span>Medium</span>
             <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-zinc-800 text-amber-400">
-              {topic.mediumCount}
+              {counts.medium}
             </span>
           </button>
 
@@ -238,7 +256,7 @@ export const MostAskedDetailPage: React.FC<MostAskedDetailPageProps> = ({ slug, 
           >
             <span>Hard</span>
             <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-zinc-800 text-rose-400">
-              {topic.hardCount}
+              {counts.hard}
             </span>
           </button>
 

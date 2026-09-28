@@ -1,5 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { coreSubjectsData, CoreSubjectPlaylist, VideoLecture } from '../data/coreSubjectsData';
+import { systemDesignPlaylistsList } from '../data/systemDesignData';
+import { dsaPlaylistsList } from '../data/dsaPlaylistsData';
 import { useProgress } from '../context/ProgressContext';
 import {
   ArrowLeft,
@@ -23,25 +25,26 @@ import {
 
 interface PlaylistDetailPageProps {
   slug: string;
-  subjectType: 'dbms' | 'os' | 'oops';
+  subjectType?: 'dbms' | 'os' | 'oops' | 'systemDesign' | 'dsa';
   navigate: (to: string) => void;
 }
 
 export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
   slug,
-  subjectType,
+  subjectType = 'dbms',
   navigate,
 }) => {
   const { isSolved, toggleSolved } = useProgress();
 
   // Find playlist across all datasets
-  const list = coreSubjectsData[subjectType] || [];
-  const playlist: CoreSubjectPlaylist =
-    list.find((p) => p.slug === slug) ||
+  const playlist: any =
+    (coreSubjectsData as any)[subjectType]?.find((p: any) => p.slug === slug) ||
+    systemDesignPlaylistsList.find((p) => p.slug === slug) ||
+    dsaPlaylistsList.find((p) => p.slug === slug) ||
     coreSubjectsData.dbms.find((p) => p.slug === slug) ||
     coreSubjectsData.os.find((p) => p.slug === slug) ||
     coreSubjectsData.oops.find((p) => p.slug === slug) ||
-    coreSubjectsData.dbms[0];
+    systemDesignPlaylistsList[0];
 
   const lectures = playlist?.lectures || [];
   const [activeLectureIndex, setActiveLectureIndex] = useState(0);
@@ -57,12 +60,24 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
   };
 
   const getParentHref = () => {
+    if (playlist.type === 'HLD' || playlist.type === 'LLD' || playlist.subjectTitle?.includes('Design')) {
+      return '/preparation/system-design-playlists';
+    }
+    if (dsaPlaylistsList.some((p) => p.slug === playlist.slug)) {
+      return '/preparation/dsa-playlists';
+    }
     if (playlist.subject === 'OS') return '/preparation/os-playlists';
     if (playlist.subject === 'OOPS') return '/preparation/oops-playlists';
     return '/preparation/dbms-playlists';
   };
 
   const getParentTitle = () => {
+    if (playlist.type === 'HLD' || playlist.type === 'LLD' || playlist.subjectTitle?.includes('Design')) {
+      return 'System Design Playlists';
+    }
+    if (dsaPlaylistsList.some((p) => p.slug === playlist.slug)) {
+      return 'DSA Playlists';
+    }
     if (playlist.subject === 'OS') return 'Operating Systems';
     if (playlist.subject === 'OOPS') return 'OOPS Playlists';
     return 'DBMS Playlists';
@@ -71,15 +86,15 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
   // Filter lectures by search
   const filteredLectures = useMemo(() => {
     if (!lectureSearch) return lectures;
-    return lectures.filter((l) =>
+    return lectures.filter((l: VideoLecture) =>
       l.title.toLowerCase().includes(lectureSearch.toLowerCase()) ||
-      (l.tags || []).some((t) => t.toLowerCase().includes(lectureSearch.toLowerCase()))
+      (l.tags || []).some((t: string) => t.toLowerCase().includes(lectureSearch.toLowerCase()))
     );
   }, [lectures, lectureSearch]);
 
   // Calculate lecture progress
   const completedCount = useMemo(() => {
-    return lectures.filter((l) => isSolved(`lecture-${playlist.slug}-${l.id}`)).length;
+    return lectures.filter((l: VideoLecture) => isSolved(`lecture-${playlist.slug}-${l.id}`)).length;
   }, [lectures, isSolved, playlist.slug]);
 
   const completionPercent =
@@ -370,8 +385,8 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
                 No matching lectures found.
               </div>
             ) : (
-              filteredLectures.map((lec) => {
-                const originalIndex = lectures.findIndex((l) => l.id === lec.id);
+              filteredLectures.map((lec: VideoLecture) => {
+                const originalIndex = lectures.findIndex((l: VideoLecture) => l.id === lec.id);
                 const isCurrent = originalIndex === activeLectureIndex;
                 const isDone = isSolved(`lecture-${playlist.slug}-${lec.id}`);
 

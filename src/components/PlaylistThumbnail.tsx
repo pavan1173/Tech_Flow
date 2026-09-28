@@ -1,235 +1,275 @@
 import React from 'react';
 
 interface PlaylistThumbnailProps {
-  type: 'love-babbar' | 'riti-kumari' | 'vivek-gupta' | 'neso-academy' | 'codewithharry' | 'rohit-negi' | 'kunal-kushwaha' | 'jennys' | string;
-  subject?: 'DBMS' | 'OS' | 'OOPS' | 'CN' | string;
+  type:
+    | 'love-babbar'
+    | 'riti-kumari'
+    | 'vivek-gupta'
+    | 'neso-academy'
+    | 'codewithharry'
+    | 'rohit-negi'
+    | 'kunal-kushwaha'
+    | 'jennys'
+    | 'shradha-khapra'
+    | 'gaurav-sen'
+    | 'exponent'
+    | 'hello-interview'
+    | 'code-aryan'
+    | 'coder-army'
+    | 'engineering-digest'
+    | string;
+  subject?: 'DBMS' | 'OS' | 'OOPS' | 'CN' | 'System Design' | 'DSA' | string;
   className?: string;
 }
 
 export const PlaylistThumbnail: React.FC<PlaylistThumbnailProps> = ({
   type,
-  subject = 'DBMS',
+  subject = 'System Design',
   className = '',
 }) => {
-  // Theme styling based on instructor and subject
-  if (type === 'love-babbar') {
-    return (
-      <div className={`relative aspect-video w-full rounded-xl overflow-hidden bg-gradient-to-r from-[#031d3d] via-[#053b70] to-[#0a5296] select-none ${className}`}>
-        {/* Subtle grid pattern */}
-        <div className="absolute inset-0 opacity-15 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:12px_12px]" />
-
-        {/* Database Cylinders / Tech graphics in Background */}
-        <div className="absolute top-2 left-20 sm:left-24 opacity-60 flex gap-2">
-          <svg className="w-8 sm:w-10 h-12 sm:h-14" viewBox="0 0 40 50" fill="none">
-            <ellipse cx="20" cy="10" rx="16" ry="6" fill="#c084fc" />
-            <path d="M4 10v10c0 3.3 7.2 6 16 6s16-2.7 16-6V10" fill="#9333ea" />
-            <ellipse cx="20" cy="20" rx="16" ry="6" fill="#a855f7" />
-            <path d="M4 20v10c0 3.3 7.2 6 16 6s16-2.7 16-6V20" fill="#7e22ce" />
-            <ellipse cx="20" cy="30" rx="16" ry="6" fill="#9333ea" />
-            <path d="M4 30v10c0 3.3 7.2 6 16 6s16-2.7 16-6V30" fill="#6b21a8" />
-            <ellipse cx="20" cy="40" rx="16" ry="6" fill="#a855f7" />
-          </svg>
-          <svg className="w-8 sm:w-10 h-12 sm:h-14 -mt-1" viewBox="0 0 40 50" fill="none">
-            <ellipse cx="20" cy="10" rx="16" ry="6" fill="#c084fc" />
-            <path d="M4 10v10c0 3.3 7.2 6 16 6s16-2.7 16-6V10" fill="#9333ea" />
-            <ellipse cx="20" cy="20" rx="16" ry="6" fill="#a855f7" />
-            <path d="M4 20v10c0 3.3 7.2 6 16 6s16-2.7 16-6V20" fill="#7e22ce" />
-            <ellipse cx="20" cy="30" rx="16" ry="6" fill="#9333ea" />
-            <path d="M4 30v10c0 3.3 7.2 6 16 6s16-2.7 16-6V30" fill="#6b21a8" />
-            <ellipse cx="20" cy="40" rx="16" ry="6" fill="#a855f7" />
-          </svg>
-        </div>
-
-        {/* Text Content */}
-        <div className="absolute inset-y-0 left-0 w-3/5 p-3.5 sm:p-5 flex flex-col justify-center z-10">
-          <div className="text-white font-extrabold text-xs sm:text-sm lg:text-base tracking-wider drop-shadow-md uppercase">
-            LOVE BABBAR
-          </div>
-          <div className="text-[#FFE600] font-black text-xl sm:text-3xl lg:text-4xl tracking-tight leading-none italic drop-shadow-md">
-            {subject}
-          </div>
-          <div className="text-[#FFE600] font-black text-base sm:text-xl lg:text-2xl tracking-wider leading-tight drop-shadow-md">
-            PLAYLIST
-          </div>
-        </div>
-
-        {/* Right side portrait avatar */}
-        <div className="absolute right-2 bottom-0 w-2/5 h-full flex items-end justify-center">
-          <div className="relative w-24 sm:w-36 h-full flex items-end justify-center">
-            <div className="absolute bottom-4 w-20 sm:w-28 h-20 sm:h-28 rounded-full bg-blue-400/30 blur-xl" />
-            
-            <div className="relative z-10 flex flex-col items-center">
-              {/* Head */}
-              <div className="w-12 sm:w-16 h-14 sm:h-18 rounded-full bg-[#e0ac69] border-2 border-[#b07b46] relative overflow-hidden flex flex-col items-center shadow-lg">
-                <div className="w-full h-6 sm:h-7 bg-[#1c1917] rounded-t-full" />
-                <div className="absolute bottom-0 w-full h-6 sm:h-8 bg-[#1c1917] rounded-b-full flex flex-col items-center justify-end pb-1">
-                  <div className="w-3 sm:w-4 h-1 bg-[#e0ac69] rounded-full mb-0.5 sm:mb-1" />
-                </div>
-                <div className="absolute top-6 sm:top-7 flex gap-2 sm:gap-3 z-10">
-                  <div className="w-1.5 h-1.5 bg-black rounded-full" />
-                  <div className="w-1.5 h-1.5 bg-black rounded-full" />
-                </div>
-              </div>
-
-              {/* Shirt */}
-              <div className="w-20 sm:w-30 h-12 sm:h-16 bg-gradient-to-r from-blue-700 via-sky-600 to-blue-800 rounded-t-3xl border-t-2 border-sky-400 flex items-center justify-center shadow-lg -mt-2">
-                <div className="w-5 h-5 border-b-2 border-white/40 transform rotate-45 -mt-3" />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* HD Quality Tag */}
-        <div className="absolute bottom-2 right-2 z-20 px-1.5 py-0.5 rounded bg-black/70 backdrop-blur-xs text-[9px] font-bold text-white flex items-center gap-1">
-          <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-          <span>HD</span>
-        </div>
+  // Shared tech badges for System Design thumbnails matching screenshot
+  const renderSystemDesignTechBadges = () => (
+    <div className="absolute bottom-2.5 left-3 flex items-center gap-1.5 z-20">
+      {/* RabbitMQ / Kafka / Message Queue Badge */}
+      <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-orange-500/90 border border-white/40 flex items-center justify-center p-1 shadow-md">
+        <svg viewBox="0 0 24 24" className="w-full h-full fill-white">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14.5h-2v-2h2v2zm0-4h-2V7h2v5.5z" />
+        </svg>
       </div>
-    );
-  }
 
-  if (type === 'riti-kumari') {
+      {/* Kafka / DB Connectors Badge */}
+      <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-cyan-600/90 border border-white/40 flex items-center justify-center p-1 shadow-md">
+        <svg viewBox="0 0 24 24" className="w-full h-full fill-white">
+          <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z" />
+        </svg>
+      </div>
+
+      {/* Redis / Database Badge */}
+      <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-red-600/90 border border-white/40 flex items-center justify-center p-1 shadow-md">
+        <svg viewBox="0 0 24 24" className="w-full h-full fill-white">
+          <path d="M12 3L4 9v6l8 6 8-6V9l-8-6zm0 2.2l5.5 4.1L12 13.5 6.5 9.3 12 5.2z" />
+        </svg>
+      </div>
+
+      {/* AWS Cloud Badge */}
+      <div className="px-2 py-0.5 rounded-full bg-amber-500/95 border border-white/40 text-black font-extrabold text-[9px] sm:text-[10px] tracking-tight shadow-md flex items-center justify-center">
+        aws
+      </div>
+
+      {/* Nginx / Node Badge */}
+      <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-emerald-600/90 border border-white/40 flex items-center justify-center text-white font-black text-xs shadow-md">
+        N
+      </div>
+    </div>
+  );
+
+  // 1. GAURAV SEN SYSTEM DESIGN
+  if (type === 'gaurav-sen') {
     return (
-      <div className={`relative aspect-video w-full rounded-xl overflow-hidden bg-gradient-to-r from-[#9a3412] via-[#c2410c] to-[#ea580c] select-none ${className}`}>
+      <div className={`relative aspect-video w-full rounded-xl overflow-hidden bg-gradient-to-r from-[#031738] via-[#09295e] to-[#123e83] select-none ${className}`}>
         <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:12px_12px]" />
-
-        <div className="absolute top-2 left-20 sm:left-24 opacity-60 flex gap-2">
-          <svg className="w-8 sm:w-10 h-12 sm:h-14" viewBox="0 0 40 50" fill="none">
-            <ellipse cx="20" cy="10" rx="16" ry="6" fill="#fde047" />
-            <path d="M4 10v10c0 3.3 7.2 6 16 6s16-2.7 16-6V10" fill="#eab308" />
-            <ellipse cx="20" cy="20" rx="16" ry="6" fill="#facc15" />
-            <path d="M4 20v10c0 3.3 7.2 6 16 6s16-2.7 16-6V20" fill="#ca8a04" />
-            <ellipse cx="20" cy="30" rx="16" ry="6" fill="#eab308" />
-            <path d="M4 30v10c0 3.3 7.2 6 16 6s16-2.7 16-6V30" fill="#a16207" />
-            <ellipse cx="20" cy="40" rx="16" ry="6" fill="#facc15" />
-          </svg>
-          <svg className="w-8 sm:w-10 h-12 sm:h-14 -mt-1" viewBox="0 0 40 50" fill="none">
-            <ellipse cx="20" cy="10" rx="16" ry="6" fill="#fde047" />
-            <path d="M4 10v10c0 3.3 7.2 6 16 6s16-2.7 16-6V10" fill="#eab308" />
-            <ellipse cx="20" cy="20" rx="16" ry="6" fill="#facc15" />
-            <path d="M4 20v10c0 3.3 7.2 6 16 6s16-2.7 16-6V20" fill="#ca8a04" />
-            <ellipse cx="20" cy="30" rx="16" ry="6" fill="#eab308" />
-            <path d="M4 30v10c0 3.3 7.2 6 16 6s16-2.7 16-6V30" fill="#a16207" />
-            <ellipse cx="20" cy="40" rx="16" ry="6" fill="#facc15" />
-          </svg>
-        </div>
-
-        <div className="absolute inset-y-0 left-0 w-3/5 p-3.5 sm:p-5 flex flex-col justify-center z-10">
-          <div className="text-white font-extrabold text-xs sm:text-sm lg:text-base tracking-wider drop-shadow-md uppercase">
-            RITI KUMARI
+        
+        {/* Banner Texts matching screenshot */}
+        <div className="absolute top-2.5 left-3 sm:top-3.5 sm:left-4 z-10">
+          <div className="text-white font-black text-xs sm:text-sm tracking-wider uppercase drop-shadow-md">
+            GAURAV SEN
           </div>
-          <div className="text-[#FFE600] font-black text-xl sm:text-3xl lg:text-4xl tracking-tight leading-none italic drop-shadow-md">
-            {subject}
-          </div>
-          <div className="text-[#FFE600] font-black text-base sm:text-xl lg:text-2xl tracking-wider leading-tight drop-shadow-md">
-            PLAYLIST
+          <div className="text-[#FFE600] font-black text-sm sm:text-lg lg:text-xl tracking-tight leading-none drop-shadow-md">
+            SYSTEM DESIGN
           </div>
         </div>
 
-        <div className="absolute right-2 bottom-0 w-2/5 h-full flex items-end justify-center">
-          <div className="relative w-24 sm:w-36 h-full flex items-end justify-center">
-            <div className="absolute bottom-4 w-20 sm:w-28 h-20 sm:h-28 rounded-full bg-yellow-400/30 blur-xl" />
-            
-            <div className="relative z-10 flex flex-col items-center">
-              <div className="absolute -inset-x-2 -top-1 bottom-3 bg-[#171412] rounded-t-full rounded-b-2xl -z-10" />
+        {/* Tech Badges */}
+        {renderSystemDesignTechBadges()}
 
-              <div className="w-11 sm:w-15 h-13 sm:h-17 rounded-full bg-[#fcd34d] border border-[#d97706] relative overflow-hidden flex flex-col items-center shadow-lg">
-                <div className="w-full h-4 sm:h-5 bg-[#171412] rounded-t-full" />
-                <div className="absolute top-5 sm:top-6 flex gap-2 sm:gap-3 z-10">
-                  <div className="w-1.5 h-1.5 bg-black rounded-full" />
-                  <div className="w-1.5 h-1.5 bg-black rounded-full" />
-                </div>
-                <div className="absolute bottom-2.5 w-3.5 h-1 border-b-2 border-[#b45309] rounded-full" />
-              </div>
-
-              <div className="w-20 sm:w-30 h-12 sm:h-16 bg-[#18181b] rounded-t-3xl border-t border-zinc-700 flex items-center justify-center shadow-lg -mt-2">
-                <div className="w-5 h-3 bg-[#27272a] rounded-t-md -mt-3" />
-              </div>
+        {/* Avatar Right */}
+        <div className="absolute right-1 sm:right-3 bottom-0 w-2/5 h-full flex items-end justify-center">
+          <div className="relative w-28 sm:w-36 h-full flex items-end justify-center">
+            <div className="w-14 sm:w-18 h-16 sm:h-20 rounded-full bg-[#f6d7b0] border-2 border-[#c68953] relative overflow-hidden flex flex-col items-center shadow-2xl">
+              <div className="w-full h-8 bg-[#1e1b18] rounded-t-full" />
+              <div className="w-4 h-1.5 bg-[#422006] rounded-full mt-4" />
             </div>
+            <div className="absolute bottom-0 w-24 sm:w-32 h-14 bg-gradient-to-r from-blue-600 to-indigo-700 rounded-t-3xl border-t border-blue-300" />
           </div>
-        </div>
-
-        <div className="absolute bottom-2 right-2 z-20 px-1.5 py-0.5 rounded bg-black/70 backdrop-blur-xs text-[9px] font-bold text-white flex items-center gap-1">
-          <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-          <span>HD</span>
         </div>
       </div>
     );
   }
 
-  // Instructor specific styles
-  const instructorProfiles: Record<string, { gradient: string; label: string; accentColor: string; role: string }> = {
-    'codewithharry': {
-      gradient: 'from-[#1e1b4b] via-[#3730a3] to-[#4f46e5]',
-      label: 'CODE WITH HARRY',
-      accentColor: '#818cf8',
-      role: 'OOP Complete Masterclass',
-    },
-    'rohit-negi': {
-      gradient: 'from-[#701a75] via-[#86198f] to-[#a21caf]',
-      label: 'ROHIT NEGI',
-      accentColor: '#f472b6',
-      role: 'Coder Army Placements',
-    },
-    'kunal-kushwaha': {
-      gradient: 'from-[#064e3b] via-[#047857] to-[#059669]',
-      label: 'KUNAL KUSHWAHA',
-      accentColor: '#4ade80',
-      role: 'Java OOP Enterprise',
-    },
-    'jennys': {
-      gradient: 'from-[#831843] via-[#9f1239] to-[#be123c]',
-      label: "JENNY'S LECTURES",
-      accentColor: '#fb7185',
-      role: 'Foundational CS Series',
-    },
-    'vivek-gupta': {
-      gradient: 'from-[#064e3b] via-[#047857] to-[#0f766e]',
-      label: 'VIVEK GUPTA',
-      accentColor: '#34d399',
-      role: 'Deep Systems & Concurrency',
-    },
-    'neso-academy': {
-      gradient: 'from-[#0f172a] via-[#1e293b] to-[#334155]',
-      label: 'NESO ACADEMY',
-      accentColor: '#38bdf8',
-      role: 'Complete Academic Course',
-    },
-  };
+  // 2. EXPONENT SYSTEM DESIGN
+  if (type === 'exponent') {
+    return (
+      <div className={`relative aspect-video w-full rounded-xl overflow-hidden bg-gradient-to-r from-[#210936] via-[#3b1259] to-[#581c87] select-none ${className}`}>
+        <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:12px_12px]" />
+        
+        <div className="absolute top-2.5 left-3 sm:top-3.5 sm:left-4 z-10">
+          <div className="text-white font-black text-xs sm:text-sm tracking-wider uppercase drop-shadow-md">
+            EXPONENT
+          </div>
+          <div className="text-[#FFE600] font-black text-sm sm:text-lg lg:text-xl tracking-tight leading-none drop-shadow-md">
+            SYSTEM DESIGN
+          </div>
+        </div>
 
-  const profile = instructorProfiles[type] || {
-    gradient: 'from-zinc-900 via-zinc-800 to-zinc-900',
-    label: type.replace(/-/g, ' ').toUpperCase(),
-    accentColor: '#60a5fa',
-    role: `${subject} Comprehensive Masterclass`,
-  };
+        {renderSystemDesignTechBadges()}
 
+        <div className="absolute right-1 sm:right-3 bottom-0 w-2/5 h-full flex items-end justify-center">
+          <div className="relative w-28 sm:w-36 h-full flex items-end justify-center">
+            <div className="w-14 sm:w-18 h-16 sm:h-20 rounded-full bg-[#eec89e] border-2 border-[#b07b46] relative overflow-hidden flex flex-col items-center shadow-2xl">
+              <div className="w-full h-7 bg-[#1c1917] rounded-t-full" />
+              {/* Glasses */}
+              <div className="w-10 h-3 border-2 border-black rounded mt-3" />
+            </div>
+            <div className="absolute bottom-0 w-24 sm:w-32 h-14 bg-gradient-to-r from-zinc-800 to-zinc-900 rounded-t-3xl border-t border-zinc-500" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // 3. HELLO INTERVIEW SYSTEM DESIGN
+  if (type === 'hello-interview') {
+    return (
+      <div className={`relative aspect-video w-full rounded-xl overflow-hidden bg-gradient-to-r from-[#78350f] via-[#b45309] to-[#d97706] select-none ${className}`}>
+        <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:12px_12px]" />
+        
+        <div className="absolute top-2.5 left-3 sm:top-3.5 sm:left-4 z-10">
+          <div className="text-white font-black text-xs sm:text-sm tracking-wider uppercase drop-shadow-md">
+            HELLO INTERVIEW
+          </div>
+          <div className="text-[#FFE600] font-black text-sm sm:text-lg lg:text-xl tracking-tight leading-none drop-shadow-md">
+            SYSTEM DESIGN
+          </div>
+        </div>
+
+        {renderSystemDesignTechBadges()}
+
+        <div className="absolute right-1 sm:right-3 bottom-0 w-2/5 h-full flex items-end justify-center">
+          <div className="relative w-28 sm:w-36 h-full flex items-end justify-center">
+            <div className="w-14 sm:w-18 h-16 sm:h-20 rounded-full bg-[#fde047] border-2 border-[#ca8a04] relative overflow-hidden flex flex-col items-center shadow-2xl">
+              <div className="w-full h-6 bg-[#78350f] rounded-t-full" />
+              <div className="w-10 h-3 border-2 border-zinc-900 rounded mt-3" />
+            </div>
+            <div className="absolute bottom-0 w-24 sm:w-32 h-14 bg-gradient-to-r from-zinc-900 to-black rounded-t-3xl border-t border-zinc-700" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // 4. CODE ARYAN SYSTEM DESIGN
+  if (type === 'code-aryan') {
+    return (
+      <div className={`relative aspect-video w-full rounded-xl overflow-hidden bg-gradient-to-r from-[#7f1d1d] via-[#991b1b] to-[#b91c1c] select-none ${className}`}>
+        <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:12px_12px]" />
+        
+        <div className="absolute top-2.5 left-3 sm:top-3.5 sm:left-4 z-10">
+          <div className="text-white font-black text-xs sm:text-sm tracking-wider uppercase drop-shadow-md">
+            CODE ARYAN
+          </div>
+          <div className="text-[#FFE600] font-black text-sm sm:text-lg lg:text-xl tracking-tight leading-none drop-shadow-md">
+            SYSTEM DESIGN
+          </div>
+        </div>
+
+        {renderSystemDesignTechBadges()}
+
+        <div className="absolute right-1 sm:right-3 bottom-0 w-2/5 h-full flex items-end justify-center">
+          <div className="relative w-28 sm:w-36 h-full flex items-end justify-center">
+            <div className="w-14 sm:w-18 h-16 sm:h-20 rounded-full bg-[#fcd34d] border-2 border-[#d97706] relative overflow-hidden flex flex-col items-center shadow-2xl">
+              <div className="w-full h-6 bg-[#18181b] rounded-t-full" />
+              <div className="w-9 h-3 border-2 border-zinc-900 rounded mt-3" />
+            </div>
+            <div className="absolute bottom-0 w-24 sm:w-32 h-14 bg-gradient-to-r from-red-800 to-rose-900 rounded-t-3xl border-t border-red-400" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // 5. CODER ARMY SYSTEM DESIGN
+  if (type === 'coder-army') {
+    return (
+      <div className={`relative aspect-video w-full rounded-xl overflow-hidden bg-gradient-to-r from-[#064e3b] via-[#047857] to-[#059669] select-none ${className}`}>
+        <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:12px_12px]" />
+        
+        <div className="absolute top-2.5 left-3 sm:top-3.5 sm:left-4 z-10">
+          <div className="text-white font-black text-xs sm:text-sm tracking-wider uppercase drop-shadow-md">
+            CODER ARMY
+          </div>
+          <div className="text-[#FFE600] font-black text-sm sm:text-lg lg:text-xl tracking-tight leading-none drop-shadow-md">
+            SYSTEM DESIGN
+          </div>
+        </div>
+
+        {renderSystemDesignTechBadges()}
+
+        <div className="absolute right-1 sm:right-3 bottom-0 w-2/5 h-full flex items-end justify-center">
+          <div className="relative w-28 sm:w-36 h-full flex items-end justify-center">
+            <div className="w-14 sm:w-18 h-16 sm:h-20 rounded-full bg-[#fde68a] border-2 border-[#b45309] relative overflow-hidden flex flex-col items-center shadow-2xl">
+              <div className="w-full h-6 bg-[#18181b] rounded-t-full" />
+            </div>
+            <div className="absolute bottom-0 w-24 sm:w-32 h-14 bg-gradient-to-r from-blue-700 to-sky-800 rounded-t-3xl border-t border-sky-400" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // 6. ENGINEERING DIGEST SYSTEM DESIGN
+  if (type === 'engineering-digest') {
+    return (
+      <div className={`relative aspect-video w-full rounded-xl overflow-hidden bg-gradient-to-r from-[#854d0e] via-[#a16207] to-[#ca8a04] select-none ${className}`}>
+        <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:12px_12px]" />
+        
+        <div className="absolute top-2.5 left-3 sm:top-3.5 sm:left-4 z-10">
+          <div className="text-white font-black text-xs sm:text-sm tracking-wider uppercase drop-shadow-md">
+            ENGINEERING DIGEST
+          </div>
+          <div className="text-[#FFE600] font-black text-sm sm:text-lg lg:text-xl tracking-tight leading-none drop-shadow-md">
+            SYSTEM DESIGN
+          </div>
+        </div>
+
+        {renderSystemDesignTechBadges()}
+
+        <div className="absolute right-1 sm:right-3 bottom-0 w-2/5 h-full flex items-end justify-center">
+          <div className="relative w-28 sm:w-36 h-full flex items-end justify-center">
+            <div className="w-14 sm:w-18 h-16 sm:h-20 rounded-full bg-[#fde68a] border-2 border-[#ca8a04] relative overflow-hidden flex flex-col items-center shadow-2xl">
+              <div className="w-full h-7 bg-[#1c1917] rounded-t-full" />
+              <div className="w-10 h-3 border-2 border-black rounded mt-3" />
+            </div>
+            <div className="absolute bottom-0 w-24 sm:w-32 h-14 bg-gradient-to-r from-zinc-900 to-black rounded-t-3xl border-t border-zinc-700" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // DEFAULT / LOVE BABBAR FALLBACK
   return (
-    <div className={`relative aspect-video w-full rounded-xl overflow-hidden bg-gradient-to-r ${profile.gradient} select-none p-4 sm:p-5 flex flex-col justify-between ${className}`}>
+    <div className={`relative aspect-video w-full rounded-xl overflow-hidden bg-gradient-to-r from-[#031d3d] via-[#053b70] to-[#0a5296] select-none ${className}`}>
       <div className="absolute inset-0 opacity-15 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:12px_12px]" />
 
-      {/* Top Banner */}
-      <div className="flex items-center justify-between z-10">
-        <span className="text-[10px] sm:text-[11px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-white/20 text-white backdrop-blur-xs tracking-wider border border-white/20">
-          {subject} PLAYLIST
-        </span>
-        <div className="px-2 py-0.5 rounded bg-black/60 backdrop-blur-xs text-[9px] font-bold text-white flex items-center gap-1">
-          <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-          <span>HD</span>
+      <div className="absolute inset-y-0 left-0 w-3/5 p-3.5 sm:p-5 flex flex-col justify-center z-10">
+        <div className="text-white font-extrabold text-xs sm:text-sm lg:text-base tracking-wider drop-shadow-md uppercase">
+          {type.replace('-', ' ').toUpperCase()}
+        </div>
+        <div className="text-[#FFE600] font-black text-xl sm:text-3xl lg:text-4xl tracking-tight leading-none italic drop-shadow-md">
+          {subject}
+        </div>
+        <div className="text-[#FFE600] font-black text-base sm:text-xl lg:text-2xl tracking-wider leading-tight drop-shadow-md">
+          PLAYLIST
         </div>
       </div>
 
-      {/* Middle/Bottom Typography */}
-      <div className="z-10 space-y-0.5">
-        <div className="text-white font-extrabold text-xs sm:text-sm tracking-wider uppercase drop-shadow-md">
-          {profile.label}
+      <div className="absolute right-2 bottom-0 w-2/5 h-full flex items-end justify-center">
+        <div className="relative w-24 sm:w-36 h-full flex items-end justify-center">
+          <div className="w-12 sm:w-16 h-14 sm:h-18 rounded-full bg-[#e0ac69] border-2 border-[#b07b46] relative overflow-hidden flex flex-col items-center shadow-lg">
+            <div className="w-full h-6 bg-[#1c1917] rounded-t-full" />
+          </div>
+          <div className="absolute bottom-0 w-20 sm:w-30 h-12 sm:h-16 bg-gradient-to-r from-blue-700 via-sky-600 to-blue-800 rounded-t-3xl border-t-2 border-sky-400" />
         </div>
-        <div className="text-[#FFE600] font-black text-xl sm:text-2xl lg:text-3xl tracking-tight leading-none italic drop-shadow-md">
-          {subject} COURSE
-        </div>
-        <p className="text-zinc-200 text-[11px] sm:text-xs font-semibold drop-shadow-xs pt-1">
-          {profile.role}
-        </p>
       </div>
     </div>
   );
