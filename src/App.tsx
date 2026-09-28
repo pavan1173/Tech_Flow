@@ -4,6 +4,7 @@ import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { PreparationSidebar } from './components/PreparationSidebar';
 import { PreparationTopBar } from './components/PreparationTopBar';
+import { PreparationBottomBar } from './components/PreparationBottomBar';
 import { AuthModal } from './components/AuthModal';
 
 // Preparation Hub Pages
@@ -40,6 +41,12 @@ import { LegalPage } from './pages/LegalPage';
 export default function App() {
   const { currentPath, navigate } = useRouter();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+
+  // Close mobile drawer on route change
+  React.useEffect(() => {
+    setMobileSidebarOpen(false);
+  }, [currentPath]);
 
   // Helper to determine if current route is part of preparation shell
   const isPrepRoute = currentPath.startsWith('/preparation');
@@ -80,6 +87,9 @@ export default function App() {
     if (currentPath === '/preparation/dsa-sheets') {
       return <DsaSheetsPage navigate={navigate} />;
     }
+    if (currentPath === '/preparation/blind-75' || currentPath === '/preparation/blind-75-dsa-sheet') {
+      return <DsaSheetDetailPage slug="blind-75-dsa-sheet" navigate={navigate} />;
+    }
     if (currentPath === '/preparation/company-wise-dsa-sheet') {
       return <CompanyWiseDsaPage navigate={navigate} />;
     }
@@ -111,11 +121,41 @@ export default function App() {
     if (currentPath === '/preparation/dbms-playlists') {
       return <DbmsPlaylistsPage navigate={navigate} />;
     }
+    if (currentPath.startsWith('/preparation/dbms-playlists/')) {
+      const slug = currentPath.replace('/preparation/dbms-playlists/', '');
+      return (
+        <PlaylistDetailPage
+          slug={slug}
+          subjectType="dbms"
+          navigate={navigate}
+        />
+      );
+    }
     if (currentPath === '/preparation/os-playlists') {
       return <OsPlaylistsPage navigate={navigate} />;
     }
+    if (currentPath.startsWith('/preparation/os-playlists/')) {
+      const slug = currentPath.replace('/preparation/os-playlists/', '');
+      return (
+        <PlaylistDetailPage
+          slug={slug}
+          subjectType="os"
+          navigate={navigate}
+        />
+      );
+    }
     if (currentPath === '/preparation/oops-playlists') {
       return <OopsPlaylistsPage navigate={navigate} />;
+    }
+    if (currentPath.startsWith('/preparation/oops-playlists/')) {
+      const slug = currentPath.replace('/preparation/oops-playlists/', '');
+      return (
+        <PlaylistDetailPage
+          slug={slug}
+          subjectType="oops"
+          navigate={navigate}
+        />
+      );
     }
     if (currentPath === '/preparation/system-design-playlists') {
       return <SystemDesignPlaylistsPage navigate={navigate} />;
@@ -129,6 +169,13 @@ export default function App() {
           navigate={navigate}
         />
       );
+    }
+    if (currentPath === '/preparation/playlists' || currentPath === '/playlists') {
+      return <PlaylistsPage navigate={navigate} />;
+    }
+    if (currentPath.startsWith('/preparation/playlists/')) {
+      const slug = currentPath.replace('/preparation/playlists/', '');
+      return <PlaylistDetailPage slug={slug} navigate={navigate} />;
     }
     if (currentPath === '/preparation/role-wise') {
       return <RoleWisePage navigate={navigate} />;
@@ -173,16 +220,29 @@ export default function App() {
             currentPath={currentPath}
             navigate={navigate}
             collapsed={sidebarCollapsed}
+            mobileOpen={mobileSidebarOpen}
+            setMobileOpen={setMobileSidebarOpen}
           />
           <div className="flex-1 flex flex-col min-w-0 min-h-screen bg-[#0a0a0a]">
             <PreparationTopBar
               currentPath={currentPath}
               navigate={navigate}
-              toggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
+              toggleSidebar={() => {
+                if (window.innerWidth < 1024) {
+                  setMobileSidebarOpen((prev) => !prev);
+                } else {
+                  setSidebarCollapsed((prev) => !prev);
+                }
+              }}
             />
-            <main className="flex-1 min-w-0 bg-[#0a0a0a] text-white">
+            <main className="flex-1 min-w-0 bg-[#0a0a0a] text-white pb-20 lg:pb-0">
               {renderPrepContent()}
             </main>
+            <PreparationBottomBar
+              currentPath={currentPath}
+              navigate={navigate}
+              openMobileSidebar={() => setMobileSidebarOpen(true)}
+            />
           </div>
         </div>
       );

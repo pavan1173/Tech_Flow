@@ -15,7 +15,11 @@ import {
   ExternalLink,
   CheckCircle2,
   Clock,
-  Sparkles
+  Sparkles,
+  Link2,
+  Bookmark,
+  MoreVertical,
+  CheckCheck
 } from 'lucide-react';
 
 interface DsaSheetDetailPageProps {
@@ -34,8 +38,11 @@ interface ProblemItem {
   platform_name?: string;
   platform_link?: string;
   problemUrl?: string;
+  tufUrl?: string;
+  docUrl?: string;
   link?: string;
   video_link?: string;
+  tag?: 'Basic' | 'Core';
   tags?: string[];
   status?: string;
 }
@@ -52,7 +59,7 @@ interface GroupedTopic {
 }
 
 export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, navigate }) => {
-  const sheetData = dsaSheetsDetail[slug];
+  const sheetData = dsaSheetsDetail[slug] || dsaSheetsDetail['blind-75-dsa-sheet'];
   const { isSolved, toggleSolved, isBookmarked, toggleBookmark, saveNote, getNote } = useProgress();
   const { isAuthenticated, openAuthModal } = useAuth();
 
@@ -64,34 +71,8 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
   const [showFullDesc, setShowFullDesc] = useState<boolean>(false);
   const [activeNoteProblem, setActiveNoteProblem] = useState<{ id: string; title: string } | null>(null);
   const [noteContent, setNoteContent] = useState<string>('');
-
-  // Custom status tracker: '-' | '~' | 'done'
-  const [customStatusMap, setCustomStatusMap] = useState<Record<string, string>>(() => {
-    try {
-      const saved = localStorage.getItem(`teachflow_custom_status_${slug}`);
-      return saved ? JSON.parse(saved) : {};
-    } catch {
-      return {};
-    }
-  });
-
-  const toggleCustomStatus = (probId: string) => {
-    setCustomStatusMap(prev => {
-      const current = prev[probId] || '-';
-      let nextStatus = '~';
-      if (current === '-') nextStatus = '~';
-      else if (current === '~') nextStatus = 'done';
-      else nextStatus = '-';
-
-      const updated = { ...prev, [probId]: nextStatus };
-      try {
-        localStorage.setItem(`teachflow_custom_status_${slug}`, JSON.stringify(updated));
-      } catch (e) {
-        console.error(e);
-      }
-      return updated;
-    });
-  };
+  const [copiedProbId, setCopiedProbId] = useState<string | null>(null);
+  const [activeMenuProbId, setActiveMenuProbId] = useState<string | null>(null);
 
   // Group sections by topic and subtopic
   const groupedData: GroupedTopic[] = useMemo(() => {
@@ -101,7 +82,7 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
 
     for (const sec of sheetData.sections) {
       const topic = sec.topic || sec.section_title || 'General Topics';
-      const subTopic = sec.subTopic || sec.sub_topic || 'Problems';
+      const subTopic = sec.subTopic || sec.sub_topic || sec.topic || 'Problems';
       const probs: ProblemItem[] = sec.problems || sec.questions || [];
 
       if (!topicMap.has(topic)) {
@@ -187,6 +168,14 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
     }
   };
 
+  const handleCopyLink = (prob: ProblemItem, probId: string) => {
+    const url = prob.problemUrl || prob.tufUrl || prob.platform_link || window.location.href;
+    navigator.clipboard?.writeText(url);
+    setCopiedProbId(probId);
+    setTimeout(() => setCopiedProbId(null), 2000);
+    setActiveMenuProbId(null);
+  };
+
   if (!sheetData) {
     return (
       <div className="p-8 text-center max-w-lg mx-auto font-lexend space-y-4">
@@ -202,18 +191,16 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
     );
   }
 
-  // Format clean topic name (remove Step X: if needed to match screenshot)
   const cleanTopicName = (name: string) => {
     return name.replace(/^Step\s*\d+\s*:\s*/i, '').trim();
   };
 
-  // Format clean subtopic name (remove Lec X: if needed to match screenshot)
   const cleanSubTopicName = (name: string) => {
     return name.replace(/^Lec\s*\d+\s*:\s*/i, '').trim();
   };
 
   return (
-    <div className="min-h-screen bg-[#090b10] text-zinc-100 p-4 sm:p-6 lg:p-8 font-lexend space-y-6 max-w-6xl mx-auto">
+    <div className="min-h-screen bg-[#07090e] text-zinc-100 p-3 sm:p-6 lg:p-8 font-lexend space-y-5 max-w-7xl mx-auto">
       {/* Back button */}
       <button
         onClick={() => navigate('/preparation/dsa-sheets')}
@@ -224,8 +211,8 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
       </button>
 
       {/* Header Section matching reference image */}
-      <div className="space-y-3.5">
-        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+      <div className="space-y-3">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-white">
           {sheetData.title}
         </h1>
 
@@ -249,13 +236,13 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
 
         {/* Creator Attribution */}
         <div className="flex items-center gap-2 text-xs text-zinc-400 font-medium">
-          <span>By {sheetData.creatorName || 'Striver (TakeUForward)'}</span>
+          <span>By {sheetData.creatorName || 'Raj Vikramaditya (Striver)'}</span>
           <span>•</span>
           <span>{totalCount} Problems</span>
         </div>
 
-        {/* Overall Progress Widget - Exact replica of screenshot */}
-        <div className="inline-flex items-center gap-3.5 px-4 py-2.5 rounded-xl bg-[#0e121a] border border-[#1e2433] shadow-xs">
+        {/* Overall Progress Widget */}
+        <div className="inline-flex items-center gap-3.5 px-4 py-2.5 rounded-xl bg-[#0c1017] border border-[#1b2230] shadow-xs">
           {/* Radial progress circle */}
           <div className="relative w-10 h-10 flex items-center justify-center shrink-0">
             <svg className="w-10 h-10 transform -rotate-90" viewBox="0 0 36 36">
@@ -267,7 +254,7 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
                 d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
               />
               <path
-                className="text-blue-500 transition-all duration-500 ease-out"
+                className="text-emerald-500 transition-all duration-500 ease-out"
                 strokeDasharray={`${progressPercent}, 100`}
                 strokeWidth="3.5"
                 strokeLinecap="round"
@@ -286,14 +273,14 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
               Overall Progress
             </span>
             <span className="text-xs font-bold text-white tracking-wide">
-              {solvedCount}/{totalCount}
+              {solvedCount}/{totalCount} Completed
             </span>
           </div>
         </div>
       </div>
 
       {/* Filter and Search Controls */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-2">
+      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 pt-2">
         <div className="relative flex-1 max-w-md">
           <Search className="w-4 h-4 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
@@ -301,18 +288,18 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
             placeholder="Search problems, topics, or tags..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 rounded-xl bg-[#0e121a] border border-[#1e2433] text-xs sm:text-sm text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-full pl-9 pr-4 py-2 rounded-xl bg-[#0c1017] border border-[#1b2230] text-xs sm:text-sm text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
         </div>
 
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap overflow-x-auto no-scrollbar py-1">
           {/* Difficulty pills */}
-          <div className="flex items-center gap-1 bg-[#0e121a] p-1 rounded-xl border border-[#1e2433]">
+          <div className="flex items-center gap-1 bg-[#0c1017] p-1 rounded-xl border border-[#1b2230] shrink-0">
             {['All', 'Easy', 'Medium', 'Hard'].map((diff) => (
               <button
                 key={diff}
                 onClick={() => setSelectedDifficulty(diff)}
-                className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                className={`px-2.5 sm:px-3 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                   selectedDifficulty === diff
                     ? 'bg-blue-600 text-white shadow-xs'
                     : 'text-zinc-400 hover:text-white'
@@ -326,39 +313,46 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
           {/* Bookmarked filter */}
           <button
             onClick={() => setOnlyBookmarks(!onlyBookmarks)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-colors cursor-pointer ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-colors cursor-pointer shrink-0 ${
               onlyBookmarks
                 ? 'bg-amber-500/10 border-amber-500/40 text-amber-400'
-                : 'bg-[#0e121a] border-[#1e2433] text-zinc-400 hover:text-white'
+                : 'bg-[#0c1017] border-[#1b2230] text-zinc-400 hover:text-white'
             }`}
           >
-            <Star className={`w-3.5 h-3.5 ${onlyBookmarks ? 'fill-amber-400 text-amber-400' : 'text-zinc-400'}`} />
-            <span>Starred</span>
+            <Bookmark className={`w-3.5 h-3.5 ${onlyBookmarks ? 'fill-amber-400 text-amber-400' : 'text-zinc-400'}`} />
+            <span>Saved</span>
           </button>
 
           {/* Expand / Collapse All */}
-          <div className="flex items-center gap-1.5 ml-1">
+          <div className="flex items-center gap-1.5 ml-1 shrink-0 text-xs">
             <button
               onClick={expandAll}
-              className="px-2 py-1 rounded-lg text-xs font-medium text-zinc-400 hover:text-white hover:bg-zinc-800/60 transition-colors cursor-pointer"
+              className="px-2 py-1 rounded-lg font-medium text-zinc-400 hover:text-white hover:bg-zinc-800/60 transition-colors cursor-pointer"
             >
-              Expand All
+              Expand
             </button>
-            <span className="text-zinc-600 text-xs">/</span>
+            <span className="text-zinc-600">/</span>
             <button
               onClick={collapseAll}
-              className="px-2 py-1 rounded-lg text-xs font-medium text-zinc-400 hover:text-white hover:bg-zinc-800/60 transition-colors cursor-pointer"
+              className="px-2 py-1 rounded-lg font-medium text-zinc-400 hover:text-white hover:bg-zinc-800/60 transition-colors cursor-pointer"
             >
-              Collapse All
+              Collapse
             </button>
           </div>
         </div>
       </div>
 
-      {/* Two-Tier Nested Accordion List matching the screenshot */}
-      <div className="space-y-2.5 pt-1">
+      {/* Accordion List Matching Exact Screenshot {1871A41C-AFA6-437D-9300-26A1A9E96577}.png */}
+      <div className="space-y-2 pt-1">
         {groupedData.map((topicGroup, tIdx) => {
-          // Check if any problems match search / filters
+          const isSingleTopic =
+            topicGroup.subTopics.length === 1 &&
+            (topicGroup.subTopics[0].subTopicName === topicGroup.topicName ||
+              topicGroup.subTopics[0].subTopicName === 'General' ||
+              topicGroup.subTopics[0].subTopicName === 'Problems' ||
+              topicGroup.subTopics[0].subTopicName === topicGroup.topicName);
+
+          // Filter problems
           const filteredSubTopics = topicGroup.subTopics.map((stGroup) => {
             const filteredProbs = stGroup.problems.filter((prob) => {
               const probTitle = prob.problem_name || prob.title || prob.question_name || '';
@@ -407,14 +401,19 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
           return (
             <div
               key={topicGroup.topicName || tIdx}
-              className="rounded-xl border border-[#1b2230] bg-[#0c1017] overflow-hidden shadow-xs transition-all duration-200"
+              className="rounded-xl border border-[#181d28] bg-[#0c1017] overflow-hidden shadow-xs transition-all duration-200"
             >
-              {/* Level 1: Step / Topic Header */}
+              {/* Step / Topic Header matching screenshot */}
               <button
                 onClick={() => toggleTopicAccordion(tIdx)}
                 className="w-full px-4 sm:px-5 py-3.5 flex items-center justify-between bg-[#0e131d] hover:bg-[#121824] transition-colors text-left select-none cursor-pointer"
               >
                 <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                  <ChevronDown
+                    className={`w-4 h-4 text-zinc-400 transition-transform duration-200 shrink-0 ${
+                      isTopicOpen ? 'rotate-0 text-blue-400' : '-rotate-90'
+                    }`}
+                  />
                   <span className="font-bold text-sm sm:text-[14px] text-zinc-100 truncate">
                     {displayName}
                   </span>
@@ -426,212 +425,350 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
                   </span>
 
                   {/* Progress bar line matching screenshot */}
-                  <div className="w-24 sm:w-32 h-1.5 rounded-full bg-[#1b2332] overflow-hidden">
+                  <div className="w-20 sm:w-28 h-1.5 rounded-full bg-[#1b2332] overflow-hidden">
                     <div
                       className="h-full rounded-full bg-blue-500 transition-all duration-300"
                       style={{ width: `${topicPercent}%` }}
                     />
                   </div>
-
-                  <ChevronDown
-                    className={`w-4 h-4 text-zinc-400 transition-transform duration-200 ${
-                      isTopicOpen ? 'rotate-180 text-blue-400' : ''
-                    }`}
-                  />
                 </div>
               </button>
 
-              {/* Level 1 Content */}
+              {/* Topic Content */}
               {isTopicOpen && (
-                <div className="p-2 sm:p-3 space-y-2 bg-[#090d14] border-t border-[#18202d]">
-                  {filteredSubTopics.length === 0 ? (
-                    <div className="p-4 text-center text-xs text-zinc-500">
-                      No matching problems in this section.
+                <div className="border-t border-[#18202d] bg-[#090d14]">
+                  {/* If single subtopic, render problems directly matching screenshot */}
+                  {isSingleTopic ? (
+                    <div className="divide-y divide-[#151c2a]">
+                      {filteredSubTopics[0]?.problems.map((prob, pIdx) => {
+                        const probTitle = prob.problem_name || prob.title || prob.question_name || 'Untitled Problem';
+                        const probId = `${slug}-${probTitle}`;
+                        const solved = isSolved(probId);
+                        const bookmarked = isBookmarked(probId);
+                        const hasNote = !!getNote(probId);
+
+                        const tag = prob.tag || ((prob.tags || []).includes('Core') ? 'Core' : (prob.tags || []).includes('Basic') ? 'Basic' : undefined);
+
+                        const tufLink = prob.tufUrl || prob.problemUrl || `https://takeuforward.org/data-structure/${encodeURIComponent(probTitle.toLowerCase().replace(/\s+/g, '-'))}`;
+                        const leetcodeLink = prob.problemUrl || `https://leetcode.com/problems/${encodeURIComponent(probTitle.toLowerCase().replace(/\s+/g, '-'))}`;
+                        const docLink = prob.docUrl || prob.tufUrl || tufLink;
+                        const videoLink = prob.video_link || `https://www.youtube.com/results?search_query=${encodeURIComponent('Striver ' + probTitle)}`;
+
+                        return (
+                          <div
+                            key={probId || pIdx}
+                            className={`px-3.5 sm:px-5 py-3 flex items-center justify-between gap-3 transition-colors group ${
+                              solved ? 'bg-[#0b1019]/40 hover:bg-[#0e1420]' : 'hover:bg-[#111724]'
+                            }`}
+                          >
+                            {/* Left: Checkbox + Title + Tag */}
+                            <div className="flex items-center gap-3 min-w-0 flex-1">
+                              <button
+                                onClick={() => toggleSolved(probId)}
+                                className={`w-4 h-4 rounded-[4px] border flex items-center justify-center transition-all shrink-0 cursor-pointer ${
+                                  solved
+                                    ? 'bg-blue-600 border-blue-600 text-white'
+                                    : 'border-zinc-700 bg-transparent hover:border-zinc-500'
+                                }`}
+                                title={solved ? 'Mark as Unsolved' : 'Mark as Solved'}
+                              >
+                                {solved && <Check className="w-3 h-3 stroke-[3]" />}
+                              </button>
+
+                              <div className="flex items-center gap-2.5 min-w-0 flex-wrap">
+                                <a
+                                  href={leetcodeLink}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className={`text-xs sm:text-[13.5px] font-semibold transition-colors truncate ${
+                                    solved
+                                      ? 'line-through text-zinc-500 hover:text-zinc-300'
+                                      : 'text-zinc-200 hover:text-white'
+                                  }`}
+                                >
+                                  {probTitle}
+                                </a>
+
+                                {/* Tag Badge matching screenshot (Basic in green / Core in amber) */}
+                                {tag === 'Basic' && (
+                                  <span className="px-1.5 py-0.5 rounded-[4px] text-[10px] font-bold bg-[#0d2a1c] text-[#34d399] border border-[#134e2c]">
+                                    Basic
+                                  </span>
+                                )}
+                                {tag === 'Core' && (
+                                  <span className="px-1.5 py-0.5 rounded-[4px] text-[10px] font-bold bg-[#2e1d0c] text-[#fbbf24] border border-[#593710]">
+                                    Core
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Right Action Icons matching screenshot */}
+                            <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0 text-zinc-400">
+                              {/* 1. TUF / Article Icon (Stylized F' / FileText) */}
+                              {prob.tufUrl && (
+                                <a
+                                  href={tufLink}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="hidden sm:inline-flex text-cyan-400 hover:text-cyan-300 p-1 rounded hover:bg-cyan-500/10 transition-colors font-mono font-black text-xs"
+                                  title="TakeUForward Article Solution"
+                                >
+                                  F'
+                                </a>
+                              )}
+
+                              {/* 2. Doc / Notes Icon */}
+                              <button
+                                onClick={() => openNoteModal(probId, probTitle)}
+                                className={`hidden sm:inline-flex p-1 rounded transition-colors hover:text-white hover:bg-zinc-800 cursor-pointer ${
+                                  hasNote ? 'text-blue-400 bg-blue-500/10' : 'text-zinc-400 hover:text-zinc-200'
+                                }`}
+                                title={hasNote ? 'Edit Notes' : 'Editorial Notes'}
+                              >
+                                <FileText className="w-3.5 h-3.5" />
+                              </button>
+
+                              {/* 3. YouTube Red Video Icon */}
+                              <a
+                                href={videoLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-red-500 hover:text-red-400 p-1 rounded hover:bg-red-500/10 transition-colors"
+                                title="YouTube Video Solution"
+                              >
+                                <Youtube className="w-4 h-4 fill-red-500/20" />
+                              </a>
+
+                              {/* 4. LeetCode / Coding Platform Icon (Amber/Gold code icon) */}
+                              <a
+                                href={leetcodeLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-amber-500 hover:text-amber-400 p-1 rounded hover:bg-amber-500/10 transition-colors"
+                                title="Solve on LeetCode"
+                              >
+                                <Code2 className="w-4 h-4 stroke-[2.5]" />
+                              </a>
+
+                              {/* 5. Direct Link / Copy Icon */}
+                              <button
+                                onClick={() => handleCopyLink(prob, probId)}
+                                className="hidden sm:inline-flex text-zinc-400 hover:text-zinc-200 p-1 rounded hover:bg-zinc-800 transition-colors cursor-pointer"
+                                title="Copy Problem Link"
+                              >
+                                {copiedProbId === probId ? (
+                                  <CheckCheck className="w-3.5 h-3.5 text-emerald-400" />
+                                ) : (
+                                  <Link2 className="w-3.5 h-3.5" />
+                                )}
+                              </button>
+
+                              {/* 6. Bookmark / Save Icon */}
+                              <button
+                                onClick={() => toggleBookmark(probId)}
+                                className={`p-1 rounded transition-colors hover:bg-zinc-800 cursor-pointer ${
+                                  bookmarked ? 'text-amber-400' : 'text-zinc-400 hover:text-zinc-200'
+                                }`}
+                                title={bookmarked ? 'Saved' : 'Save Bookmark'}
+                              >
+                                <Bookmark className={`w-3.5 h-3.5 ${bookmarked ? 'fill-amber-400' : ''}`} />
+                              </button>
+
+                              {/* 7. More Options 3-Dots Menu */}
+                              <div className="relative">
+                                <button
+                                  onClick={() => setActiveMenuProbId(activeMenuProbId === probId ? null : probId)}
+                                  className="text-zinc-500 hover:text-zinc-300 p-1 rounded hover:bg-zinc-800 transition-colors cursor-pointer"
+                                  title="More Options"
+                                >
+                                  <MoreVertical className="w-3.5 h-3.5" />
+                                </button>
+
+                                {activeMenuProbId === probId && (
+                                  <div className="absolute right-0 top-full mt-1 w-48 rounded-xl bg-[#141b28] border border-[#222c3f] shadow-2xl py-1 z-30 text-xs font-medium space-y-0.5">
+                                    <button
+                                      onClick={() => {
+                                        toggleSolved(probId);
+                                        setActiveMenuProbId(null);
+                                      }}
+                                      className="w-full px-3 py-1.5 text-left text-zinc-300 hover:text-white hover:bg-zinc-800/80 flex items-center gap-2 cursor-pointer"
+                                    >
+                                      <Check className="w-3.5 h-3.5 text-emerald-400" />
+                                      <span>{solved ? 'Mark as Unsolved' : 'Mark as Solved'}</span>
+                                    </button>
+                                    <button
+                                      onClick={() => {
+                                        openNoteModal(probId, probTitle);
+                                        setActiveMenuProbId(null);
+                                      }}
+                                      className="w-full px-3 py-1.5 text-left text-zinc-300 hover:text-white hover:bg-zinc-800/80 flex items-center gap-2 cursor-pointer"
+                                    >
+                                      <FileText className="w-3.5 h-3.5 text-blue-400" />
+                                      <span>Custom Notes</span>
+                                    </button>
+                                    <button
+                                      onClick={() => handleCopyLink(prob, probId)}
+                                      className="w-full px-3 py-1.5 text-left text-zinc-300 hover:text-white hover:bg-zinc-800/80 flex items-center gap-2 cursor-pointer"
+                                    >
+                                      <Link2 className="w-3.5 h-3.5 text-purple-400" />
+                                      <span>Copy Problem Link</span>
+                                    </button>
+                                    {prob.tufUrl && (
+                                      <a
+                                        href={tufLink}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        onClick={() => setActiveMenuProbId(null)}
+                                        className="w-full px-3 py-1.5 text-left text-zinc-300 hover:text-white hover:bg-zinc-800/80 flex items-center gap-2 sm:hidden cursor-pointer"
+                                      >
+                                        <span className="text-cyan-400 font-mono font-black text-xs">F'</span>
+                                        <span>Article Solution</span>
+                                      </a>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
                   ) : (
-                    filteredSubTopics.map((subGroup, stIdx) => {
-                      const subKey = `${tIdx}-${stIdx}`;
-                      const isSubOpen = expandedSubTopics[subKey] ?? (tIdx === 0 && stIdx === 0);
+                    /* Multi-subtopic (e.g. Striver A2Z) */
+                    <div className="p-2 sm:p-3 space-y-2">
+                      {filteredSubTopics.map((subGroup, stIdx) => {
+                        const subKey = `${tIdx}-${stIdx}`;
+                        const isSubOpen = expandedSubTopics[subKey] ?? (tIdx === 0 && stIdx === 0);
 
-                      // Subtopic solved count
-                      const subSolvedCount = subGroup.problems.filter(p => {
-                        const pTitle = p.problem_name || p.title || p.question_name || '';
-                        return isSolved(`${slug}-${pTitle}`);
-                      }).length;
+                        const subSolvedCount = subGroup.problems.filter(p => {
+                          const pTitle = p.problem_name || p.title || p.question_name || '';
+                          return isSolved(`${slug}-${pTitle}`);
+                        }).length;
 
-                      const displaySubName = cleanSubTopicName(subGroup.subTopicName);
+                        const displaySubName = cleanSubTopicName(subGroup.subTopicName);
 
-                      return (
-                        <div
-                          key={subGroup.subTopicName || stIdx}
-                          className="rounded-lg border border-[#19212e] bg-[#0d1119] overflow-hidden"
-                        >
-                          {/* Level 2: SubTopic Header */}
-                          <button
-                            onClick={() => toggleSubTopicAccordion(subKey)}
-                            className="w-full px-3.5 py-2.5 flex items-center justify-between bg-[#101622] hover:bg-[#141b2a] transition-colors text-left select-none cursor-pointer"
+                        return (
+                          <div
+                            key={subGroup.subTopicName || stIdx}
+                            className="rounded-lg border border-[#19212e] bg-[#0d1119] overflow-hidden"
                           >
-                            <span className="font-semibold text-xs sm:text-[13px] text-zinc-200 truncate">
-                              {displaySubName}
-                            </span>
-
-                            <div className="flex items-center gap-2.5 shrink-0 ml-2">
-                              <span className="text-[11px] text-zinc-400 font-mono">
-                                {subSolvedCount}/{subGroup.problems.length}
+                            <button
+                              onClick={() => toggleSubTopicAccordion(subKey)}
+                              className="w-full px-3.5 py-2.5 flex items-center justify-between bg-[#101622] hover:bg-[#141b2a] transition-colors text-left select-none cursor-pointer"
+                            >
+                              <span className="font-semibold text-xs sm:text-[13px] text-zinc-200 truncate">
+                                {displaySubName}
                               </span>
-                              <ChevronDown
-                                className={`w-3.5 h-3.5 text-zinc-400 transition-transform duration-200 ${
-                                  isSubOpen ? 'rotate-180 text-blue-400' : ''
-                                }`}
-                              />
-                            </div>
-                          </button>
 
-                          {/* Level 3: Problem Items */}
-                          {isSubOpen && (
-                            <div className="divide-y divide-[#171f2d] bg-[#0a0e16]">
-                              {subGroup.problems.map((prob, pIdx) => {
-                                const probTitle = prob.problem_name || prob.title || prob.question_name || 'Untitled Problem';
-                                const probId = `${slug}-${probTitle}`;
-                                const solved = isSolved(probId);
-                                const bookmarked = isBookmarked(probId);
-                                const hasNote = !!getNote(probId);
-                                const customStatus = customStatusMap[probId] || (solved ? 'done' : '-');
+                              <div className="flex items-center gap-2.5 shrink-0 ml-2">
+                                <span className="text-[11px] text-zinc-400 font-mono">
+                                  {subSolvedCount}/{subGroup.problems.length}
+                                </span>
+                                <ChevronDown
+                                  className={`w-3.5 h-3.5 text-zinc-400 transition-transform duration-200 ${
+                                    isSubOpen ? 'rotate-180 text-blue-400' : ''
+                                  }`}
+                                />
+                              </div>
+                            </button>
 
-                                const diff = prob.difficulty || 'Easy';
-                                const diffLower = diff.toLowerCase();
-                                const diffBadgeStyle =
-                                  diffLower === 'basic'
-                                    ? 'text-zinc-200 bg-[#1c2432] border border-[#273347]'
-                                    : diffLower === 'easy'
-                                    ? 'text-emerald-400 bg-emerald-950/40 border border-emerald-800/40'
-                                    : diffLower === 'hard'
-                                    ? 'text-rose-400 bg-rose-950/40 border border-rose-800/40'
-                                    : 'text-amber-400 bg-amber-950/40 border border-amber-800/40';
+                            {isSubOpen && (
+                              <div className="divide-y divide-[#171f2d] bg-[#0a0e16]">
+                                {subGroup.problems.map((prob, pIdx) => {
+                                  const probTitle = prob.problem_name || prob.title || prob.question_name || 'Untitled Problem';
+                                  const probId = `${slug}-${probTitle}`;
+                                  const solved = isSolved(probId);
+                                  const bookmarked = isBookmarked(probId);
+                                  const hasNote = !!getNote(probId);
+                                  const tag = prob.tag || ((prob.tags || []).includes('Core') ? 'Core' : (prob.tags || []).includes('Basic') ? 'Basic' : undefined);
 
-                                const practiceLink = prob.platform_link || prob.problemUrl || prob.link || '';
-                                const videoLink = prob.video_link || `https://www.youtube.com/results?search_query=${encodeURIComponent('Striver ' + probTitle)}`;
+                                  const tufLink = prob.tufUrl || prob.problemUrl || `https://takeuforward.org/data-structure/${encodeURIComponent(probTitle.toLowerCase().replace(/\s+/g, '-'))}`;
+                                  const leetcodeLink = prob.problemUrl || `https://leetcode.com/problems/${encodeURIComponent(probTitle.toLowerCase().replace(/\s+/g, '-'))}`;
+                                  const videoLink = prob.video_link || `https://www.youtube.com/results?search_query=${encodeURIComponent('Striver ' + probTitle)}`;
 
-                                return (
-                                  <div
-                                    key={probId || pIdx}
-                                    className="px-3.5 py-2.5 sm:py-3 flex items-center justify-between gap-3 hover:bg-[#111724] transition-colors group"
-                                  >
-                                    {/* Left: Checkbox + Title */}
-                                    <div className="flex items-center gap-3 min-w-0 flex-1">
-                                      <button
-                                        onClick={() => toggleSolved(probId)}
-                                        className={`w-4 h-4 rounded-md border flex items-center justify-center transition-all shrink-0 cursor-pointer ${
-                                          solved
-                                            ? 'bg-blue-600 border-blue-600 text-white'
-                                            : 'border-zinc-600 bg-transparent hover:border-zinc-400'
-                                        }`}
-                                        title={solved ? 'Mark as Unsolved' : 'Mark as Solved'}
-                                      >
-                                        {solved && <Check className="w-3 h-3 stroke-[3]" />}
-                                      </button>
+                                  return (
+                                    <div
+                                      key={probId || pIdx}
+                                      className="px-3.5 py-2.5 sm:py-3 flex items-center justify-between gap-3 hover:bg-[#111724] transition-colors group"
+                                    >
+                                      <div className="flex items-center gap-3 min-w-0 flex-1">
+                                        <button
+                                          onClick={() => toggleSolved(probId)}
+                                          className={`w-4 h-4 rounded-md border flex items-center justify-center transition-all shrink-0 cursor-pointer ${
+                                            solved
+                                              ? 'bg-blue-600 border-blue-600 text-white'
+                                              : 'border-zinc-600 bg-transparent hover:border-zinc-400'
+                                          }`}
+                                        >
+                                          {solved && <Check className="w-3 h-3 stroke-[3]" />}
+                                        </button>
 
-                                      <div className="min-w-0">
-                                        <div className="flex items-center gap-2 flex-wrap">
-                                          {practiceLink ? (
-                                            <a
-                                              href={practiceLink}
-                                              target="_blank"
-                                              rel="noopener noreferrer"
-                                              className={`text-xs sm:text-[13px] font-medium transition-colors ${
-                                                solved
-                                                  ? 'line-through text-zinc-500 hover:text-zinc-300'
-                                                  : 'text-zinc-200 hover:text-blue-400'
-                                              }`}
-                                            >
-                                              {probTitle}
-                                            </a>
-                                          ) : (
-                                            <span
-                                              className={`text-xs sm:text-[13px] font-medium ${
-                                                solved ? 'line-through text-zinc-500' : 'text-zinc-200'
-                                              }`}
-                                            >
-                                              {probTitle}
+                                        <div className="flex items-center gap-2 min-w-0 flex-wrap">
+                                          <a
+                                            href={leetcodeLink}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className={`text-xs sm:text-[13px] font-medium transition-colors ${
+                                              solved
+                                                ? 'line-through text-zinc-500 hover:text-zinc-300'
+                                                : 'text-zinc-200 hover:text-blue-400'
+                                            }`}
+                                          >
+                                            {probTitle}
+                                          </a>
+
+                                          {tag === 'Basic' && (
+                                            <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#0d2a1c] text-[#34d399] border border-[#134e2c]">
+                                              Basic
+                                            </span>
+                                          )}
+                                          {tag === 'Core' && (
+                                            <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#2e1d0c] text-[#fbbf24] border border-[#593710]">
+                                              Core
                                             </span>
                                           )}
                                         </div>
                                       </div>
-                                    </div>
 
-                                    {/* Right: Actions & Badges (Status icon, Difficulty pill, YouTube, Star, Note) */}
-                                    <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
-                                      {/* Revision / Status Cycle Badge */}
-                                      <button
-                                        onClick={() => toggleCustomStatus(probId)}
-                                        className="w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-mono font-bold transition-all cursor-pointer hover:bg-zinc-800 text-zinc-400"
-                                        title="Cycle status: '-' | '~' | '✓'"
-                                      >
-                                        {customStatus === 'done' ? (
-                                          <span className="w-3.5 h-3.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500 flex items-center justify-center text-[9px]">
-                                            ✓
-                                          </span>
-                                        ) : customStatus === '~' ? (
-                                          <span className="text-amber-400 font-bold">~</span>
-                                        ) : (
-                                          <span className="text-zinc-500">-</span>
+                                      <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 text-zinc-400">
+                                        {prob.tufUrl && (
+                                          <a
+                                            href={tufLink}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="hidden sm:inline-flex text-cyan-400 p-1 font-mono font-black text-xs hover:bg-cyan-500/10 rounded"
+                                            title="TakeUForward Article Solution"
+                                          >
+                                            F'
+                                          </a>
                                         )}
-                                      </button>
-
-                                      {/* Difficulty Pill Badge */}
-                                      <span
-                                        className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${diffBadgeStyle}`}
-                                      >
-                                        {diff}
-                                      </span>
-
-                                      {/* YouTube Video Link Button */}
-                                      <a
-                                        href={videoLink}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="p-1 rounded-md text-red-500 hover:text-red-400 hover:bg-red-500/10 transition-colors"
-                                        title="Watch Video Solution"
-                                      >
-                                        <Youtube className="w-4 h-4 fill-red-500/20" />
-                                      </a>
-
-                                      {/* Bookmark / Star Button */}
-                                      <button
-                                        onClick={() => toggleBookmark(probId)}
-                                        className="p-1 rounded-md transition-colors hover:bg-zinc-800 cursor-pointer"
-                                        title={bookmarked ? 'Remove Bookmark' : 'Bookmark Problem'}
-                                      >
-                                        <Star
-                                          className={`w-3.5 h-3.5 ${
-                                            bookmarked
-                                              ? 'fill-amber-400 text-amber-400'
-                                              : 'text-zinc-500 hover:text-zinc-300'
-                                          }`}
-                                        />
-                                      </button>
-
-                                      {/* Notes Button */}
-                                      <button
-                                        onClick={() => openNoteModal(probId, probTitle)}
-                                        className={`p-1 rounded-md transition-colors cursor-pointer ${
-                                          hasNote
-                                            ? 'text-blue-400 bg-blue-500/10'
-                                            : 'text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800'
-                                        }`}
-                                        title={hasNote ? 'Edit Notes' : 'Add Note'}
-                                      >
-                                        <FileText className="w-3.5 h-3.5" />
-                                      </button>
+                                        <button
+                                          onClick={() => openNoteModal(probId, probTitle)}
+                                          className={`hidden sm:inline-flex p-1 rounded hover:bg-zinc-800 transition-colors cursor-pointer ${hasNote ? 'text-blue-400' : 'text-zinc-400'}`}
+                                          title="Notes"
+                                        >
+                                          <FileText className="w-3.5 h-3.5" />
+                                        </button>
+                                        <a href={videoLink} target="_blank" rel="noopener noreferrer" className="text-red-500 hover:text-red-400 p-1 rounded hover:bg-red-500/10 transition-colors" title="YouTube Video Solution">
+                                          <Youtube className="w-4 h-4 fill-red-500/20" />
+                                        </a>
+                                        <a href={leetcodeLink} target="_blank" rel="noopener noreferrer" className="text-amber-500 hover:text-amber-400 p-1 rounded hover:bg-amber-500/10 transition-colors" title="Solve on LeetCode">
+                                          <Code2 className="w-4 h-4" />
+                                        </a>
+                                        <button onClick={() => toggleBookmark(probId)} className="p-1 rounded hover:bg-zinc-800 cursor-pointer" title="Save Bookmark">
+                                          <Bookmark className={`w-3.5 h-3.5 ${bookmarked ? 'fill-amber-400 text-amber-400' : 'text-zinc-400'}`} />
+                                        </button>
+                                      </div>
                                     </div>
-                                  </div>
-                                );
-                              })}
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })
+                                  );
+                                })}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
                   )}
                 </div>
               )}
@@ -651,34 +788,34 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
               </h3>
               <button
                 onClick={() => setActiveNoteProblem(null)}
-                className="p-1 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 cursor-pointer"
+                className="p-1 rounded-lg text-zinc-400 hover:text-white"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <p className="text-xs text-zinc-400 font-medium">
+            <div className="text-xs text-zinc-400 font-medium">
               {activeNoteProblem.title}
-            </p>
+            </div>
 
             <textarea
-              rows={6}
               value={noteContent}
               onChange={(e) => setNoteContent(e.target.value)}
-              placeholder="Write your personal notes, key insights, edge cases, time/space complexities..."
-              className="w-full p-3 rounded-xl bg-[#090d14] border border-[#1e2433] text-xs sm:text-sm text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-blue-500 resize-none font-mono"
+              placeholder="Write your approach, edge cases, time/space complexity notes..."
+              rows={6}
+              className="w-full p-3 rounded-xl bg-[#07090e] border border-[#1e2433] text-xs text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-blue-500 resize-none font-mono"
             />
 
-            <div className="flex items-center justify-end gap-2 pt-1">
+            <div className="flex justify-end gap-2 pt-2">
               <button
                 onClick={() => setActiveNoteProblem(null)}
-                className="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-zinc-400 hover:bg-zinc-800 transition-colors cursor-pointer"
+                className="px-3 py-1.5 rounded-lg text-xs text-zinc-400 hover:text-white transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSaveNote}
-                className="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-xs transition-colors cursor-pointer"
+                className="px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold transition-colors"
               >
                 Save Notes
               </button>

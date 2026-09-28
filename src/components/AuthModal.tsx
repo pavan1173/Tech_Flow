@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { TeachFlowLogo } from './TeachFlowLogo';
 import {
   X,
   CheckCircle2,
@@ -46,13 +47,7 @@ export const AuthModal: React.FC = () => {
         {/* Top Bar with brand & close */}
         <div className="px-6 pt-6 pb-2 flex items-center justify-between relative z-10">
           <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-500 via-indigo-600 to-purple-600 p-0.5 shadow-md flex items-center justify-center">
-              <div className="w-full h-full bg-[#0b0e14] rounded-[6px] flex items-center justify-center">
-                <span className="font-black text-[10px] font-mono bg-gradient-to-r from-blue-400 to-purple-300 bg-clip-text text-transparent">
-                  TF
-                </span>
-              </div>
-            </div>
+            <TeachFlowLogo size={28} />
             <span className="font-bold text-sm tracking-tight text-white">TeachFlow</span>
             <span className="text-[11px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 font-semibold border border-blue-500/20">
               Free Access

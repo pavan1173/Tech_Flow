@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { TeachFlowLogo } from './TeachFlowLogo';
 import {
   LayoutDashboard,
   FileCode,
@@ -72,6 +73,7 @@ export const PreparationSidebar: React.FC<SidebarProps> = ({
   });
 
   const dsaSubSheets = [
+    { label: 'Blind 75 DSA Sheet', href: '/preparation/dsa-sheets/blind-75-dsa-sheet' },
     { label: "Striver's A2Z DSA Sheet", href: '/preparation/dsa-sheets/striver-a2z-dsa-sheet' },
     { label: 'Love Babbar DSA Sheet', href: '/preparation/dsa-sheets/love-babbar-dsa-sheet' },
     { label: 'Shradha Didi DSA Sheet', href: '/preparation/dsa-sheets/shradha-khapra-dsa-sheet' },
@@ -96,16 +98,7 @@ export const PreparationSidebar: React.FC<SidebarProps> = ({
           onClick={(e) => handleNav(e, '/')}
           className="flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl bg-[#141416] border border-zinc-800/80 hover:border-zinc-700 transition-all cursor-pointer group"
         >
-          <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 p-0.5 flex items-center justify-center shrink-0">
-            <div className="w-full h-full bg-[#121216] rounded-[5px] flex items-center justify-center">
-              <span className="font-mono font-extrabold text-[10px] text-violet-300">
-                TF
-              </span>
-            </div>
-          </div>
-          <span className="font-extrabold text-lg text-white tracking-tight">
-            TeachFlow
-          </span>
+          <TeachFlowLogo size={30} showText={true} />
         </a>
       </div>
 
@@ -727,7 +720,7 @@ export const PreparationSidebar: React.FC<SidebarProps> = ({
             }`}
           >
             <Scroll className="w-4 h-4 text-zinc-400 shrink-0" />
-            <span>My Saved Notes</span>
+            <span>Cool Notes</span>
           </a>
         </div>
       </div>
@@ -736,31 +729,37 @@ export const PreparationSidebar: React.FC<SidebarProps> = ({
 
   return (
     <>
-      {/* Mobile menu button */}
-      <div className="lg:hidden fixed top-3 left-4 z-50">
-        <button
-          onClick={() => {
-            if (setMobileOpen) {
-              setMobileOpen(!mobileOpen);
-            } else {
-              setInternalMobileOpen(!internalMobileOpen);
-            }
-          }}
-          className="p-2 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 shadow-md"
-        >
-          {isDrawerOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-        </button>
-      </div>
-
       {/* Mobile Drawer */}
       {isDrawerOpen && (
-        <div className="lg:hidden fixed inset-0 z-40 flex">
+        <div className="lg:hidden fixed inset-0 z-50 flex animate-in fade-in duration-200">
           <div
-            className="fixed inset-0 bg-black/80 backdrop-blur-xs"
+            className="fixed inset-0 bg-black/80 backdrop-blur-xs transition-opacity"
             onClick={closeDrawer}
+            aria-label="Close sidebar overlay"
           />
-          <div className="relative w-72 max-w-[80vw] bg-[#07090e] border-r border-zinc-900 h-full overflow-y-auto custom-scrollbar">
-            {navContent}
+          <div className="relative w-72 sm:w-80 max-w-[85vw] bg-[#07090e] border-r border-zinc-900 h-full overflow-y-auto overscroll-contain custom-scrollbar z-50 flex flex-col shadow-2xl animate-in slide-in-from-left duration-300 ease-out">
+            {/* Mobile Drawer Header with Close Button */}
+            <div className="px-4 py-3 border-b border-zinc-800 flex items-center justify-between shrink-0">
+              <a
+                href="/"
+                onClick={(e) => handleNav(e, '/')}
+                className="flex items-center group cursor-pointer"
+              >
+                <TeachFlowLogo size={28} showText={true} />
+              </a>
+
+              <button
+                onClick={closeDrawer}
+                aria-label="Close navigation"
+                className="p-2 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto pb-10">
+              {navContent}
+            </div>
           </div>
         </div>
       )}

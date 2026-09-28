@@ -270,6 +270,18 @@ export const playlistsData = {
 };
 export const dsaSheetsList = [
   {
+    "title": "Blind 75 DSA Sheet",
+    "creator": "Take U Forward / Tech Interview",
+    "problems": 75,
+    "slug": "blind-75-dsa-sheet",
+    "href": "/preparation/dsa-sheets/blind-75-dsa-sheet",
+    "isExternal": false,
+    "desc": "The quintessential 75 LeetCode & coding problems across 10 essential topics to crack any product company interview.",
+    "badge": "High Yield 75",
+    "color": "from-amber-500 to-orange-600",
+    "imageUrl": "/images/sheets/striver.webp"
+  },
+  {
     "title": "Strivers A2Z DSA Sheet",
     "creator": "Raj Vikramaditya (Striver)",
     "problems": 455,

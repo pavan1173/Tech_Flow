@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useTheme } from '../context/ThemeContext';
 import { useProgress } from '../context/ProgressContext';
 import { useAuth } from '../context/AuthContext';
-import { Sun, Moon, Menu, X, ArrowUpRight, MessageSquare, CheckCircle2, Sparkles, BookOpen, LogOut } from 'lucide-react';
+import { TeachFlowLogo } from './TeachFlowLogo';
+import { Sun, Moon, Menu, X, ArrowUpRight, MessageSquare, CheckCircle2, Sparkles, BookOpen } from 'lucide-react';
 
 interface NavbarProps {
   currentPath: string;
@@ -12,7 +13,7 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate }) => {
   const { theme, toggleTheme } = useTheme();
   const { totalSolved } = useProgress();
-  const { user, isAuthenticated, openAuthModal, logout } = useAuth();
+  const { isAuthenticated, openAuthModal } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showCommunityModal, setShowCommunityModal] = useState(false);
 
@@ -42,21 +43,9 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate }) => {
         <a
           href="/"
           onClick={(e) => handleLinkClick(e, '/')}
-          className="flex items-center gap-2.5 group cursor-pointer select-none"
+          className="flex items-center group cursor-pointer select-none"
         >
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 via-violet-600 to-fuchsia-600 p-0.5 shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform duration-200 flex items-center justify-center">
-            <div className="w-full h-full bg-[#121216] dark:bg-black rounded-[9px] flex items-center justify-center">
-              <span className="font-black text-xs font-mono tracking-wider bg-gradient-to-r from-indigo-400 via-violet-300 to-pink-400 bg-clip-text text-transparent">
-                TF
-              </span>
-            </div>
-          </div>
-          <div className="flex flex-col">
-            <span className="font-lexend font-black text-xl tracking-tight text-zinc-900 dark:text-white flex items-center gap-1.5">
-              TeachFlow
-              <span className="w-1.5 h-1.5 rounded-full bg-violet-500 inline-block animate-ping" />
-            </span>
-          </div>
+          <TeachFlowLogo size={36} showText={true} />
         </a>
 
         {/* Desktop Nav Links */}
@@ -99,24 +88,8 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate }) => {
             {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-300" /> : <Moon className="w-4 h-4 text-indigo-600" />}
           </button>
 
-          {/* User Profile or Google Sign In */}
-          {isAuthenticated && user ? (
-            <div className="hidden sm:flex items-center gap-2 pl-1">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-600 to-violet-500 text-white flex items-center justify-center text-xs font-bold shadow-xs">
-                {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
-              </div>
-              <span className="text-xs font-semibold text-zinc-900 dark:text-white max-w-[100px] truncate">
-                {user.name || user.email}
-              </span>
-              <button
-                onClick={logout}
-                title="Sign out"
-                className="p-1.5 rounded-lg text-zinc-400 hover:text-red-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
-              >
-                <LogOut className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          ) : (
+          {/* Google Sign In (when not logged in) */}
+          {!isAuthenticated && (
             <button
               onClick={openAuthModal}
               className="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-800 dark:text-zinc-200 text-xs font-semibold transition-all cursor-pointer"

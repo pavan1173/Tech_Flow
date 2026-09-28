@@ -56,7 +56,7 @@ export const PreparationDashboardPage: React.FC<PrepDashboardProps> = ({ navigat
     { title: 'Role-Wise Interview Questions', tag: 'Role Focused', count: '4 Profiles', href: '/preparation/role-wise', icon: Code, color: 'text-cyan-500' },
     { title: 'HR & Behavioral Questions', tag: 'STAR Method', count: '100 Questions', href: '/preparation/hr-questions', icon: MessageSquareQuote, color: 'text-purple-500' },
     { title: 'Cold Email & Outreach Templates', tag: 'Job Referral', count: '11 Categories', href: '/preparation/cold-email-templets', icon: Mail, color: 'text-amber-500' },
-    { title: 'Computer Science Notes', tag: 'Core CS PDFs', count: '26 Notes', href: '/preparation/notes', icon: FileText, color: 'text-emerald-500' },
+    { title: 'Cool Notes', tag: 'Core CS PDFs', count: '26 Notes', href: '/preparation/notes', icon: FileText, color: 'text-emerald-500' },
     { title: 'ATS Resume Templates', tag: 'LaTeX & Docs', count: '6 Templates', href: '/preparation/resume-templates', icon: Scroll, color: 'text-indigo-500' },
     { title: 'Curated Video Playlists', tag: 'YouTube Courses', count: '3 Streams', href: '/preparation/dsa-playlists', icon: Youtube, color: 'text-red-500' },
     { title: 'Most Asked Technical Questions', tag: 'High Recurrence', count: '6 Domains', href: '/preparation/most-asked-questions', icon: HelpCircle, color: 'text-teal-500' },
@@ -99,64 +99,64 @@ export const PreparationDashboardPage: React.FC<PrepDashboardProps> = ({ navigat
       </div>
 
       {/* Top 4 Metric Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-        <div className="p-5 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Total Solved</span>
-            <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
-              <CheckCircle2 className="w-4 h-4" />
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
+        <div className="p-3.5 sm:p-5 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800">
+          <div className="flex items-center justify-between mb-2 sm:mb-3">
+            <span className="text-[11px] sm:text-xs font-semibold text-zinc-500 dark:text-zinc-400">Total Solved</span>
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
+              <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </div>
           </div>
-          <div className="text-3xl font-extrabold text-zinc-900 dark:text-white">
+          <div className="text-2xl sm:text-3xl font-extrabold text-zinc-900 dark:text-white">
             {totalSolved}
           </div>
-          <p className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1 flex items-center gap-1">
-            <span className="text-emerald-500 font-semibold">+3 this week</span> · Keep it up
+          <p className="text-[10px] sm:text-[11px] text-zinc-500 dark:text-zinc-400 mt-1 flex items-center gap-1">
+            <span className="text-emerald-500 font-semibold">+3 this week</span>
           </p>
         </div>
 
-        <div className="p-5 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Current Streak</span>
-            <div className="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-500 flex items-center justify-center">
-              <Flame className="w-4 h-4" />
+        <div className="p-3.5 sm:p-5 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800">
+          <div className="flex items-center justify-between mb-2 sm:mb-3">
+            <span className="text-[11px] sm:text-xs font-semibold text-zinc-500 dark:text-zinc-400">Current Streak</span>
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-amber-500/10 text-amber-500 flex items-center justify-center">
+              <Flame className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </div>
           </div>
-          <div className="text-3xl font-extrabold text-zinc-900 dark:text-white">
-            {streakDays} <span className="text-base font-normal text-zinc-400">Days</span>
+          <div className="text-2xl sm:text-3xl font-extrabold text-zinc-900 dark:text-white">
+            {streakDays} <span className="text-xs sm:text-base font-normal text-zinc-400">Days</span>
           </div>
-          <p className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">
-            Active streak recorded on TeachFlow
+          <p className="text-[10px] sm:text-[11px] text-zinc-500 dark:text-zinc-400 mt-1 truncate">
+            Active streak
           </p>
         </div>
 
-        <div className="p-5 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Total Practice Problems</span>
-            <div className="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-500 flex items-center justify-center">
-              <Code className="w-4 h-4" />
+        <div className="p-3.5 sm:p-5 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800">
+          <div className="flex items-center justify-between mb-2 sm:mb-3">
+            <span className="text-[11px] sm:text-xs font-semibold text-zinc-500 dark:text-zinc-400">Problems</span>
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-indigo-500/10 text-indigo-500 flex items-center justify-center">
+              <Code className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </div>
           </div>
-          <div className="text-3xl font-extrabold text-zinc-900 dark:text-white">
+          <div className="text-2xl sm:text-3xl font-extrabold text-zinc-900 dark:text-white">
             2,500+
           </div>
-          <p className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">
-            Across 45 companies &amp; 7 top sheets
+          <p className="text-[10px] sm:text-[11px] text-zinc-500 dark:text-zinc-400 mt-1 truncate">
+            Across 45 companies
           </p>
         </div>
 
-        <div className="p-5 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Interview Readiness</span>
-            <div className="w-8 h-8 rounded-lg bg-violet-500/10 text-violet-500 flex items-center justify-center">
-              <TrendingUp className="w-4 h-4" />
+        <div className="p-3.5 sm:p-5 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800">
+          <div className="flex items-center justify-between mb-2 sm:mb-3">
+            <span className="text-[11px] sm:text-xs font-semibold text-zinc-500 dark:text-zinc-400">Readiness</span>
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-violet-500/10 text-violet-500 flex items-center justify-center">
+              <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </div>
           </div>
-          <div className="text-3xl font-extrabold text-[#6C47FF] dark:text-[#9f85ff]">
+          <div className="text-2xl sm:text-3xl font-extrabold text-[#6C47FF] dark:text-[#9f85ff]">
             {Math.min(95, Math.max(12, Math.floor(totalSolved * 1.5) + 35))}%
           </div>
-          <p className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">
-            Based on pattern &amp; company coverage
+          <p className="text-[10px] sm:text-[11px] text-zinc-500 dark:text-zinc-400 mt-1 truncate">
+            Placement readiness
           </p>
         </div>
       </div>

@@ -1,105 +1,230 @@
-import React, { useState } from 'react';
-import { playlistsData } from '../data/common';
-import { Youtube, ExternalLink, Play, Sparkles, BookOpen, Layers } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { hyntsPlaylists, HyntsPlaylist } from '../data/hyntsPlaylistsData';
+import { PlaylistThumbnail } from '../components/PlaylistThumbnail';
+import {
+  Youtube,
+  Play,
+  Sparkles,
+  BookOpen,
+  Layers,
+  ChevronRight,
+  Clock,
+  Award,
+  Search,
+  CheckCircle2,
+  Tv
+} from 'lucide-react';
 
 interface PlaylistsPageProps {
-  initialTab?: 'dsa' | 'dbms' | 'systemDesign';
+  initialCategory?: string;
   navigate: (to: string) => void;
 }
 
-export const PlaylistsPage: React.FC<PlaylistsPageProps> = ({ initialTab = 'dsa' }) => {
-  const [activeTab, setActiveTab] = useState<'dsa' | 'dbms' | 'systemDesign'>(initialTab);
+export const PlaylistsPage: React.FC<PlaylistsPageProps> = ({
+  initialCategory = 'all',
+  navigate,
+}) => {
+  const [activeCategory, setActiveCategory] = useState<string>(initialCategory);
+  const [searchQuery, setSearchQuery] = useState('');
 
-  const tabs = [
-    { id: 'dsa', label: 'DSA Playlists', icon: Sparkles, count: playlistsData?.dsa?.length || 4 },
-    { id: 'dbms', label: 'Core Subjects (DBMS, OS, CN)', icon: BookOpen, count: playlistsData?.dbms?.length || 3 },
-    { id: 'systemDesign', label: 'System Design (HLD/LLD)', icon: Layers, count: playlistsData?.systemDesign?.length || 5 },
+  const categories = [
+    { id: 'all', label: 'All Playlists', icon: Tv, count: hyntsPlaylists.length },
+    { id: 'dsa', label: 'DSA Playlists', icon: Sparkles, count: hyntsPlaylists.filter(p => p.category === 'dsa').length },
+    { id: 'dbms', label: 'DBMS', icon: BookOpen, count: hyntsPlaylists.filter(p => p.category === 'dbms').length },
+    { id: 'os', label: 'Operating Systems', icon: Award, count: hyntsPlaylists.filter(p => p.category === 'os').length },
+    { id: 'oops', label: 'OOPS', icon: BookOpen, count: hyntsPlaylists.filter(p => p.category === 'oops').length },
+    { id: 'system-design', label: 'System Design', icon: Layers, count: hyntsPlaylists.filter(p => p.category === 'system-design').length },
   ];
 
-  const currentList = playlistsData?.[activeTab] || [];
+  const filteredPlaylists = useMemo(() => {
+    return hyntsPlaylists.filter((p) => {
+      const matchesCategory =
+        activeCategory === 'all' || p.category === activeCategory;
+      const matchesQuery =
+        !searchQuery ||
+        p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.instructor.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.channel.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.description.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesCategory && matchesQuery;
+    });
+  }, [activeCategory, searchQuery]);
+
+  const handleNav = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    navigate(href);
+  };
+
+  const getPlaylistDetailRoute = (playlist: HyntsPlaylist) => {
+    if (playlist.category === 'dsa') return `/preparation/dsa-playlists/${playlist.slug}`;
+    if (playlist.category === 'dbms') return `/preparation/dbms-playlists/${playlist.slug}`;
+    if (playlist.category === 'os') return `/preparation/os-playlists/${playlist.slug}`;
+    if (playlist.category === 'oops') return `/preparation/oops-playlists/${playlist.slug}`;
+    if (playlist.category === 'system-design') return `/preparation/system-design-playlists/${playlist.slug}`;
+    return `/preparation/dsa-playlists/${playlist.slug}`;
+  };
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto space-y-8 font-lexend">
+    <div className="min-h-screen bg-[#07090e] text-zinc-100 p-4 sm:p-6 lg:p-8 font-lexend space-y-6 max-w-7xl mx-auto pb-24">
+      {/* Breadcrumb */}
+      <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-zinc-400">
+        <a
+          href="/preparation"
+          onClick={(e) => handleNav(e, '/preparation')}
+          className="hover:text-white transition-colors"
+        >
+          Preparation
+        </a>
+        <ChevronRight className="w-3.5 h-3.5 text-zinc-600 shrink-0" />
+        <span className="text-white font-medium">Video Playlists</span>
+      </nav>
+
       {/* Header */}
-      <div className="pb-6 border-b border-zinc-200 dark:border-zinc-800">
-        <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#6C47FF] dark:text-[#9c81ff] mb-2">
-          <Youtube className="w-3.5 h-3.5" />
-          Curated Video Courses
+      <div className="space-y-3 pb-2 border-b border-[#18202d]">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-semibold">
+          <Youtube className="w-3.5 h-3.5 text-red-500" />
+          <span>Complete Video Learning Hub</span>
         </div>
-        <h1 className="text-2xl sm:text-4xl font-extrabold text-zinc-900 dark:text-white">
-          Best Video Playlists for Tech Interview Prep (2026-27)
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-white">
+          All Courses & Video Playlists
         </h1>
-        <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 mt-2 max-w-3xl leading-relaxed">
-          Comprehensive, handpicked video tutorials and courses from the top engineering educators worldwide. Never get stuck wondering which course to follow.
+        <p className="text-xs sm:text-sm text-zinc-400 max-w-3xl leading-relaxed">
+          Follow authentic, comprehensive playlists across Data Structures & Algorithms, DBMS, Operating Systems, OOPs, and System Design. Every course features an embedded video player, lecture tracking, practice problem links, and autosaved notes.
         </p>
       </div>
 
-      {/* Tabs */}
-      <div className="flex flex-wrap items-center gap-2">
-        {tabs.map((tab) => {
-          const Icon = tab.icon;
-          const isActive = activeTab === tab.id;
-          return (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
-                isActive
-                  ? 'bg-[#6C47FF] text-white shadow-md shadow-indigo-500/20'
-                  : 'bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-800 hover:text-zinc-900 dark:hover:text-white'
-              }`}
-            >
-              <Icon className="w-4 h-4" />
-              <span>{tab.label}</span>
-              <span className={`text-[10px] px-2 py-0.5 rounded-full ${isActive ? 'bg-white/20 text-white' : 'bg-zinc-200 dark:bg-zinc-800 text-zinc-500'}`}>
-                {tab.count}
-              </span>
-            </button>
-          );
-        })}
+      {/* Filter Tabs & Search Bar */}
+      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+        {/* Category Pills */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
+          {categories.map((cat) => {
+            const Icon = cat.icon;
+            const isActive = activeCategory === cat.id;
+            return (
+              <button
+                key={cat.id}
+                onClick={() => setActiveCategory(cat.id)}
+                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+                  isActive
+                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20'
+                    : 'bg-[#0c1017] text-zinc-400 hover:text-white border border-[#1b2230]'
+                }`}
+              >
+                <Icon className="w-3.5 h-3.5" />
+                <span>{cat.label}</span>
+                <span
+                  className={`text-[10px] px-1.5 py-0.5 rounded-full ${
+                    isActive ? 'bg-white/20 text-white' : 'bg-zinc-800 text-zinc-400'
+                  }`}
+                >
+                  {cat.count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Search */}
+        <div className="relative min-w-[240px] md:w-72">
+          <Search className="w-4 h-4 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search playlists, topics, channels..."
+            className="w-full pl-9 pr-3 py-2 rounded-xl bg-[#0c1017] border border-[#1b2230] text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500"
+          />
+        </div>
       </div>
 
       {/* Playlists Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {currentList.map((item: any) => (
-          <a
-            key={item.title}
-            href={item.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 p-6 flex flex-col justify-between hover:border-zinc-300 dark:hover:border-zinc-700 hover:-translate-y-1 transition-all duration-300 shadow-xs hover:shadow-xl hover:shadow-indigo-500/5 cursor-pointer"
-          >
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-xs font-semibold text-[#6C47FF] dark:text-[#9f85ff]">
-                  {item.badge}
-                </span>
-                <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-zinc-200/60 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300">
-                  {item.videos}
-                </span>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
+        {filteredPlaylists.map((playlist) => {
+          const detailUrl = getPlaylistDetailRoute(playlist);
+
+          return (
+            <div
+              key={playlist.slug}
+              className="group flex flex-col bg-[#0c1017] border border-[#1b2230] hover:border-blue-500/50 rounded-2xl overflow-hidden transition-all duration-300 shadow-md hover:shadow-2xl hover:-translate-y-1"
+            >
+              {/* Thumbnail Container */}
+              <div
+                onClick={() => navigate(detailUrl)}
+                className="relative aspect-video w-full overflow-hidden bg-zinc-900 border-b border-[#1b2230] cursor-pointer"
+              >
+                <PlaylistThumbnail type={playlist.thumbnailType} subject={playlist.category.toUpperCase()} />
+
+                {/* Badge top-left */}
+                <div className="absolute top-3 left-3 z-10">
+                  <span className="px-2.5 py-1 rounded-lg bg-black/75 backdrop-blur-md border border-white/10 text-white text-[10px] font-bold">
+                    {playlist.badge}
+                  </span>
+                </div>
+
+                {/* Duration top-right */}
+                <div className="absolute top-3 right-3 z-10">
+                  <span className="px-2 py-0.5 rounded-md bg-black/80 backdrop-blur-md text-zinc-300 text-[11px] font-mono font-semibold flex items-center gap-1">
+                    <Clock className="w-3 h-3 text-zinc-400" />
+                    {playlist.totalDuration}
+                  </span>
+                </div>
+
+                {/* Hover Play Overlay */}
+                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 backdrop-blur-[2px] transition-all flex items-center justify-center">
+                  <div className="w-14 h-14 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-2xl transform scale-75 group-hover:scale-100 transition-all duration-300">
+                    <Play className="w-6 h-6 fill-white ml-0.5" />
+                  </div>
+                </div>
               </div>
 
-              <h2 className="text-lg font-bold text-zinc-900 dark:text-white group-hover:text-[#6C47FF] dark:group-hover:text-[#9f85ff] transition-colors mb-1">
-                {item.title}
-              </h2>
-              <p className="text-xs text-zinc-500 mb-3">
-                Channel: {item.channel}
-              </p>
+              {/* Content info */}
+              <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-xs text-zinc-400">
+                    <span className="font-semibold text-blue-400">{playlist.instructor}</span>
+                    <span className="text-amber-400 font-bold">★ {playlist.rating}</span>
+                  </div>
 
-              <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed mb-6">
-                {item.desc}
-              </p>
-            </div>
+                  <h2
+                    onClick={() => navigate(detailUrl)}
+                    className="font-bold text-sm sm:text-base text-white group-hover:text-blue-300 transition-colors leading-snug line-clamp-2 cursor-pointer"
+                  >
+                    {playlist.title}
+                  </h2>
 
-            <div className="pt-4 border-t border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-between text-xs font-semibold text-red-500 dark:text-red-400">
-              <span className="flex items-center gap-1.5">
-                <Play className="w-3.5 h-3.5 fill-current" />
-                Watch on YouTube
-              </span>
-              <ExternalLink className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                  <p className="text-xs text-zinc-400 line-clamp-2 leading-relaxed">
+                    {playlist.description}
+                  </p>
+                </div>
+
+                <div className="pt-3 border-t border-[#18202d] flex items-center justify-between text-xs">
+                  <span className="font-mono text-zinc-400 font-semibold">
+                    {playlist.totalVideos} Lectures
+                  </span>
+
+                  <div className="flex items-center gap-2">
+                    <a
+                      href={playlist.playlistUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-1.5 rounded-lg bg-[#141b28] hover:bg-[#1a2334] text-zinc-400 hover:text-red-400 transition-colors"
+                      title="Open in YouTube"
+                    >
+                      <Youtube className="w-3.5 h-3.5" />
+                    </a>
+                    <button
+                      onClick={() => navigate(detailUrl)}
+                      className="px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-md shadow-blue-600/20"
+                    >
+                      <Play className="w-3 h-3 fill-current" />
+                      <span>Start Course</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
-          </a>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

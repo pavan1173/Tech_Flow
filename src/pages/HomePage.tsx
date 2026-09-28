@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { faqData, testimonialsData } from '../data/common';
+import { TeachFlowLogo } from '../components/TeachFlowLogo';
 import {
   ArrowRight,
   Code2,
@@ -108,6 +109,14 @@ export const HomePage: React.FC<HomePageProps> = ({ navigate }) => {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-gradient-to-tr from-[#6C47FF]/20 via-indigo-500/15 to-transparent blur-[120px] rounded-full pointer-events-none -z-10" />
 
         <div className="max-w-5xl mx-auto px-4 sm:px-6 text-center">
+          {/* Logo Showcase */}
+          <div className="flex justify-center mb-6">
+            <div className="relative group cursor-pointer" onClick={() => navigate('/preparation')}>
+              <div className="absolute -inset-2 rounded-3xl bg-gradient-to-r from-cyan-500/30 via-blue-500/30 to-purple-600/30 blur-xl opacity-60 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+              <TeachFlowLogo size={76} glow={true} className="relative drop-shadow-2xl" />
+            </div>
+          </div>
+
           {/* Social Proof Counter */}
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-zinc-100 dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-800 text-xs md:text-sm font-medium text-zinc-600 dark:text-zinc-300 mb-8 shadow-xs">
             <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />

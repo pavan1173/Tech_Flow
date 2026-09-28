@@ -1,22 +1,20 @@
-import React, { useState, useMemo, useRef, useEffect } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { coolNotesList, NoteItem } from '../data/coolNotesData';
-import { HandwrittenNotePreview } from '../components/HandwrittenNotePreview';
 import {
   FileText,
   Search,
   ChevronRight,
+  ChevronLeft,
   ChevronDown,
   Calendar,
+  ExternalLink,
   Download,
   X,
-  BookOpen,
-  ZoomIn,
-  ZoomOut,
-  Maximize2,
-  Printer,
-  ChevronLeft,
-  Share2,
+  Tag,
+  Loader2,
   Sparkles,
+  BookOpen,
+  Share2,
   Check
 } from 'lucide-react';
 
@@ -24,97 +22,96 @@ interface NotesPageProps {
   navigate: (to: string) => void;
 }
 
+const ITEMS_PER_PAGE = 12;
+
 export const NotesPage: React.FC<NotesPageProps> = ({ navigate }) => {
-  const [selectedCategory, setSelectedCategory] = useState<string>('All Categories');
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeNote, setActiveNote] = useState<NoteItem | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [zoomLevel, setZoomLevel] = useState<number>(100);
-  const [downloadSuccess, setDownloadSuccess] = useState(false);
+  const [activeNote, setActiveNote] = useState<NoteItem | null>(null);
+  const [pdfLoading, setPdfLoading] = useState(true);
+  const [copiedLink, setCopiedLink] = useState(false);
 
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  // Scroll to top of list on page change
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 120, behavior: 'smooth' });
+  };
 
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsDropdownOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+  // Distinct categories sorted with common first
+  const allCategories = useMemo(() => {
+    const set = new Set<string>();
+    coolNotesList.forEach((n) => set.add(n.category));
+    return ['All', ...Array.from(set)];
   }, []);
+
+  // Filter notes based on category and search query
+  const filteredNotes = useMemo(() => {
+    return coolNotesList.filter((note) => {
+      // Category filter
+      if (selectedCategory !== 'All' && note.category !== selectedCategory) {
+        return false;
+      }
+      // Search filter
+      if (searchQuery.trim()) {
+        const query = searchQuery.toLowerCase();
+        const titleMatch = note.title.toLowerCase().includes(query);
+        const catMatch = note.category.toLowerCase().includes(query);
+        const descMatch = (note.description || '').toLowerCase().includes(query);
+        if (!titleMatch && !catMatch && !descMatch) return false;
+      }
+      return true;
+    });
+  }, [selectedCategory, searchQuery]);
+
+  // Reset page to 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategory, searchQuery]);
+
+  // Pagination calculation
+  const totalPages = Math.ceil(filteredNotes.length / ITEMS_PER_PAGE) || 1;
+  const paginatedNotes = useMemo(() => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filteredNotes.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  }, [filteredNotes, currentPage]);
 
   const handleNav = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     navigate(href);
   };
 
-  // Distinct categories
-  const allCategories = useMemo(() => {
-    const set = new Set<string>();
-    coolNotesList.forEach((n) => set.add(n.category));
-    return ['All Categories', ...Array.from(set)];
-  }, []);
-
-  // Filter notes
-  const filteredNotes = useMemo(() => {
-    return coolNotesList.filter((note) => {
-      // Category match
-      if (selectedCategory !== 'All Categories' && note.category !== selectedCategory) {
-        return false;
-      }
-      // Search match
-      if (searchQuery.trim()) {
-        const query = searchQuery.toLowerCase();
-        const titleMatch = note.title.toLowerCase().includes(query);
-        const catMatch = note.category.toLowerCase().includes(query);
-        const subMatch = (note.previewSubtext || '').toLowerCase().includes(query);
-        if (!titleMatch && !catMatch && !subMatch) return false;
-      }
-      return true;
-    });
-  }, [selectedCategory, searchQuery]);
-
   const openNoteModal = (note: NoteItem) => {
     setActiveNote(note);
-    setCurrentPage(1);
-    setZoomLevel(100);
+    setPdfLoading(true);
   };
 
   const closeNoteModal = () => {
     setActiveNote(null);
+    setPdfLoading(false);
   };
 
-  const handleDownload = (note: NoteItem) => {
-    setDownloadSuccess(true);
-    setTimeout(() => setDownloadSuccess(false), 2500);
-    // Trigger download of text content as sample PDF / MD
-    const element = document.createElement('a');
-    const file = new Blob(
-      [
-        `# ${note.title}\nCategory: ${note.category}\nDate: ${note.date}\nAuthor: ${note.author || 'TeachFlow'}\n\n` +
-          (note.contentPages || [])
-            .map(
-              (p) =>
-                `## Page ${p.pageNumber}: ${p.title}\n` +
-                p.sections.map((s) => `### ${s.heading || ''}\n${s.body}\n${s.bulletPoints ? s.bulletPoints.join('\n- ') : ''}`).join('\n\n')
-            )
-            .join('\n\n---\n\n')
-      ],
-      { type: 'text/markdown' }
-    );
-    element.href = URL.createObjectURL(file);
-    element.download = `${note.id}-study-notes.md`;
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (activeNote) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [activeNote]);
+
+  const copyShareLink = (note: NoteItem) => {
+    navigator.clipboard.writeText(note.file_url);
+    setCopiedLink(true);
+    setTimeout(() => setCopiedLink(false), 2000);
   };
 
   return (
     <div className="min-h-screen bg-[#07090e] text-zinc-100 p-4 sm:p-6 lg:p-8 font-lexend space-y-6 max-w-7xl mx-auto">
-      {/* Breadcrumb matching screenshot */}
+      {/* 1. Breadcrumbs matching hynts.in */}
       <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-zinc-400">
         <a
           href="/preparation"
@@ -127,7 +124,7 @@ export const NotesPage: React.FC<NotesPageProps> = ({ navigate }) => {
         <span className="text-white font-medium">Cool Notes</span>
       </nav>
 
-      {/* Header Section matching screenshot */}
+      {/* 2. Header Section matching hynts.in */}
       <div className="space-y-1.5">
         <div className="flex items-center gap-2.5">
           <div className="w-7 h-7 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center text-zinc-300">
@@ -142,51 +139,39 @@ export const NotesPage: React.FC<NotesPageProps> = ({ navigate }) => {
         </p>
       </div>
 
-      {/* Filter & Counter Bar matching screenshot */}
+      {/* 3. Controls & Filter Bar matching hynts.in */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-1">
-        <div className="flex items-center gap-4">
-          {/* Category Dropdown Button matching screenshot */}
-          <div className="relative" ref={dropdownRef}>
-            <button
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#0c1017] border border-[#1b2230] text-xs font-semibold text-white hover:border-zinc-700 transition-all cursor-pointer shadow-xs"
+        <div className="flex items-center gap-4 flex-wrap">
+          {/* Category Dropdown Select */}
+          <div className="relative inline-flex items-center group">
+            <FileText className="w-4 h-4 absolute left-3 text-zinc-400 pointer-events-none z-10" />
+            <select
+              id="notes-category-filter"
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="appearance-none pl-9 pr-10 py-2.5 text-xs sm:text-sm font-lexend font-medium bg-[#0c1017] border border-[#1b2230] rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 hover:border-zinc-700 transition-all cursor-pointer min-w-[200px]"
+              aria-label="Filter notes by category"
             >
-              <FileText className="w-3.5 h-3.5 text-zinc-400" />
-              <span>{selectedCategory}</span>
-              <ChevronDown className={`w-3.5 h-3.5 text-zinc-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
-            </button>
-
-            {/* Dropdown Menu */}
-            {isDropdownOpen && (
-              <div className="absolute left-0 mt-1.5 w-60 max-h-72 overflow-y-auto bg-[#0c1017] border border-[#1b2230] rounded-xl shadow-2xl p-1.5 z-50 divide-y divide-[#171e2c]">
-                {allCategories.map((cat) => (
-                  <button
-                    key={cat}
-                    onClick={() => {
-                      setSelectedCategory(cat);
-                      setIsDropdownOpen(false);
-                    }}
-                    className={`w-full text-left px-3 py-2 text-xs rounded-lg transition-colors cursor-pointer flex items-center justify-between ${
-                      selectedCategory === cat
-                        ? 'bg-blue-600/20 text-blue-400 font-bold'
-                        : 'text-zinc-300 hover:bg-zinc-800/80 hover:text-white'
-                    }`}
-                  >
-                    <span>{cat}</span>
-                    {selectedCategory === cat && <Check className="w-3 h-3 text-blue-400" />}
-                  </button>
+              <option value="All">All Categories</option>
+              {allCategories
+                .filter((c) => c !== 'All')
+                .map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
                 ))}
-              </div>
-            )}
+            </select>
+            <ChevronDown className="w-3.5 h-3.5 absolute right-3 text-zinc-400 pointer-events-none" />
           </div>
 
-          {/* Note count matching screenshot */}
-          <div className="text-xs text-zinc-400 font-medium">
-            <span className="text-white font-bold">{filteredNotes.length}</span> notes found
-          </div>
+          {/* Notes count indicator */}
+          <p className="text-xs text-zinc-400 font-lexend">
+            <span className="font-semibold text-white">{filteredNotes.length}</span> note
+            {filteredNotes.length === 1 ? '' : 's'} found
+          </p>
         </div>
 
-        {/* Quick Search Input */}
+        {/* Search Bar */}
         <div className="relative w-full sm:w-72">
           <Search className="w-3.5 h-3.5 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
@@ -194,181 +179,250 @@ export const NotesPage: React.FC<NotesPageProps> = ({ navigate }) => {
             placeholder="Search notes by keyword..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 rounded-xl bg-[#0c1017] border border-[#1b2230] text-xs text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all"
+            className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-[#0c1017] border border-[#1b2230] text-xs text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all"
           />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery('')}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
         </div>
       </div>
 
-      {/* Grid of Notes matching screenshot */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 pt-2">
-        {filteredNotes.map((note) => (
-          <div
-            key={note.id}
-            onClick={() => openNoteModal(note)}
-            className="group rounded-2xl bg-[#0c1017] border border-[#1b2230] hover:border-zinc-700/80 overflow-hidden flex flex-col justify-between transition-all duration-200 hover:shadow-xl hover:shadow-blue-500/5 hover:-translate-y-1 cursor-pointer select-none"
+      {/* 4. Grid of Notes Cards (matching hynts.in exactly) */}
+      {paginatedNotes.length === 0 ? (
+        <div className="rounded-2xl border border-[#1b2230] bg-[#0c1017] p-12 text-center space-y-3">
+          <FileText className="w-10 h-10 text-zinc-600 mx-auto" />
+          <h3 className="text-base font-bold text-white">No notes found</h3>
+          <p className="text-xs text-zinc-400 max-w-sm mx-auto">
+            Try adjusting your search query or selecting &quot;All Categories&quot; to see all 26 available notes.
+          </p>
+          <button
+            onClick={() => {
+              setSelectedCategory('All');
+              setSearchQuery('');
+            }}
+            className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold transition-all cursor-pointer inline-flex items-center gap-1.5"
           >
-            {/* Top Ruled Paper Handwritten Preview */}
-            <HandwrittenNotePreview note={note} />
+            Reset Filters
+          </button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 pt-1">
+          {paginatedNotes.map((note) => (
+            <button
+              key={note.id}
+              onClick={() => openNoteModal(note)}
+              className="group relative w-full text-left rounded-xl overflow-hidden border border-[#1b2230] hover:border-blue-500/50 hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500/50 cursor-pointer h-[286px] bg-[#0c1017]"
+              aria-label={`Open note: ${note.title}`}
+            >
+              {/* Thumbnail Image Cover */}
+              <img
+                src={note.thumbnail_url}
+                alt={`Preview of ${note.title}`}
+                className="absolute inset-0 w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500 ease-out"
+                loading="lazy"
+                onError={(e) => {
+                  // Fallback to CDN thumbnail if local path is unavailable
+                  if (e.currentTarget.src !== note.cdn_thumbnail_url) {
+                    e.currentTarget.src = note.cdn_thumbnail_url;
+                  }
+                }}
+              />
 
-            {/* Bottom Details Footer */}
-            <div className="p-4 sm:p-5 space-y-2">
-              <h3 className="font-extrabold text-sm sm:text-base text-white group-hover:text-blue-400 transition-colors line-clamp-1">
-                {note.title}
-              </h3>
-
-              <div className="flex items-center gap-1.5 text-xs text-zinc-500 font-medium">
-                <Calendar className="w-3.5 h-3.5 text-zinc-500" />
-                <span>{note.date}</span>
+              {/* Category Pill Tag */}
+              <div className="absolute top-3 right-3 z-20">
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold font-lexend bg-black/60 backdrop-blur-md text-white border border-white/20 truncate max-w-[150px]">
+                  <Tag className="w-2.5 h-2.5 text-zinc-300 shrink-0" />
+                  <span className="truncate">{note.category}</span>
+                </span>
               </div>
-            </div>
-          </div>
-        ))}
-      </div>
 
-      {/* ========================================================================= */}
-      {/* IN-PAGE PDF READER MODAL */}
-      {/* ========================================================================= */}
+              {/* Bottom Gradient Fade */}
+              <div className="absolute inset-x-0 bottom-0 z-10 h-[65%] bg-gradient-to-t from-black/95 via-black/70 to-transparent" />
+
+              {/* Card Bottom Details */}
+              <div className="absolute inset-x-0 bottom-0 z-20 p-4 flex flex-col gap-1.5">
+                <h3 className="font-semibold font-lexend text-sm text-white leading-snug line-clamp-2 group-hover:text-blue-400 transition-colors duration-200">
+                  {note.title}
+                </h3>
+                <div className="flex items-center gap-1.5 pt-1.5 border-t border-white/10 mt-0.5">
+                  <Calendar className="w-3 h-3 text-white/50" />
+                  <span className="text-[10px] text-white/50 font-lexend">{note.date}</span>
+                </div>
+              </div>
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* 5. Pagination Bar (matching hynts.in screenshot: < Previous 1 2 3 Next >) */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-1 pt-6 pb-4">
+          {/* Previous Button */}
+          <button
+            onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+            disabled={currentPage === 1}
+            className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold font-lexend transition-all cursor-pointer ${
+              currentPage === 1
+                ? 'opacity-40 cursor-not-allowed text-zinc-500'
+                : 'text-zinc-300 hover:text-white hover:bg-zinc-800'
+            }`}
+          >
+            <ChevronLeft className="w-3.5 h-3.5" />
+            <span>Previous</span>
+          </button>
+
+          {/* Page Number Buttons */}
+          {Array.from({ length: totalPages }).map((_, idx) => {
+            const pageNum = idx + 1;
+            const isActive = pageNum === currentPage;
+            return (
+              <button
+                key={pageNum}
+                onClick={() => handlePageChange(pageNum)}
+                className={`w-8 h-8 rounded-lg text-xs font-bold font-lexend transition-all cursor-pointer ${
+                  isActive
+                    ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
+                    : 'text-zinc-400 hover:text-white hover:bg-zinc-800/80'
+                }`}
+              >
+                {pageNum}
+              </button>
+            );
+          })}
+
+          {/* Next Button */}
+          <button
+            onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
+            disabled={currentPage === totalPages}
+            className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold font-lexend transition-all cursor-pointer ${
+              currentPage === totalPages
+                ? 'opacity-40 cursor-not-allowed text-zinc-500'
+                : 'text-zinc-300 hover:text-white hover:bg-zinc-800'
+            }`}
+          >
+            <span>Next</span>
+            <ChevronRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
+
+      {/* 6. In-Page PDF Viewer Modal matching hynts.in */}
       {activeNote && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-150"
-          onClick={closeNoteModal}
+          className="fixed inset-0 z-50 flex flex-col animate-in fade-in duration-200"
+          role="dialog"
+          aria-modal="true"
+          aria-label={`Viewing: ${activeNote.title}`}
         >
+          {/* Backdrop */}
           <div
-            className="relative w-full max-w-4xl h-[90vh] bg-[#0c1017] border border-[#1b2230] rounded-2xl shadow-2xl flex flex-col overflow-hidden text-zinc-100"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Top Toolbar */}
-            <div className="px-5 py-3.5 bg-[#090d14] border-b border-[#1b2230] flex items-center justify-between gap-3">
-              <div className="flex items-center gap-3 min-w-0">
-                <div className="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center shrink-0">
-                  <BookOpen className="w-4 h-4" />
-                </div>
-                <div className="min-w-0">
-                  <h2 className="text-sm sm:text-base font-extrabold text-white truncate">
-                    {activeNote.title}
-                  </h2>
-                  <p className="text-[11px] text-zinc-400">
-                    Category: {activeNote.category} · {activeNote.pages} Total Pages · {activeNote.date}
-                  </p>
+            className="absolute inset-0 bg-black/80 backdrop-blur-md"
+            onClick={closeNoteModal}
+            aria-hidden="true"
+          />
+
+          {/* Modal Container */}
+          <div className="relative z-10 flex flex-col w-full h-full max-w-6xl mx-auto my-2 sm:my-4 px-2 sm:px-6">
+            {/* Modal Header Bar */}
+            <div className="flex items-center gap-3 bg-[#0d121c] border border-[#1b2230] rounded-t-xl px-4 py-3 shrink-0 shadow-lg">
+              {/* PDF Icon Badge */}
+              <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center justify-center">
+                <FileText className="w-4 h-4 text-red-400" />
+              </div>
+
+              {/* Title & Category Info */}
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold font-lexend text-white truncate">
+                  {activeNote.title}
+                </p>
+                <div className="flex items-center gap-2 text-xs text-zinc-400 font-lexend truncate">
+                  <span className="text-blue-400 font-medium">{activeNote.category}</span>
+                  <span>•</span>
+                  <span>{activeNote.date}</span>
+                  {activeNote.description && (
+                    <>
+                      <span>•</span>
+                      <span className="text-zinc-400 truncate max-w-xs">{activeNote.description}</span>
+                    </>
+                  )}
                 </div>
               </div>
 
               {/* Action Buttons */}
               <div className="flex items-center gap-2 shrink-0">
-                {/* Download Button */}
+                {/* Share Link */}
                 <button
-                  onClick={() => handleDownload(activeNote)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold transition-all cursor-pointer shadow-xs"
+                  onClick={() => copyShareLink(activeNote)}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold font-lexend bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white transition-colors cursor-pointer"
+                  title="Copy Google Drive Link"
+                >
+                  {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Share2 className="w-3.5 h-3.5" />}
+                  <span className="hidden sm:inline">{copiedLink ? 'Copied!' : 'Share'}</span>
+                </button>
+
+                {/* Open in New Tab */}
+                <a
+                  href={activeNote.file_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold font-lexend bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white transition-colors cursor-pointer"
+                  aria-label="Open in new tab"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">New Tab</span>
+                </a>
+
+                {/* Download PDF */}
+                <a
+                  href={activeNote.file_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  download
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold font-lexend bg-blue-600 hover:bg-blue-500 text-white transition-colors cursor-pointer"
+                  title="Download / View PDF"
                 >
                   <Download className="w-3.5 h-3.5" />
-                  <span className="hidden sm:inline">
-                    {downloadSuccess ? 'Downloaded!' : 'Download Note'}
-                  </span>
-                </button>
+                  <span className="hidden sm:inline">Download</span>
+                </a>
 
-                {/* Close Button */}
+                {/* Close Modal Button */}
                 <button
                   onClick={closeNoteModal}
-                  className="p-1.5 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer"
+                  className="inline-flex items-center justify-center w-8 h-8 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer"
+                  aria-label="Close modal"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-4 h-4" />
                 </button>
               </div>
             </div>
 
-            {/* Document Body Area */}
-            <div className="flex-1 overflow-y-auto p-4 sm:p-8 bg-[#07090e] flex justify-center">
-              <div
-                className="w-full max-w-3xl bg-white text-zinc-900 rounded-xl shadow-2xl p-6 sm:p-10 space-y-6 transition-all font-sans"
-                style={{ transform: `scale(${zoomLevel / 100})`, transformOrigin: 'top center' }}
-              >
-                {/* Note Document Header */}
-                <div className="border-b-2 border-zinc-900 pb-4 flex items-start justify-between">
-                  <div>
-                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-zinc-900 text-white mb-2 inline-block">
-                      {activeNote.category}
-                    </span>
-                    <h1 className="text-2xl sm:text-3xl font-black text-zinc-900">
-                      {activeNote.title}
-                    </h1>
-                    <p className="text-xs text-zinc-600 font-mono mt-1">
-                      Author: {activeNote.author || 'TeachFlow Engineering'} · Published: {activeNote.date}
-                    </p>
-                  </div>
+            {/* Modal Body: Embedded PDF Viewport */}
+            <div className="relative flex-1 bg-zinc-950 border-x border-b border-[#1b2230] rounded-b-xl overflow-hidden shadow-2xl">
+              {/* Spinner while loading */}
+              {pdfLoading && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 z-10 bg-zinc-950">
+                  <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+                  <p className="text-xs sm:text-sm text-zinc-400 font-lexend">
+                    Loading PDF document...
+                  </p>
                 </div>
+              )}
 
-                {/* Note Content Pages */}
-                {activeNote.contentPages?.map((page) => (
-                  <div key={page.pageNumber} className="space-y-4 pt-2">
-                    <div className="flex items-center justify-between border-b border-zinc-300 pb-1">
-                      <h3 className="font-bold text-sm text-blue-900 uppercase tracking-wide">
-                        {page.title}
-                      </h3>
-                      <span className="text-[10px] text-zinc-500 font-mono">
-                        Page {page.pageNumber} of {activeNote.contentPages.length}
-                      </span>
-                    </div>
-
-                    <div className="space-y-4 text-xs sm:text-sm text-zinc-800 leading-relaxed">
-                      {page.sections.map((section, sIdx) => (
-                        <div key={sIdx} className="space-y-2">
-                          {section.heading && (
-                            <h4 className="font-extrabold text-sm text-zinc-900">
-                              {section.heading}
-                            </h4>
-                          )}
-                          <p className="text-zinc-700 whitespace-pre-line">{section.body}</p>
-
-                          {section.bulletPoints && (
-                            <ul className="list-disc list-inside space-y-1 pl-2 text-zinc-700">
-                              {section.bulletPoints.map((bp, bIdx) => (
-                                <li key={bIdx}>{bp}</li>
-                              ))}
-                            </ul>
-                          )}
-
-                          {section.codeOrDiagram && (
-                            <pre className="p-3.5 rounded-lg bg-zinc-950 text-emerald-400 font-mono text-xs overflow-x-auto border border-zinc-800">
-                              <code>{section.codeOrDiagram}</code>
-                            </pre>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-
-                {/* Footer on Document */}
-                <div className="pt-6 border-t border-zinc-200 flex items-center justify-between text-[11px] text-zinc-500 font-mono">
-                  <span>TeachFlow Curated Placement Notes</span>
-                  <span>www.teachflow.in</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Bottom Reader Navigation Controls */}
-            <div className="px-5 py-3 bg-[#090d14] border-t border-[#1b2230] flex items-center justify-between text-xs text-zinc-400">
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setZoomLevel((prev) => Math.max(prev - 10, 70))}
-                  className="p-1.5 rounded-lg bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300 transition-colors"
-                  title="Zoom Out"
-                >
-                  <ZoomOut className="w-3.5 h-3.5" />
-                </button>
-                <span className="font-mono text-zinc-300 font-bold">{zoomLevel}%</span>
-                <button
-                  onClick={() => setZoomLevel((prev) => Math.min(prev + 10, 150))}
-                  className="p-1.5 rounded-lg bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300 transition-colors"
-                  title="Zoom In"
-                >
-                  <ZoomIn className="w-3.5 h-3.5" />
-                </button>
-              </div>
-
-              <div className="text-[11px] text-zinc-400 font-medium">
-                Showing full high-yield study sheet
-              </div>
+              {/* In-Page Google Drive PDF viewer */}
+              <iframe
+                src={`${activeNote.preview_url}#toolbar=1&navpanes=1&scrollbar=1`}
+                title={activeNote.title}
+                className={`w-full h-full border-0 transition-opacity duration-300 ${
+                  pdfLoading ? 'opacity-0' : 'opacity-100'
+                }`}
+                onLoad={() => setPdfLoading(false)}
+                allow="fullscreen"
+              />
             </div>
           </div>
         </div>

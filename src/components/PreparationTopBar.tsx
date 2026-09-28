@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
+import { TeachFlowLogo } from './TeachFlowLogo';
 import { Sun, Moon, PanelLeft, ChevronRight, LogOut, Sparkles } from 'lucide-react';
 
 interface PreparationTopBarProps {
@@ -69,8 +70,44 @@ export const PreparationTopBar: React.FC<PreparationTopBarProps> = ({
     if (currentPath === '/preparation/dsa-playlists') {
       return [{ label: 'Preparation', href: '/preparation' }, { label: 'DSA Playlists' }];
     }
+    if (currentPath.startsWith('/preparation/dbms-playlists/')) {
+      const slug = currentPath.replace('/preparation/dbms-playlists/', '');
+      const plName = slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+      return [
+        { label: 'Preparation', href: '/preparation' },
+        { label: 'DBMS Playlists', href: '/preparation/dbms-playlists' },
+        { label: plName },
+      ];
+    }
     if (currentPath === '/preparation/dbms-playlists') {
-      return [{ label: 'Preparation', href: '/preparation' }, { label: 'Core Subjects' }];
+      return [{ label: 'Preparation', href: '/preparation' }, { label: 'DBMS Playlists' }];
+    }
+    if (currentPath.startsWith('/preparation/os-playlists/')) {
+      const slug = currentPath.replace('/preparation/os-playlists/', '');
+      const plName = slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+      return [
+        { label: 'Preparation', href: '/preparation' },
+        { label: 'OS Playlists', href: '/preparation/os-playlists' },
+        { label: plName },
+      ];
+    }
+    if (currentPath === '/preparation/os-playlists') {
+      return [{ label: 'Preparation', href: '/preparation' }, { label: 'Operating Systems' }];
+    }
+    if (currentPath.startsWith('/preparation/oops-playlists/')) {
+      const slug = currentPath.replace('/preparation/oops-playlists/', '');
+      const plName = slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+      return [
+        { label: 'Preparation', href: '/preparation' },
+        { label: 'OOPS Playlists', href: '/preparation/oops-playlists' },
+        { label: plName },
+      ];
+    }
+    if (currentPath === '/preparation/oops-playlists') {
+      return [{ label: 'Preparation', href: '/preparation' }, { label: 'OOPS Playlists' }];
+    }
+    if (currentPath === '/preparation/playlists') {
+      return [{ label: 'Preparation', href: '/preparation' }, { label: 'Video Playlists' }];
     }
     if (currentPath.startsWith('/preparation/system-design-playlists/')) {
       const slug = currentPath.replace('/preparation/system-design-playlists/', '');
@@ -137,30 +174,45 @@ export const PreparationTopBar: React.FC<PreparationTopBarProps> = ({
   return (
     <header className="sticky top-0 z-30 w-full h-14 bg-black/90 dark:bg-black/90 backdrop-blur-md border-b border-zinc-800/80 px-4 sm:px-6 flex items-center justify-between text-zinc-300 font-lexend">
       {/* Left: Sidebar toggle icon + Breadcrumbs */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2.5 min-w-0 flex-1 mr-2">
         <button
           onClick={toggleSidebar}
           aria-label="Toggle sidebar"
-          className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800/80 transition-colors cursor-pointer"
+          className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800/80 transition-colors cursor-pointer shrink-0"
         >
           <PanelLeft className="w-5 h-5" />
         </button>
 
-        <nav className="flex items-center gap-2 text-xs sm:text-sm text-zinc-400">
+        {/* Mobile brand logo */}
+        <button
+          onClick={() => navigate('/')}
+          className="sm:hidden flex items-center shrink-0 cursor-pointer"
+          aria-label="Go to Home"
+        >
+          <TeachFlowLogo size={24} />
+        </button>
+
+        {/* Mobile active page indicator */}
+        <span className="sm:hidden text-xs font-semibold text-white truncate max-w-[120px] xs:max-w-[180px]">
+          {breadcrumbs[breadcrumbs.length - 1]?.label}
+        </span>
+
+        {/* Desktop full breadcrumbs */}
+        <nav className="hidden sm:flex items-center gap-2 text-xs sm:text-sm text-zinc-400 min-w-0 truncate">
           {breadcrumbs.map((crumb, idx) => {
             const isLast = idx === breadcrumbs.length - 1;
             return (
               <React.Fragment key={crumb.label}>
-                {idx > 0 && <ChevronRight className="w-3.5 h-3.5 text-zinc-600" />}
+                {idx > 0 && <ChevronRight className="w-3.5 h-3.5 text-zinc-600 shrink-0" />}
                 {crumb.href && !isLast ? (
                   <button
                     onClick={() => navigate(crumb.href!)}
-                    className="hover:text-white transition-colors cursor-pointer"
+                    className="hover:text-white transition-colors cursor-pointer truncate"
                   >
                     {crumb.label}
                   </button>
                 ) : (
-                  <span className={isLast ? 'text-white font-semibold' : ''}>
+                  <span className={`truncate ${isLast ? 'text-white font-semibold' : ''}`}>
                     {crumb.label}
                   </span>
                 )}
@@ -171,7 +223,7 @@ export const PreparationTopBar: React.FC<PreparationTopBarProps> = ({
       </div>
 
       {/* Right: Dark mode toggle & Google Sign In button */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
         {/* Dark Mode Switch Pill */}
         <button
           onClick={toggleTheme}

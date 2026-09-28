@@ -1,822 +1,327 @@
 export interface NoteItem {
   id: string;
   title: string;
+  description: string;
   category: string;
+  file_url: string;
+  preview_url: string;
+  thumbnail_url: string;
+  cdn_thumbnail_url: string;
+  created_at: string;
   date: string;
-  pages: number;
-  author?: string;
-  tagColor?: string;
-  previewHeader?: string;
-  previewPoints?: string[];
-  previewSubtext?: string;
-  diagramType?: 'sql' | 'backend' | 'system-design' | 'nodejs' | 'react' | 'ml' | 'cn' | 'aws' | 'k8s' | 'docker' | 'os' | 'dbms' | 'java' | 'python' | 'cpp' | 'git' | 'nextjs' | 'security' | 'generic';
-  contentPages: {
-    pageNumber: number;
-    title: string;
-    sections: {
-      heading?: string;
-      body: string;
-      codeOrDiagram?: string;
-      bulletPoints?: string[];
-    }[];
-  }[];
 }
 
 export const coolNotesList: NoteItem[] = [
   {
-    id: 'sql-mastery-notes',
-    title: 'SQL - Mastery Notes',
-    category: 'SQL',
-    date: 'Jul 22, 2026',
-    pages: 18,
-    author: 'TeachFlow Engineering',
-    diagramType: 'sql',
-    previewHeader: 'SQL MASTER NOTES',
-    previewPoints: [
-      '1. SQL = Structured Query Language. Used to communicate with databases: Create, read, update and delete data.',
-      '2. Database = Organized collection of data.',
-      '3. DBMS = Software used to manage databases (MySQL, Oracle, PostgreSQL...)'
-    ],
-    previewSubtext: 'SQL is the language, MySQL is the software.',
-    contentPages: [
-      {
-        pageNumber: 1,
-        title: 'SQL Fundamentals & RDBMS Core Concepts',
-        sections: [
-          {
-            heading: '1. What is SQL & Relational Databases?',
-            body: 'SQL (Structured Query Language) is the standard language for relational database management systems. RDBMS stores structured data in tables with rows and columns, enforcing ACID properties and relationships via Foreign Keys.'
-          },
-          {
-            heading: '2. Types of SQL Commands',
-            body: 'SQL commands are categorized into five sub-languages:',
-            bulletPoints: [
-              'DDL (Data Definition Language): CREATE, ALTER, DROP, TRUNCATE, RENAME',
-              'DML (Data Manipulation Language): INSERT, UPDATE, DELETE',
-              'DQL (Data Query Language): SELECT',
-              'DCL (Data Control Language): GRANT, REVOKE',
-              'TCL (Transaction Control Language): COMMIT, ROLLBACK, SAVEPOINT'
-            ]
-          },
-          {
-            heading: '3. Essential Query Clauses',
-            body: 'Standard execution order in SQL: FROM -> WHERE -> GROUP BY -> HAVING -> SELECT -> DISTINCT -> ORDER BY -> LIMIT/OFFSET.'
-          }
-        ]
-      },
-      {
-        pageNumber: 2,
-        title: 'Advanced Joins & Analytical Window Functions',
-        sections: [
-          {
-            heading: 'Window Functions (DENSE_RANK, ROW_NUMBER, LAG/LEAD)',
-            body: 'Window functions perform calculations across a set of table rows that are related to the current row without collapsing them into a single aggregate row.',
-            codeOrDiagram: `SELECT employee_id, department, salary,\n       DENSE_RANK() OVER (PARTITION BY department ORDER BY salary DESC) as dept_salary_rank,\n       LAG(salary, 1) OVER (PARTITION BY department ORDER BY salary DESC) as prev_salary\nFROM employees;`
-          }
-        ]
-      }
-    ]
+    id: "488f1f7b-7508-4104-987a-a52990cb107e",
+    title: "SQL - Mastery Notes",
+    description: "",
+    category: "SQL",
+    file_url: "https://drive.google.com/file/d/1P2flu2Rjkarc5zfclXzKmZOmD2I21fWR/view?usp=drive_link",
+    preview_url: "https://drive.google.com/file/d/1P2flu2Rjkarc5zfclXzKmZOmD2I21fWR/preview",
+    thumbnail_url: "/notes-thumbnails/488f1f7b-7508-4104-987a-a52990cb107e.png",
+    cdn_thumbnail_url: "https://hynts.in/_astro/1784715149933-SQL_-_Mastery_Notes-compressed.CcJEm5zP.png",
+    created_at: "2026-07-22T10:12:32.412274+00:00",
+    date: "Jul 22, 2026"
   },
-
   {
-    id: 'top-50-backend-interview-questions',
-    title: 'Top 50 Backend Interview Questions.',
-    category: 'Backend',
-    date: 'Jul 22, 2026',
-    pages: 24,
-    author: '@codewithz',
-    diagramType: 'backend',
-    previewHeader: 'TOP 50 BACKEND INTERVIEW QUESTIONS',
-    previewPoints: [
-      'Page 1 - Backend Fundamentals (Q1 - Q10)',
-      '1. What is a REST API? REST is an architectural style using HTTP methods for CRUD operations.',
-      'CRUD with REST: GET -> Read, POST -> Create, PUT -> Update, DELETE -> Delete'
-    ],
-    previewSubtext: 'REST vs SOAP: REST uses JSON/XML, lightweight, stateless over HTTP/HTTPS.',
-    contentPages: [
-      {
-        pageNumber: 1,
-        title: 'Backend Fundamentals & REST Architecture',
-        sections: [
-          {
-            heading: '1. What is a RESTful API?',
-            body: 'REST (Representational State Transfer) is an architectural style characterized by statelessness, cacheability, client-server decoupling, and a uniform interface using standard HTTP status codes and verbs (GET, POST, PUT, PATCH, DELETE).'
-          },
-          {
-            heading: '2. Idempotency in HTTP Methods',
-            body: 'An HTTP method is idempotent if executing it multiple times produces the exact same server state as executing it once.',
-            bulletPoints: [
-              'GET: Idempotent & Safe (read-only)',
-              'PUT: Idempotent (replaces entire resource)',
-              'DELETE: Idempotent (deleting already deleted returns 404/204 without side effects)',
-              'POST: Non-idempotent (creates new record on each invocation)',
-              'PATCH: Non-idempotent in general (applies partial diffs)'
-            ]
-          }
-        ]
-      }
-    ]
+    id: "2d31431b-f064-4dcf-814a-c0df61bd3b3c",
+    title: "Top 50 Backend Interview Questions.",
+    description: "",
+    category: "Backend",
+    file_url: "https://drive.google.com/file/d/1_egw50_Ra1gPf60q3s4erY9Bbh5cQYIG/view?usp=drive_link",
+    preview_url: "https://drive.google.com/file/d/1_egw50_Ra1gPf60q3s4erY9Bbh5cQYIG/preview",
+    thumbnail_url: "/notes-thumbnails/2d31431b-f064-4dcf-814a-c0df61bd3b3c.png",
+    cdn_thumbnail_url: "https://hynts.in/_astro/1784713894816-Top_50_Backend_Interview_Questions.CyADcnE9.png",
+    created_at: "2026-07-22T09:51:38.755856+00:00",
+    date: "Jul 22, 2026"
   },
-
   {
-    id: 'top-50-system-design-interview-questions',
-    title: 'Top 50 System Design Interview Questions.',
-    category: 'System Design (HLD)',
-    date: 'Jul 22, 2026',
-    pages: 32,
-    author: 'Tech System Architects',
-    diagramType: 'system-design',
-    previewHeader: 'Top 50 System Design Interview Questions.',
-    previewPoints: [
-      'Page 1 (Questions 1 - 5)',
-      '1. What is Distributed System? A collection of independent computers appearing as a single system.',
-      '2. Difference between Vertical (Scale Up) and Horizontal (Scale Out) Scaling.',
-      '3. Load Balancing algorithms: Round Robin, Least Connections, Consistent Hashing.'
-    ],
-    previewSubtext: 'Examples: Google, Amazon, WhatsApp distributed architectures.',
-    contentPages: [
-      {
-        pageNumber: 1,
-        title: 'Distributed Systems & Scalability Pillars',
-        sections: [
-          {
-            heading: '1. Vertical vs Horizontal Scaling',
-            body: 'Vertical scaling upgrades CPU/RAM on a single server (hard ceiling, single point of failure). Horizontal scaling provisions multiple commodity nodes behind a load balancer with auto-scaling capabilities.'
-          },
-          {
-            heading: '2. Consistent Hashing in Distributed Caching',
-            body: 'Consistent hashing maps both servers and data keys onto a circular hash ring (0 to 2^32 - 1), ensuring that adding or removing a cache node only relocates k/N keys rather than invalidating the entire cluster.'
-          }
-        ]
-      }
-    ]
+    id: "554c4773-61ef-41cc-a768-a1ab1b85b2f7",
+    title: "Top 50 System Design Interview Questions.",
+    description: "",
+    category: "System Design (HLD)",
+    file_url: "https://drive.google.com/file/d/1gV_4ikyEkM5Krko4k8IK14GDNTOuhm1P/view?usp=drive_link",
+    preview_url: "https://drive.google.com/file/d/1gV_4ikyEkM5Krko4k8IK14GDNTOuhm1P/preview",
+    thumbnail_url: "/notes-thumbnails/554c4773-61ef-41cc-a768-a1ab1b85b2f7.png",
+    cdn_thumbnail_url: "https://hynts.in/_astro/1784713820683-Top_50_System_Design_Interview_Questions.B1Bj0W7R.png",
+    created_at: "2026-07-22T09:50:40.557552+00:00",
+    date: "Jul 22, 2026"
   },
-
   {
-    id: 'nodejs-guide',
-    title: 'Nodejs Guide',
-    category: 'Node.js',
-    date: 'Jul 22, 2026',
-    pages: 16,
-    author: 'Node Core Team',
-    diagramType: 'nodejs',
-    previewHeader: 'Node.js Handwritten Notes',
-    previewPoints: [
-      '1. What is Node.js? Open-source, cross-platform JS runtime outside the browser.',
-      '2. Why Node.js was Created? Non-blocking I/O event-driven model handling thousands of concurrent connections on a single thread.',
-      '3. Features: V8 engine, libuv event loop, streams, buffers.'
-    ],
-    previewSubtext: 'Where Node.js is used: Web servers, APIs, Microservices, Real-time apps (Chat, Gaming).',
-    contentPages: [
-      {
-        pageNumber: 1,
-        title: 'Node.js Internals & Event Loop',
-        sections: [
-          {
-            heading: 'Event Loop Phases in libuv',
-            body: 'The Node.js event loop executes in 6 distinct sequential phases on every tick: Timers -> Pending Callbacks -> Idle/Prepare -> Poll (I/O) -> Check (setImmediate) -> Close Callbacks. Microtasks (process.nextTick & Promise) run between every phase.'
-          }
-        ]
-      }
-    ]
+    id: "3b64cfd0-aca6-432a-80c8-11517155b744",
+    title: "Nodejs Guide",
+    description: "",
+    category: "Node.js",
+    file_url: "https://drive.google.com/file/d/1Az11YdwBL1TpCREUfpWlMtvctgbdK-oK/view?usp=drive_link",
+    preview_url: "https://drive.google.com/file/d/1Az11YdwBL1TpCREUfpWlMtvctgbdK-oK/preview",
+    thumbnail_url: "/notes-thumbnails/3b64cfd0-aca6-432a-80c8-11517155b744.png",
+    cdn_thumbnail_url: "https://hynts.in/_astro/1784713165895-NodeJs.OeG85Ob1.png",
+    created_at: "2026-07-22T09:39:29.642653+00:00",
+    date: "Jul 22, 2026"
   },
-
   {
-    id: 'reactjs-guide',
-    title: 'Reactjs Guide',
-    category: 'React',
-    date: 'Jul 22, 2026',
-    pages: 20,
-    author: 'Frontend Mastery',
-    diagramType: 'react',
-    previewHeader: 'REACT.JS HANDBOOK',
-    previewPoints: [
-      '1. React Fundamentals & Project Setup',
-      '1.1 What is React? Declarative component-based UI library maintained by Meta.',
-      '1.2 Folder Structure (Vite): my-app/ public/ src/ components/ hooks/'
-    ],
-    previewSubtext: 'Virtual DOM diffing, Fiber tree, unidirectional data flow, React Hooks.',
-    contentPages: [
-      {
-        pageNumber: 1,
-        title: 'React Architecture & Hook Rules',
-        sections: [
-          {
-            heading: 'Fiber Architecture & Reconciliation',
-            body: 'React Fiber breaks rendering into incremental work chunks, allowing high-priority user interactions to interrupt background work to maintain 60 FPS.'
-          }
-        ]
-      }
-    ]
+    id: "c3cc6bcc-2c0f-454a-b795-8a9efe51d76f",
+    title: "Reactjs Guide",
+    description: "",
+    category: "React",
+    file_url: "https://drive.google.com/file/d/12i2DyiQw9-zA4n1TohsYfDNCGUOuTHTV/view?usp=drive_link4",
+    preview_url: "https://drive.google.com/file/d/12i2DyiQw9-zA4n1TohsYfDNCGUOuTHTV/preview",
+    thumbnail_url: "/notes-thumbnails/c3cc6bcc-2c0f-454a-b795-8a9efe51d76f.png",
+    cdn_thumbnail_url: "https://hynts.in/_astro/1784713118053-reactjs-handbook.CzQCcsFR.png",
+    created_at: "2026-07-22T09:38:47.383734+00:00",
+    date: "Jul 22, 2026"
   },
-
   {
-    id: 'machine-learning-notes',
-    title: 'Machine Learning Notes',
-    category: 'Machine Learning',
-    date: 'Jul 22, 2026',
-    pages: 28,
-    author: 'AI Research Labs',
-    diagramType: 'ml',
-    previewHeader: 'What is Machine Learning?',
-    previewPoints: [
-      'Machine Learning (ML) is a branch of AI that allows computers to learn from data and make decisions or predictions without explicit programming.',
-      'Types: Supervised Learning, Unsupervised Learning, Reinforcement Learning.',
-      'Linear Regression, Decision Trees, Gradient Boosting, Neural Networks.'
-    ],
-    previewSubtext: 'Data Preprocessing -> Feature Engineering -> Model Training -> Evaluation Metrics (Precision, Recall, F1).',
-    contentPages: [
-      {
-        pageNumber: 1,
-        title: 'Machine Learning Foundations',
-        sections: [
-          {
-            heading: 'Supervised vs Unsupervised Learning',
-            body: 'Supervised learning trains on labeled input-output pairs (Regression & Classification). Unsupervised learning discovers latent patterns and clusters in unlabeled data (K-Means, PCA, Autoencoders).'
-          }
-        ]
-      }
-    ]
+    id: "8d8e727f-9111-4253-ab17-70348aeecdec",
+    title: "Machine Learning Notes",
+    description: "",
+    category: "Machine Learning",
+    file_url: "https://drive.google.com/file/d/18V1rXqxWw8oE4_wSYlsdz1MfPU0ynoVe/view?usp=drive_link",
+    preview_url: "https://drive.google.com/file/d/18V1rXqxWw8oE4_wSYlsdz1MfPU0ynoVe/preview",
+    thumbnail_url: "/notes-thumbnails/8d8e727f-9111-4253-ab17-70348aeecdec.png",
+    cdn_thumbnail_url: "https://hynts.in/_astro/1784710095361-machine_learning-compressed.BN5nz4g5.png",
+    created_at: "2026-07-22T08:48:18.291383+00:00",
+    date: "Jul 22, 2026"
   },
-
   {
-    id: 'computer-networks-notes',
-    title: 'Computer Networks Notes',
-    category: 'Computer Networks',
-    date: 'Jul 22, 2026',
-    pages: 22,
-    author: 'Networking Specialists',
-    diagramType: 'cn',
-    previewHeader: 'COMPUTER NETWORKS - Page 1',
-    previewPoints: [
-      '1. What is Computer Network? Interconnected devices sharing resources & data.',
-      '2. OSI 7-Layer Model: Physical, Data Link, Network, Transport, Session, Presentation, Application.',
-      '3. TCP vs UDP: Connection-oriented reliable vs Connectionless fast datagrams.'
-    ],
-    previewSubtext: '3-Way Handshake: SYN -> SYN-ACK -> ACK. Subnetting, CIDR, DNS, HTTP/3 QUIC.',
-    contentPages: [
-      {
-        pageNumber: 1,
-        title: 'OSI Model & Transport Protocols',
-        sections: [
-          {
-            heading: 'TCP 3-Way Handshake',
-            body: 'Client sends SYN; Server responds with SYN-ACK; Client acknowledges with ACK. Ensures both parties have verified transmission and reception capabilities.'
-          }
-        ]
-      }
-    ]
+    id: "25d08dc2-8533-459e-8518-6813c0e3e092",
+    title: "Computer Network Notes",
+    description: "",
+    category: "Computer Networks",
+    file_url: "https://drive.google.com/file/d/1KgWtofnkkcES81C0Tdc2SuFaTqvz4IP6/view?usp=drive_link",
+    preview_url: "https://drive.google.com/file/d/1KgWtofnkkcES81C0Tdc2SuFaTqvz4IP6/preview",
+    thumbnail_url: "/notes-thumbnails/25d08dc2-8533-459e-8518-6813c0e3e092.png",
+    cdn_thumbnail_url: "https://hynts.in/_astro/1783931934111-Computer-Network_Notes.C0J9GaTF.png",
+    created_at: "2026-07-13T08:38:58.627452+00:00",
+    date: "Jul 13, 2026"
   },
-
   {
-    id: 'aws-mastery-notes',
-    title: 'AWS Notes',
-    category: 'AWS',
-    date: 'Jul 22, 2026',
-    pages: 26,
-    author: 'Cloud Architects',
-    diagramType: 'aws',
-    previewHeader: 'AWS Amazon Web Services',
-    previewPoints: [
-      'World\'s most popular cloud platform by Amazon.',
-      'Core Services: EC2 (Compute), S3 (Object Storage), Lambda (Serverless), RDS (Managed Databases), VPC (Virtual Private Cloud).',
-      'IAM (Identity & Access Management), Route 53 DNS, CloudFront CDN.'
-    ],
-    previewSubtext: 'High Availability, Auto-Scaling Groups, Multi-AZ & Multi-Region resilience.',
-    contentPages: [
-      {
-        pageNumber: 1,
-        title: 'AWS Cloud Architecture',
-        sections: [
-          {
-            heading: 'VPC & Networking Security',
-            body: 'VPC provides private isolated cloud networks. Public subnets route traffic via Internet Gateway (IGW); Private subnets route outbound traffic via NAT Gateways while blocking inbound traffic.'
-          }
-        ]
-      }
-    ]
+    id: "4383aafe-e818-431a-a095-4af377b1db40",
+    title: "Aws Notes",
+    description: "",
+    category: "AWS",
+    file_url: "https://drive.google.com/file/d/1W8rlx3iSgIcN2jpgooao7x5uCfqIAQ1l/view?usp=drive_link",
+    preview_url: "https://drive.google.com/file/d/1W8rlx3iSgIcN2jpgooao7x5uCfqIAQ1l/preview",
+    thumbnail_url: "/notes-thumbnails/4383aafe-e818-431a-a095-4af377b1db40.png",
+    cdn_thumbnail_url: "https://hynts.in/_astro/1783931670605-AwsNotes-compressed.Bs8l0gYp.png",
+    created_at: "2026-07-13T08:34:34.215786+00:00",
+    date: "Jul 13, 2026"
   },
-
   {
-    id: 'kubernetes-notes',
-    title: 'Kubernetes Notes',
-    category: 'Kubernetes',
-    date: 'Jul 22, 2026',
-    pages: 20,
-    author: 'DevOps Guild',
-    diagramType: 'k8s',
-    previewHeader: '1. Kubernetes Architecture',
-    previewPoints: [
-      'What is Kubernetes? Production-grade container orchestration tool.',
-      'Control Plane: API Server, etcd, Kube-Scheduler, Kube-Controller-Manager.',
-      'Worker Nodes: Kubelet, Kube-Proxy, Container Runtime (containerd).'
-    ],
-    previewSubtext: 'Pods, Deployments, Services (ClusterIP, NodePort, LoadBalancer), Ingress, HPA.',
-    contentPages: [
-      {
-        pageNumber: 1,
-        title: 'Kubernetes Cluster Architecture',
-        sections: [
-          {
-            heading: 'Pod Lifecycle & Deployments',
-            body: 'Pods are the smallest deployable compute units in Kubernetes containing one or more tightly coupled containers sharing network namespaces and storage volumes.'
-          }
-        ]
-      }
-    ]
+    id: "e0b76983-8b04-48a2-93e9-b4c960bcc240",
+    title: "kubernetes In-Depth Notes",
+    description: "",
+    category: "Kubernetes",
+    file_url: "https://drive.google.com/file/d/1jaTa3tDD6Vi13lrEf-Q7rX3f8IOE0Vqo/view?usp=drive_link",
+    preview_url: "https://drive.google.com/file/d/1jaTa3tDD6Vi13lrEf-Q7rX3f8IOE0Vqo/preview",
+    thumbnail_url: "/notes-thumbnails/e0b76983-8b04-48a2-93e9-b4c960bcc240.png",
+    cdn_thumbnail_url: "https://hynts.in/_astro/1783931635214-kubernetus_notes-compressed.BKhQ9uXV.png",
+    created_at: "2026-07-13T08:34:02.521311+00:00",
+    date: "Jul 13, 2026"
   },
-
   {
-    id: 'docker-notes',
-    title: 'Docker & Containers Handbook',
-    category: 'Docker',
-    date: 'Jul 22, 2026',
-    pages: 18,
-    author: 'Container Specialists',
-    diagramType: 'docker',
-    previewHeader: 'Docker Mastery Guide',
-    previewPoints: [
-      'Images, Containers, Dockerfile multi-stage builds.',
-      'Namespaces for isolation, Cgroups for resource allocation.',
-      'Docker Compose for multi-container orchestration.'
-    ],
-    previewSubtext: 'Docker vs VMs: Light footprint, shared OS kernel, millisecond startup.',
-    contentPages: [
-      {
-        pageNumber: 1,
-        title: 'Docker Fundamentals & Optimization',
-        sections: [
-          {
-            heading: 'Multi-Stage Docker Builds',
-            body: 'Multi-stage builds allow compiling code in a heavy build stage (with SDKs) and copying only the compiled artifacts into a lightweight distroless/alpine runtime image, drastically reducing CVEs and image size.'
-          }
-        ]
-      }
-    ]
+    id: "530a2f9d-93fc-44d1-8d1f-00c913763012",
+    title: "Java Interview Questions",
+    description: "Java 30 Tricky Interview Questions.",
+    category: "Java",
+    file_url: "https://drive.google.com/file/d/1xj4ugFw5I-k5gXqImBwwl-MMher4qqoK/view?usp=drive_link",
+    preview_url: "https://drive.google.com/file/d/1xj4ugFw5I-k5gXqImBwwl-MMher4qqoK/preview",
+    thumbnail_url: "/notes-thumbnails/530a2f9d-93fc-44d1-8d1f-00c913763012.png",
+    cdn_thumbnail_url: "https://hynts.in/_astro/1783834921704-Java_Interview_Quetions.DcAjOPVh.png",
+    created_at: "2026-07-12T05:42:06.875668+00:00",
+    date: "Jul 12, 2026"
   },
-
   {
-    id: 'operating-systems-notes',
-    title: 'Operating Systems - Core Handwritten Notes',
-    category: 'Operating Systems',
-    date: 'Jul 22, 2026',
-    pages: 30,
-    author: 'CS Faculty',
-    diagramType: 'os',
-    previewHeader: 'Operating Systems Notes',
-    previewPoints: [
-      'Process vs Thread, Context Switching, CPU Scheduling algorithms.',
-      'Deadlocks: 4 Coffman conditions, Banker\'s Algorithm.',
-      'Virtual Memory, Paging, TLB, Page Faults, Thrashing.'
-    ],
-    previewSubtext: 'Semaphores, Mutex, Critical Section Problem, Inter-Process Communication (IPC).',
-    contentPages: [
-      {
-        pageNumber: 1,
-        title: 'Memory Management & Process Scheduling',
-        sections: [
-          {
-            heading: 'Paging & Address Translation',
-            body: 'The MMU converts virtual addresses to physical frames using page tables and caches recent translations in the TLB (Translation Lookaside Buffer).'
-          }
-        ]
-      }
-    ]
+    id: "6b8894f5-21c2-4322-86f0-0119aeabda3a",
+    title: "Docker Notes",
+    description: "",
+    category: "Docker",
+    file_url: "https://drive.google.com/file/d/1YGRQJOPF4tVVZqMhGcHvfMVZ-pf9XaSQ/view?usp=drive_link",
+    preview_url: "https://drive.google.com/file/d/1YGRQJOPF4tVVZqMhGcHvfMVZ-pf9XaSQ/preview",
+    thumbnail_url: "/notes-thumbnails/6b8894f5-21c2-4322-86f0-0119aeabda3a.png",
+    cdn_thumbnail_url: "https://hynts.in/_astro/1783834671027-Docker_Notes.sqAbUoAv.png",
+    created_at: "2026-07-12T05:37:58.674738+00:00",
+    date: "Jul 12, 2026"
   },
-
   {
-    id: 'dbms-notes',
-    title: 'DBMS - Complete Interview Notes',
-    category: 'DBMS',
-    date: 'Jul 22, 2026',
-    pages: 25,
-    author: 'Database Architects',
-    diagramType: 'dbms',
-    previewHeader: 'DBMS Complete Notes',
-    previewPoints: [
-      'ER Modeling, Relational Algebra, Normalization (1NF, 2NF, 3NF, BCNF).',
-      'ACID properties, Transactions, Strict 2-Phase Locking (2PL).',
-      'B+ Tree Indexing, Clustered vs Non-Clustered Indexes, WAL logging.'
-    ],
-    previewSubtext: 'Concurrency anomalies: Dirty Read, Non-repeatable Read, Phantom Read.',
-    contentPages: [
-      {
-        pageNumber: 1,
-        title: 'Relational Model & Normalization',
-        sections: [
-          {
-            heading: 'Normalization Rules',
-            body: '1NF: Atomic columns; 2NF: No partial dependency on candidate keys; 3NF: No transitive dependency; BCNF: Every determinant is a superkey.'
-          }
-        ]
-      }
-    ]
+    id: "24067761-5712-4ef3-bc70-ad96b59c4a74",
+    title: "LLD Notes",
+    description: "",
+    category: "System Design (LLD)",
+    file_url: "https://drive.google.com/file/d/1FMRE0wZTcLoVE-ZF-GRW_o7nmcfaOOzp/view?usp=drive_link",
+    preview_url: "https://drive.google.com/file/d/1FMRE0wZTcLoVE-ZF-GRW_o7nmcfaOOzp/preview",
+    thumbnail_url: "/notes-thumbnails/24067761-5712-4ef3-bc70-ad96b59c4a74.png",
+    cdn_thumbnail_url: "https://hynts.in/_astro/1783834644542-lld-notes.B5piOnDQ.png",
+    created_at: "2026-07-12T05:37:29.423999+00:00",
+    date: "Jul 12, 2026"
   },
-
   {
-    id: 'javascript-deep-dive',
-    title: 'JavaScript - Deep Dive Notes',
-    category: 'JavaScript',
-    date: 'Jul 22, 2026',
-    pages: 22,
-    author: 'JS Foundation',
-    diagramType: 'generic',
-    previewHeader: 'JavaScript Advanced Notes',
-    previewPoints: [
-      'Closures, Prototypal Inheritance, `this` binding rules.',
-      'Event Loop, Call Stack, Microtask queue vs Macrotask queue.',
-      'Promises, async/await, Generators, ESNext features.'
-    ],
-    previewSubtext: 'Debouncing vs Throttling, Memory Leaks, Garbage Collection in V8.',
-    contentPages: [
-      {
-        pageNumber: 1,
-        title: 'Execution Context & Scopes',
-        sections: [
-          {
-            heading: 'Call Stack & Execution Context',
-            body: 'Every JS code runs in an execution context containing Variable Environment, Lexical Environment, and `this` binding.'
-          }
-        ]
-      }
-    ]
+    id: "688c4614-2df7-4751-abc1-515b065179c5",
+    title: "Web Devlopment Notes",
+    description: "",
+    category: "Frontend",
+    file_url: "https://drive.google.com/file/d/11gCf6pMmiTOWEcC3jboyM3HOmjK6UW0c/view?usp=drive_link",
+    preview_url: "https://drive.google.com/file/d/11gCf6pMmiTOWEcC3jboyM3HOmjK6UW0c/preview",
+    thumbnail_url: "/notes-thumbnails/688c4614-2df7-4751-abc1-515b065179c5.png",
+    cdn_thumbnail_url: "https://hynts.in/_astro/1783834388158-web-dev_notes.qIBaRgqQ.png",
+    created_at: "2026-07-12T05:33:23.504201+00:00",
+    date: "Jul 12, 2026"
   },
-
   {
-    id: 'typescript-guide',
-    title: 'TypeScript - Zero to Hero Guide',
-    category: 'TypeScript',
-    date: 'Jul 22, 2026',
-    pages: 18,
-    author: 'Type Enthusiasts',
-    diagramType: 'generic',
-    previewHeader: 'TypeScript Handbook',
-    previewPoints: [
-      'Generics, Interfaces vs Type aliases, Utility Types.',
-      'Conditional Types, `infer` keyword, Template Literal types.',
-      'Type Narrowing, Discriminated Unions, Unknown vs Any.'
-    ],
-    previewSubtext: 'Structural typing, declaration merging, TS compiler internals.',
-    contentPages: [
-      {
-        pageNumber: 1,
-        title: 'Type System Internals',
-        sections: [
-          {
-            heading: 'Discriminated Unions & Generics',
-            body: 'Discriminated unions provide type safety when handling polymorphic state payloads in React and Redux.'
-          }
-        ]
-      }
-    ]
+    id: "4139e882-7317-4749-867c-0d7ac9a8f005",
+    title: "Kubernates Notes",
+    description: "",
+    category: "Kubernetes",
+    file_url: "https://drive.google.com/file/d/1a1FXmfE3rQt5roy8IFtpv5E0I50xS9or/view?usp=drive_link",
+    preview_url: "https://drive.google.com/file/d/1a1FXmfE3rQt5roy8IFtpv5E0I50xS9or/preview",
+    thumbnail_url: "/notes-thumbnails/4139e882-7317-4749-867c-0d7ac9a8f005.png",
+    cdn_thumbnail_url: "https://hynts.in/_astro/1783833435964-kubernetus_notes.DeJIn52v.png",
+    created_at: "2026-07-12T05:17:23.270809+00:00",
+    date: "Jul 12, 2026"
   },
-
   {
-    id: 'java-placement-guide',
-    title: 'Java - Complete Placement Guide',
-    category: 'Java',
-    date: 'Jul 22, 2026',
-    pages: 35,
-    author: 'Java User Group',
-    diagramType: 'java',
-    previewHeader: 'Java Placement Notes',
-    previewPoints: [
-      'JVM Architecture (Heap, Stack, Metaspace), ClassLoaders.',
-      'Garbage Collection (G1, ZGC), Multithreading, Thread Pools.',
-      'Collections Framework, ConcurrentHashMap, Streams API.'
-    ],
-    previewSubtext: 'Java 8 to Java 21 features: Records, Pattern Matching, Virtual Threads.',
-    contentPages: [
-      {
-        pageNumber: 1,
-        title: 'JVM Memory Model & Concurrency',
-        sections: [
-          {
-            heading: 'Virtual Threads (Project Loom)',
-            body: 'Virtual threads provide lightweight concurrency managed by JVM, allowing millions of concurrent tasks with minimal memory overhead.'
-          }
-        ]
-      }
-    ]
+    id: "5c57b2b7-5739-4a7e-9236-ea41f4a5fc24",
+    title: "C++ Beginner Notes",
+    description: "",
+    category: "C++",
+    file_url: "https://drive.google.com/file/d/1THvhdbMjlugYWkxcR7_l-NSurrbg6pQq/view?usp=drive_link",
+    preview_url: "https://drive.google.com/file/d/1THvhdbMjlugYWkxcR7_l-NSurrbg6pQq/preview",
+    thumbnail_url: "/notes-thumbnails/5c57b2b7-5739-4a7e-9236-ea41f4a5fc24.png",
+    cdn_thumbnail_url: "https://hynts.in/_astro/1783833359387-C__.CuY4AWPu.png",
+    created_at: "2026-07-12T05:16:05.992889+00:00",
+    date: "Jul 12, 2026"
   },
-
   {
-    id: 'python-revision-notes',
-    title: 'Python - Interview Revision Notes',
-    category: 'Python',
-    date: 'Jul 22, 2026',
-    pages: 20,
-    author: 'Python Gurus',
-    diagramType: 'python',
-    previewHeader: 'Python Revision Guide',
-    previewPoints: [
-      'GIL, Memory Management (Reference Counting & Cyclical GC).',
-      'Decorators, Generators (`yield`), List/Dict Comprehensions.',
-      'OOP, Metaclasses, Asyncio event loop, Magic dunder methods.'
-    ],
-    previewSubtext: 'Python data structures complexity, Lambda, Map, Filter, Reduce.',
-    contentPages: [
-      {
-        pageNumber: 1,
-        title: 'Python Core Mechanics',
-        sections: [
-          {
-            heading: 'Decorators & Closures',
-            body: 'A decorator is a callable that takes another function, extends its behavior without modifying it, and returns the modified wrapper.'
-          }
-        ]
-      }
-    ]
+    id: "e0cce6a8-5057-4b13-90f0-549269bec556",
+    title: "Java Interview Coding Questions",
+    description: "Most Asked Java Coding questions.",
+    category: "Java",
+    file_url: "https://drive.google.com/file/d/1B1sPNBzB91WCjBlGQrQVp1j_hjJTNMmc/view?usp=drive_link",
+    preview_url: "https://drive.google.com/file/d/1B1sPNBzB91WCjBlGQrQVp1j_hjJTNMmc/preview",
+    thumbnail_url: "/notes-thumbnails/e0cce6a8-5057-4b13-90f0-549269bec556.png",
+    cdn_thumbnail_url: "https://hynts.in/_astro/1782564170688-java_coding_interview_questions.DKAax5o0.png",
+    created_at: "2026-06-27T12:42:54.985508+00:00",
+    date: "Jun 27, 2026"
   },
-
   {
-    id: 'cpp-stl-notes',
-    title: 'C++ & STL - Fast Revision Notes',
-    category: 'C++',
-    date: 'Jul 22, 2026',
-    pages: 24,
-    author: 'Competitive Programmers',
-    diagramType: 'cpp',
-    previewHeader: 'C++ STL Notes',
-    previewPoints: [
-      'Pointers, References, Dynamic Memory Allocation (new/delete).',
-      'Smart Pointers (`unique_ptr`, `shared_ptr`, `weak_ptr`), RAII.',
-      'STL Containers: vector, map (Red-Black tree), unordered_map (Hash table).'
-    ],
-    previewSubtext: 'Move Semantics, Rvalue references (`&&`), Lambda expressions in C++11.',
-    contentPages: [
-      {
-        pageNumber: 1,
-        title: 'STL Complexity & Memory Layout',
-        sections: [
-          {
-            heading: 'Smart Pointers & RAII',
-            body: 'RAII binds resource lifetime to object lifetime, ensuring automatic cleanup when leaving scope.'
-          }
-        ]
-      }
-    ]
+    id: "0d373fc1-3971-40ee-bcb7-574e0b0c1e7f",
+    title: "Java Fundamental",
+    description: "Java Fundamental notes for beginners.",
+    category: "Java",
+    file_url: "https://drive.google.com/file/d/1zrfmo2t8cHji9sNsMC-AdjEUBpiH-ANW/view?usp=drive_link",
+    preview_url: "https://drive.google.com/file/d/1zrfmo2t8cHji9sNsMC-AdjEUBpiH-ANW/preview",
+    thumbnail_url: "/notes-thumbnails/0d373fc1-3971-40ee-bcb7-574e0b0c1e7f.png",
+    cdn_thumbnail_url: "https://hynts.in/_astro/1782563905545-java_fundamentals.BBo__UCV.png",
+    created_at: "2026-06-27T12:38:28.836957+00:00",
+    date: "Jun 27, 2026"
   },
-
   {
-    id: 'git-github-notes',
-    title: 'Git & GitHub - Workflow Notes',
-    category: 'Git',
-    date: 'Jul 22, 2026',
-    pages: 14,
-    author: 'DevOps Engineers',
-    diagramType: 'git',
-    previewHeader: 'Git Mastery Matrix',
-    previewPoints: [
-      'Git merge vs rebase, detached HEAD state, cherry-pick.',
-      'Git reflog, interactive rebase, stash, reset vs revert.',
-      'Branching workflows (Git Flow, GitHub Flow, Trunk-based development).'
-    ],
-    previewSubtext: 'CI/CD GitHub Actions, Merge Conflicts resolution guide.',
-    contentPages: [
-      {
-        pageNumber: 1,
-        title: 'Git Version Control Mastery',
-        sections: [
-          {
-            heading: 'Merge vs Rebase',
-            body: 'Merge preserves branch history with a merge commit; rebase creates a linear history by replaying commits on top of base branch.'
-          }
-        ]
-      }
-    ]
+    id: "ef8e4888-3ca6-4ba3-8ca1-dd9f2aef6567",
+    title: "Spring Boot HandBook 1",
+    description: "spring boot interview guide",
+    category: "Spring Boot",
+    file_url: "https://drive.google.com/file/d/1ChsN1SoEUNw1ZcPWxkXT4g_MV9PIx5xC/view?usp=drive_link",
+    preview_url: "https://drive.google.com/file/d/1ChsN1SoEUNw1ZcPWxkXT4g_MV9PIx5xC/preview",
+    thumbnail_url: "/notes-thumbnails/ef8e4888-3ca6-4ba3-8ca1-dd9f2aef6567.png",
+    cdn_thumbnail_url: "https://hynts.in/_astro/1782563477192-Spring_boot_part_1.CSJ3Zj98.png",
+    created_at: "2026-06-27T12:31:22.330579+00:00",
+    date: "Jun 27, 2026"
   },
-
   {
-    id: 'nextjs-app-router-notes',
-    title: 'Next.js - App Router & RSC Notes',
-    category: 'Next.js',
-    date: 'Jul 22, 2026',
-    pages: 18,
-    author: 'Vercel Community',
-    diagramType: 'nextjs',
-    previewHeader: 'Next.js 14 Handbook',
-    previewPoints: [
-      'React Server Components (RSC) vs Client Components ("use client").',
-      'SSR, SSG, ISR, Server Actions, Middleware, Parallel routes.',
-      'Next.js 4-tier caching architecture (Request memoization, Data Cache, Full Route Cache, Router Cache).'
-    ],
-    previewSubtext: 'Route Handlers, Image & Font optimization, SEO metadata API.',
-    contentPages: [
-      {
-        pageNumber: 1,
-        title: 'Next.js Architecture',
-        sections: [
-          {
-            heading: 'Server Actions & Mutations',
-            body: 'Server Actions allow asynchronous mutations directly from UI components without setting up REST endpoints manually.'
-          }
-        ]
-      }
-    ]
+    id: "4c733ef5-5fe7-409d-b22d-e4cd5739f99e",
+    title: "Python OOPs & Collection Notes",
+    description: "Python Notes for beginners.",
+    category: "Python",
+    file_url: "https://drive.google.com/file/d/1nNIDbwqTQCTLgtaGEV1ZPOBQNvqEfM2N/view?usp=drive_link",
+    preview_url: "https://drive.google.com/file/d/1nNIDbwqTQCTLgtaGEV1ZPOBQNvqEfM2N/preview",
+    thumbnail_url: "/notes-thumbnails/4c733ef5-5fe7-409d-b22d-e4cd5739f99e.png",
+    cdn_thumbnail_url: "https://hynts.in/_astro/1782563418957-Python_Oops_and_Collection_.Bzepg8IP.png",
+    created_at: "2026-06-27T12:30:23.370814+00:00",
+    date: "Jun 27, 2026"
   },
-
   {
-    id: 'spring-boot-microservices-notes',
-    title: 'Spring Boot - Backend Architecture Notes',
-    category: 'Spring Boot',
-    date: 'Jul 22, 2026',
-    pages: 26,
-    author: 'Enterprise Architects',
-    diagramType: 'generic',
-    previewHeader: 'Spring Boot Guide',
-    previewPoints: [
-      'IoC Container, Dependency Injection, Spring Bean Lifecycle.',
-      '@SpringBootApplication, Auto-configuration, Spring Data JPA.',
-      'Microservices: Eureka Service Discovery, API Gateway, Resilience4j Circuit Breaker.'
-    ],
-    previewSubtext: 'Spring Security with JWT, Spring Boot Actuator health checks.',
-    contentPages: [
-      {
-        pageNumber: 1,
-        title: 'Spring Architecture & JPA',
-        sections: [
-          {
-            heading: 'Inversion of Control & Beans',
-            body: 'IoC transfers object creation and lifecycle management to the ApplicationContext container.'
-          }
-        ]
-      }
-    ]
+    id: "869d2a4c-d5ec-4200-9031-404b40a1c41f",
+    title: "OOPs Notes",
+    description: "OOPs notes for beginners.",
+    category: "OOPS",
+    file_url: "https://drive.google.com/file/d/1gTfZVbqyH5HfFt3DgCFJ7g3C1FEaSk26/view?usp=drive_link",
+    preview_url: "https://drive.google.com/file/d/1gTfZVbqyH5HfFt3DgCFJ7g3C1FEaSk26/preview",
+    thumbnail_url: "/notes-thumbnails/869d2a4c-d5ec-4200-9031-404b40a1c41f.png",
+    cdn_thumbnail_url: "https://hynts.in/_astro/1782291744555-oops.Uti4ohJL.png",
+    created_at: "2026-06-24T09:02:29.138022+00:00",
+    date: "Jun 24, 2026"
   },
-
   {
-    id: 'linux-command-mastery',
-    title: 'Linux - Command Line Mastery Notes',
-    category: 'Linux',
-    date: 'Jul 22, 2026',
-    pages: 16,
-    author: 'SysAdmin Team',
-    diagramType: 'generic',
-    previewHeader: 'Linux CLI Notes',
-    previewPoints: [
-      'File permissions (chmod, chown), Inodes, Hard vs Soft links.',
-      'Process management: top, htop, ps aux, kill -9, nice.',
-      'Text processing: grep, awk, sed, find, xargs, pipes & redirection.'
-    ],
-    previewSubtext: 'Shell scripting automation, systemd services, networking commands (netstat, ss, curl).',
-    contentPages: [
-      {
-        pageNumber: 1,
-        title: 'Linux System Administration',
-        sections: [
-          {
-            heading: 'File Permissions & Inodes',
-            body: 'Linux permissions follow read(4), write(2), execute(1) for User, Group, and Others.'
-          }
-        ]
-      }
-    ]
+    id: "3a945b10-1a3f-4b09-b3be-127ac2446022",
+    title: "Api Interview Questions",
+    description: "96 Backend Api Interview Questions.",
+    category: "Backend",
+    file_url: "https://drive.google.com/file/d/1ZiDCp0zzorkcqXPlyRwEUUb9f1p28ql9/view?usp=drive_link",
+    preview_url: "https://drive.google.com/file/d/1ZiDCp0zzorkcqXPlyRwEUUb9f1p28ql9/preview",
+    thumbnail_url: "/notes-thumbnails/3a945b10-1a3f-4b09-b3be-127ac2446022.png",
+    cdn_thumbnail_url: "https://hynts.in/_astro/1782141813622-Api_Interview_Questions-compressed.DlKh_X49.png",
+    created_at: "2026-06-22T15:23:37.943811+00:00",
+    date: "Jun 22, 2026"
   },
-
   {
-    id: 'cybersecurity-owasp-notes',
-    title: 'Cybersecurity - OWASP Top 10 Notes',
-    category: 'Security',
-    date: 'Jul 22, 2026',
-    pages: 20,
-    author: 'AppSec Engineers',
-    diagramType: 'security',
-    previewHeader: 'OWASP Security Guide',
-    previewPoints: [
-      'SQL Injection, Cross-Site Scripting (XSS), CSRF, SSRF.',
-      'Broken Access Control, Cryptographic Failures, Security Misconfiguration.',
-      'HTTPS, TLS 1.3, JWT Security (signing vs encryption), Content Security Policy (CSP).'
-    ],
-    previewSubtext: 'Penetration testing fundamentals, rate limiting, authentication hardening.',
-    contentPages: [
-      {
-        pageNumber: 1,
-        title: 'Application Security Pillars',
-        sections: [
-          {
-            heading: 'Cross-Site Scripting (XSS) Prevention',
-            body: 'Prevent Stored and Reflected XSS by using context-aware output encoding, strict CSP headers, and sanitized HTML.'
-          }
-        ]
-      }
-    ]
+    id: "58b6ba8f-96e9-4d04-9b59-831215957315",
+    title: "Cool DSA Notes",
+    description: "Simple DSA Notes",
+    category: "DSA",
+    file_url: "https://drive.google.com/file/d/1Vllrx5b7SbA4HHR4MtLfmTk2Q3DyaQUi/view?usp=drive_link",
+    preview_url: "https://drive.google.com/file/d/1Vllrx5b7SbA4HHR4MtLfmTk2Q3DyaQUi/preview",
+    thumbnail_url: "/notes-thumbnails/58b6ba8f-96e9-4d04-9b59-831215957315.png",
+    cdn_thumbnail_url: "https://hynts.in/_astro/1782139297081-DSASheet.DRd3Ygo0.png",
+    created_at: "2026-06-22T14:41:40.139308+00:00",
+    date: "Jun 22, 2026"
   },
-
   {
-    id: 'dsa-patterns-cheatsheet',
-    title: '20 DSA Patterns - Cheat Sheet',
-    category: 'DSA',
-    date: 'Jul 22, 2026',
-    pages: 30,
-    author: 'Competitive Programmers',
-    diagramType: 'generic',
-    previewHeader: 'DSA Pattern Matrix',
-    previewPoints: [
-      'Two Pointers, Sliding Window, Fast & Slow Pointers.',
-      'Binary Search, Tree BFS/DFS, Monotonic Stack, Backtracking.',
-      'Dynamic Programming (0/1 Knapsack, LCS, LIS), Topological Sort.'
-    ],
-    previewSubtext: 'Time & Space complexity tables, common edge cases, pattern recognition guide.',
-    contentPages: [
-      {
-        pageNumber: 1,
-        title: 'Sliding Window & Two Pointers',
-        sections: [
-          {
-            heading: 'Sliding Window Technique',
-            body: 'Used to find sub-arrays or sub-strings satisfying constraints in O(N) rather than O(N^2).'
-          }
-        ]
-      }
-    ]
+    id: "5290264a-b1de-4b42-b379-c38b121477b2",
+    title: "Git Sheet",
+    description: "Git & Github For Beginners",
+    category: "Git & GitHub",
+    file_url: "https://drive.google.com/file/d/1BVZR7qisEGMMbRdCd7hiPwbS1Gqmxvhv/view?usp=drive_link",
+    preview_url: "https://drive.google.com/file/d/1BVZR7qisEGMMbRdCd7hiPwbS1Gqmxvhv/preview",
+    thumbnail_url: "/notes-thumbnails/5290264a-b1de-4b42-b379-c38b121477b2.png",
+    cdn_thumbnail_url: "https://hynts.in/_astro/1782139254888-GitSheet.PagCIjlE.png",
+    created_at: "2026-06-22T14:40:58.168202+00:00",
+    date: "Jun 22, 2026"
   },
-
   {
-    id: 'genai-llm-system-guide',
-    title: 'Generative AI & LLMs - System Guide',
-    category: 'GenAI',
-    date: 'Jul 22, 2026',
-    pages: 24,
-    author: 'AI Engineers',
-    diagramType: 'generic',
-    previewHeader: 'GenAI & LLM Architecture',
-    previewPoints: [
-      'Transformers architecture (Self-Attention, Multi-Head Attention).',
-      'RAG (Retrieval-Augmented Generation), Vector Databases (Milvus, Pinecone).',
-      'Prompt Engineering, Fine-Tuning (LoRA, QLoRA), Evaluation metrics.'
-    ],
-    previewSubtext: 'Embedding models, Semantic chunking, Hybrid search (Dense + Sparse BM25).',
-    contentPages: [
-      {
-        pageNumber: 1,
-        title: 'RAG Pipeline Architecture',
-        sections: [
-          {
-            heading: 'Chunking & Vector Embeddings',
-            body: 'Documents are chunked, embedded into high-dimensional vectors, stored in vector DBs, and retrieved via cosine similarity.'
-          }
-        ]
-      }
-    ]
+    id: "7238b777-262f-45a9-9666-6d28f26df7b2",
+    title: "Searching & Sorthing DSA",
+    description: "Searching & Sorthing Notes",
+    category: "DSA",
+    file_url: "https://drive.google.com/file/d/1aJ5FH_fHNx5TiFtYnLbPwxN9JOysgur8/view?usp=drive_link",
+    preview_url: "https://drive.google.com/file/d/1aJ5FH_fHNx5TiFtYnLbPwxN9JOysgur8/preview",
+    thumbnail_url: "/notes-thumbnails/7238b777-262f-45a9-9666-6d28f26df7b2.png",
+    cdn_thumbnail_url: "https://hynts.in/_astro/1782139221914-SortingAndSearching.DuCTKte_.png",
+    created_at: "2026-06-22T14:40:25.403788+00:00",
+    date: "Jun 22, 2026"
   },
-
   {
-    id: 'low-level-design-solid-notes',
-    title: 'Low Level Design - SOLID & GOF Patterns',
-    category: 'LLD',
-    date: 'Jul 22, 2026',
-    pages: 28,
-    author: 'System Architects',
-    diagramType: 'generic',
-    previewHeader: 'LLD Design Patterns',
-    previewPoints: [
-      'SOLID Principles with real-world code examples.',
-      'Creational: Singleton, Factory, Builder, Prototype.',
-      'Structural: Adapter, Decorator, Facade, Composite.',
-      'Behavioral: Observer, Strategy, Command, State.'
-    ],
-    previewSubtext: 'Class diagrams, UML notation, Schema design for Uber, Parking Lot, Splitwise.',
-    contentPages: [
-      {
-        pageNumber: 1,
-        title: 'SOLID Principles & Design Patterns',
-        sections: [
-          {
-            heading: 'Strategy Pattern Implementation',
-            body: 'Defines a family of algorithms, encapsulates each one, and makes them interchangeable at runtime.'
-          }
-        ]
-      }
-    ]
+    id: "32040374-914d-4630-b4ec-57d23de16e4a",
+    title: "Core Java Interview Questions",
+    description: "58 Core Java Interview Questions",
+    category: "Java",
+    file_url: "https://drive.google.com/file/d/1ZvYqvi03XIUmvKN8xW2nTMIE7dW-lN5E/view?usp=drive_link",
+    preview_url: "https://drive.google.com/file/d/1ZvYqvi03XIUmvKN8xW2nTMIE7dW-lN5E/preview",
+    thumbnail_url: "/notes-thumbnails/32040374-914d-4630-b4ec-57d23de16e4a.png",
+    cdn_thumbnail_url: "https://hynts.in/_astro/1782139176607-Quick_notes_on_Core_Java.Ch1yXq7z.png",
+    created_at: "2026-06-22T14:39:39.35508+00:00",
+    date: "Jun 22, 2026"
   },
-
   {
-    id: 'hr-behavioral-guide',
-    title: 'HR Interview - STAR Framework Guide',
-    category: 'HR Round',
-    date: 'Jul 22, 2026',
-    pages: 18,
-    author: 'Tech Recruiters',
-    diagramType: 'generic',
-    previewHeader: 'HR Round Master Guide',
-    previewPoints: [
-      'STAR Method: Situation, Task, Action, Result.',
-      'Top 25 Behavioral Questions: Conflict resolution, leadership, failure.',
-      'Salary negotiation templates and questions to ask the interviewer.'
-    ],
-    previewSubtext: 'Amazon 16 Leadership Principles, Culture Fit criteria, Offer evaluation.',
-    contentPages: [
-      {
-        pageNumber: 1,
-        title: 'Behavioral Mastery with STAR',
-        sections: [
-          {
-            heading: 'The STAR Framework',
-            body: 'Structure behavioral answers clearly: Set the context (Situation), describe your responsibility (Task), explain the concrete steps you took (Action), and quantify the impact (Result).'
-          }
-        ]
-      }
-    ]
-  }
+    id: "3cb60320-7693-4676-9488-2fece887c356",
+    title: "Git Guide",
+    description: "Git & Github notes for Beginners",
+    category: "Git & GitHub",
+    file_url: "https://drive.google.com/file/d/1yfH-5vwJ42BqGjdnvgaD0vDIIVp1fAYN/view?usp=drive_link",
+    preview_url: "https://drive.google.com/file/d/1yfH-5vwJ42BqGjdnvgaD0vDIIVp1fAYN/preview",
+    thumbnail_url: "/notes-thumbnails/3cb60320-7693-4676-9488-2fece887c356.png",
+    cdn_thumbnail_url: "https://hynts.in/_astro/1782139119221-Github_Guide.CRvpOzQX.png",
+    created_at: "2026-06-22T14:38:41.277116+00:00",
+    date: "Jun 22, 2026"
+  },
 ];

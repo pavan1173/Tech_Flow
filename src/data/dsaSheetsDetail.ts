@@ -1,4 +1,8 @@
+import { blind75SheetData } from './blind75Data';
+
 export const dsaSheetsDetail: Record<string, any> = {
+  "blind-75-dsa-sheet": blind75SheetData,
+  "blind-75": blind75SheetData,
   "love-babbar-dsa-sheet": {
     "title": "Love Babbar DSA Sheet",
     "description": "Love Babbar’s DSA Sheet is a well-structured roadmap that covers all major Data Structures and Algorithms concepts needed for placements. It’s widely used by students preparing for coding interviews at companies like Amazon, Microsoft, Google, and other top tech firms. The sheet is beginner-friendly, comprehensive, and helps strengthen problem-solving skills across languages like C++, Java, and Python. We appreciate and credit Love Babbar for creating this valuable resource for the developer community.",

@@ -1,4 +1,5 @@
 import React from 'react';
+import { TeachFlowLogo } from './TeachFlowLogo';
 
 interface FooterProps {
   navigate: (to: string) => void;
@@ -18,20 +19,9 @@ export const Footer: React.FC<FooterProps> = ({ navigate }) => {
           <a
             href="/"
             onClick={(e) => handleNav(e, '/')}
-            className="flex items-center gap-2 group cursor-pointer"
+            className="flex items-center group cursor-pointer"
           >
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-violet-600 via-indigo-600 to-fuchsia-600 p-0.5 flex items-center justify-center">
-              <div className="w-full h-full bg-zinc-950 rounded-[6px] flex items-center justify-center">
-                <svg viewBox="0 0 24 24" className="w-4 h-4 text-violet-400" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M4 14.5L12 3l8 11.5" />
-                  <path d="M12 21V9" />
-                  <circle cx="12" cy="9" r="1.5" fill="currentColor" />
-                </svg>
-              </div>
-            </div>
-            <span className="font-lexend font-black text-xl text-white tracking-tight">
-              TeachFlow
-            </span>
+            <TeachFlowLogo size={34} showText={true} />
           </a>
 
           {/* Links */}
