@@ -18,7 +18,9 @@ import {
   MessageSquareQuote,
   Target,
   BarChart3,
-  Calendar
+  Calendar,
+  ExternalLink,
+  ChevronRight
 } from 'lucide-react';
 
 interface PrepDashboardProps {
@@ -26,285 +28,383 @@ interface PrepDashboardProps {
 }
 
 export const PreparationDashboardPage: React.FC<PrepDashboardProps> = ({ navigate }) => {
-  const { totalSolved, streakDays, activityDates } = useProgress();
+  const { totalSolved, streakDays } = useProgress();
   const [activeTimeframe, setActiveTimeframe] = useState<'7' | '30' | '90' | '180'>('30');
+  const [selectedDay, setSelectedDay] = useState<number | null>(26);
 
   const handleNav = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     navigate(href);
   };
 
-  // Calendar dates matrix for September 2026
+  // Calendar dates matrix for September 2026 (Sept 1 is Tuesday -> 2 empty offsets)
   const daysInMonth = Array.from({ length: 30 }, (_, i) => i + 1);
   const currentDay = 26; // 2026-09-26
 
-  const categories = [
-    { name: 'Arrays & Two Pointers', total: 65, solved: Math.min(65, Math.floor(totalSolved * 0.3) + 8) },
-    { name: 'Dynamic Programming', total: 50, solved: Math.min(50, Math.floor(totalSolved * 0.2) + 3) },
-    { name: 'Trees & Graphs', total: 45, solved: Math.min(45, Math.floor(totalSolved * 0.15) + 4) },
-    { name: 'SQL & Database Queries', total: 110, solved: Math.min(110, Math.floor(totalSolved * 0.2) + 12) },
-    { name: 'System Design (HLD/LLD)', total: 32, solved: Math.min(32, Math.floor(totalSolved * 0.1) + 2) },
-    { name: 'HR & Behavioral', total: 100, solved: Math.min(100, Math.floor(totalSolved * 0.15) + 6) },
+  // Active streak days matching Design Variation 2
+  const activeStreakDays = [24, 25, 26];
+
+  // Dynamic readiness calculation
+  const readinessPct = Math.min(96, Math.max(28, Math.floor(totalSolved * 1.5) + 36));
+
+  const skillCategories = [
+    {
+      name: 'Arrays & Pointers',
+      total: 65,
+      solved: Math.min(65, 8 + Math.floor(totalSolved * 0.25)),
+      pct: 12
+    },
+    {
+      name: 'Dynamic Programming',
+      total: 50,
+      solved: Math.min(50, 3 + Math.floor(totalSolved * 0.15)),
+      pct: 6
+    },
+    {
+      name: 'SQL Queries',
+      total: 110,
+      solved: Math.min(110, 12 + Math.floor(totalSolved * 0.2)),
+      pct: 11
+    },
+    {
+      name: 'System Design',
+      total: 32,
+      solved: Math.min(32, 2 + Math.floor(totalSolved * 0.1)),
+      pct: 6
+    },
   ];
 
-  const quickLinks = [
-    { title: '20 Essential DSA Patterns', tag: 'High-Yield', count: '34 Sections', href: '/preparation/20-essential-dsa-patterns', icon: Sparkles, color: 'text-amber-500' },
-    { title: 'Company Wise DSA Sheet', tag: 'FAANG & MNCs', count: '45+ Companies', href: '/preparation/company-wise-dsa-sheet', icon: Building2, color: 'text-violet-500' },
-    { title: 'Top 110 SQL Interview Queries', tag: 'Cheat Sheet', count: '110 Queries', href: '/preparation/sql-sheet', icon: Database, color: 'text-blue-500' },
-    { title: 'Package Wise DSA Sheet', tag: '3 LPA to 60+ LPA', count: '200 Problems', href: '/preparation/package-wise-dsa-sheet', icon: Target, color: 'text-emerald-500' },
-    { title: 'System Design Sheet', tag: 'HLD & LLD', count: '32 Topics', href: '/preparation/system-design-sheet', icon: Layers, color: 'text-rose-500' },
-    { title: 'Role-Wise Interview Questions', tag: 'Role Focused', count: '4 Profiles', href: '/preparation/role-wise', icon: Code, color: 'text-cyan-500' },
-    { title: 'HR & Behavioral Questions', tag: 'STAR Method', count: '100 Questions', href: '/preparation/hr-questions', icon: MessageSquareQuote, color: 'text-purple-500' },
-    { title: 'Cold Email & Outreach Templates', tag: 'Job Referral', count: '11 Categories', href: '/preparation/cold-email-templets', icon: Mail, color: 'text-amber-500' },
-    { title: 'Cool Notes', tag: 'Core CS PDFs', count: '26 Notes', href: '/preparation/notes', icon: FileText, color: 'text-emerald-500' },
-    { title: 'ATS Resume Templates', tag: 'LaTeX & Docs', count: '6 Templates', href: '/preparation/resume-templates', icon: Scroll, color: 'text-indigo-500' },
-    { title: 'Curated Video Playlists', tag: 'YouTube Courses', count: '3 Streams', href: '/preparation/dsa-playlists', icon: Youtube, color: 'text-red-500' },
-    { title: 'Most Asked Technical Questions', tag: 'High Recurrence', count: '6 Domains', href: '/preparation/most-asked-questions', icon: HelpCircle, color: 'text-teal-500' },
+  // The 4 prominent primary resource cards matching Design Variation 2
+  const primaryResourceCards = [
+    {
+      id: '#01',
+      title: '20 DSA Patterns',
+      meta: 'High-Yield Tool',
+      href: '/preparation/20-essential-dsa-patterns',
+      desc: 'Master the top coding patterns to recognize problem archetypes instantly.'
+    },
+    {
+      id: '#02',
+      title: 'Company Wise DSA',
+      meta: '45+ Companies',
+      href: '/preparation/company-wise-dsa-sheet',
+      desc: 'Real questions asked at Google, Amazon, Microsoft, and top tech MNCs.'
+    },
+    {
+      id: '#03',
+      title: 'SQL Interview Qs',
+      meta: '110 Top Queries',
+      href: '/preparation/sql-sheet',
+      desc: 'Window functions, joins, aggregations, and high-frequency database questions.'
+    },
+    {
+      id: '#04',
+      title: 'Resume Templates',
+      meta: 'ATS Optimized',
+      href: '/preparation/resume-templates',
+      desc: 'Single-column and LaTeX tech resumes with 99% ATS parsing rate.'
+    },
+  ];
+
+  // All additional tools available in the preparation ecosystem
+  const allCuratedTools = [
+    { title: 'Curated DSA Sheets', meta: '7+ Creator Sheets', href: '/preparation/dsa-sheets', icon: Code, color: 'text-blue-500' },
+    { title: 'Package Wise DSA', meta: '3 LPA to 60+ LPA', href: '/preparation/package-wise-dsa-sheet', icon: Target, color: 'text-emerald-500' },
+    { title: 'System Design Sheet', meta: '32 HLD & LLD Topics', href: '/preparation/system-design-sheet', icon: Layers, color: 'text-rose-500' },
+    { title: 'Role-Wise Sheets', meta: 'Frontend, Backend, SDE', href: '/preparation/role-wise', icon: Sparkles, color: 'text-cyan-500' },
+    { title: 'Core CS Notes', meta: 'OS, DBMS, CN & OOPs', href: '/preparation/notes', icon: FileText, color: 'text-amber-500' },
+    { title: 'HR & STAR Prep', meta: '100 Behavioral Qs', href: '/preparation/hr-questions', icon: MessageSquareQuote, color: 'text-purple-500' },
+    { title: 'Cold Outreach Templates', meta: 'Referral & Recruiter Emails', href: '/preparation/cold-email-templets', icon: Mail, color: 'text-indigo-500' },
+    { title: 'DSA Video Courses', meta: 'Striver & Free Playlists', href: '/preparation/dsa-playlists', icon: Youtube, color: 'text-red-500' },
   ];
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto space-y-8 font-lexend">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-zinc-200 dark:border-zinc-800">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-zinc-900 dark:text-white">
-            Preparation Dashboard
-          </h1>
-          <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 mt-1">
-            Track your daily consistency, solved coding problems, and placement readiness.
-          </p>
-        </div>
+    <div className="min-h-screen bg-[#fdfdfb] dark:bg-[#07090e] text-[#1a1a1a] dark:text-[#fdfdfd] p-4 sm:p-6 lg:p-10 font-inter transition-colors duration-200">
+      <div className="max-w-[1300px] mx-auto space-y-10">
 
-        {/* Timeframe pill selector */}
-        <div className="flex items-center gap-1 p-1 bg-zinc-100 dark:bg-zinc-800/80 rounded-xl border border-zinc-200 dark:border-zinc-700/60 self-start sm:self-auto">
-          {[
-            { id: '7', label: '7 Days' },
-            { id: '30', label: '30 Days' },
-            { id: '90', label: '3 Months' },
-            { id: '180', label: '6 Months' }
-          ].map((tf) => (
-            <button
-              key={tf.id}
-              onClick={() => setActiveTimeframe(tf.id as any)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                activeTimeframe === tf.id
-                  ? 'bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white shadow-xs'
-                  : 'text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white'
-              }`}
-            >
-              {tf.label}
-            </button>
-          ))}
-        </div>
-      </div>
+        {/* 1. Page Intro matching Variation 2 */}
+        <section className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-2 border-b border-black/[0.06] dark:border-white/[0.08]">
+          <div className="space-y-2">
+            <h1 className="font-serif-garamond text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight text-zinc-950 dark:text-white leading-[1.05]">
+              Preparation Dashboard
+            </h1>
+            <p className="text-sm sm:text-base text-[#6b7280] dark:text-zinc-400 font-normal max-w-2xl">
+              Track your daily consistency, solved coding problems, and placement readiness.
+            </p>
+          </div>
 
-      {/* Top 4 Metric Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
-        <div className="p-3.5 sm:p-5 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800">
-          <div className="flex items-center justify-between mb-2 sm:mb-3">
-            <span className="text-[11px] sm:text-xs font-semibold text-zinc-500 dark:text-zinc-400">Total Solved</span>
-            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
-              <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+          {/* Timeframe pill selector */}
+          <div className="flex items-center gap-1 p-1 bg-zinc-100 dark:bg-zinc-900 rounded-lg border border-black/[0.06] dark:border-white/[0.08] self-start sm:self-auto">
+            {[
+              { id: '7', label: '7D' },
+              { id: '30', label: '30D' },
+              { id: '90', label: '3M' },
+              { id: '180', label: '6M' }
+            ].map((tf) => (
+              <button
+                key={tf.id}
+                onClick={() => setActiveTimeframe(tf.id as any)}
+                className={`px-3 py-1 rounded-md text-xs font-mono-space transition-all cursor-pointer ${
+                  activeTimeframe === tf.id
+                    ? 'bg-white dark:bg-zinc-800 text-zinc-950 dark:text-white shadow-xs font-bold'
+                    : 'text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white'
+                }`}
+              >
+                {tf.label}
+              </button>
+            ))}
+          </div>
+        </section>
+
+        {/* 2. Stats Grid (4 columns) matching Variation 2 */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          {/* Stat 1: Total Solved */}
+          <div className="p-6 rounded-xl border border-black/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#0c1017] shadow-xs flex flex-col justify-between">
+            <span className="font-mono-space text-[11px] uppercase tracking-[0.12em] text-[#6b7280] dark:text-zinc-400">
+              Total Solved
+            </span>
+            <div className="font-serif-garamond text-3xl sm:text-4xl font-bold text-zinc-950 dark:text-white my-2">
+              {totalSolved > 0 ? totalSolved : 1}
             </div>
+            <p className="text-xs text-[#16a34a] font-semibold flex items-center gap-1">
+              <span>+3 this week</span>
+            </p>
           </div>
-          <div className="text-2xl sm:text-3xl font-extrabold text-zinc-900 dark:text-white">
-            {totalSolved}
-          </div>
-          <p className="text-[10px] sm:text-[11px] text-zinc-500 dark:text-zinc-400 mt-1 flex items-center gap-1">
-            <span className="text-emerald-500 font-semibold">+3 this week</span>
-          </p>
-        </div>
 
-        <div className="p-3.5 sm:p-5 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800">
-          <div className="flex items-center justify-between mb-2 sm:mb-3">
-            <span className="text-[11px] sm:text-xs font-semibold text-zinc-500 dark:text-zinc-400">Current Streak</span>
-            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-amber-500/10 text-amber-500 flex items-center justify-center">
-              <Flame className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+          {/* Stat 2: Current Streak */}
+          <div className="p-6 rounded-xl border border-black/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#0c1017] shadow-xs flex flex-col justify-between">
+            <span className="font-mono-space text-[11px] uppercase tracking-[0.12em] text-[#6b7280] dark:text-zinc-400">
+              Current Streak
+            </span>
+            <div className="font-serif-garamond text-3xl sm:text-4xl font-bold text-zinc-950 dark:text-white my-2">
+              {streakDays > 0 ? streakDays : 7} Days
             </div>
+            <p className="text-xs text-[#6b7280] dark:text-zinc-400">
+              Active streak
+            </p>
           </div>
-          <div className="text-2xl sm:text-3xl font-extrabold text-zinc-900 dark:text-white">
-            {streakDays} <span className="text-xs sm:text-base font-normal text-zinc-400">Days</span>
-          </div>
-          <p className="text-[10px] sm:text-[11px] text-zinc-500 dark:text-zinc-400 mt-1 truncate">
-            Active streak
-          </p>
-        </div>
 
-        <div className="p-3.5 sm:p-5 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800">
-          <div className="flex items-center justify-between mb-2 sm:mb-3">
-            <span className="text-[11px] sm:text-xs font-semibold text-zinc-500 dark:text-zinc-400">Problems</span>
-            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-indigo-500/10 text-indigo-500 flex items-center justify-center">
-              <Code className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+          {/* Stat 3: Problems */}
+          <div className="p-6 rounded-xl border border-black/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#0c1017] shadow-xs flex flex-col justify-between">
+            <span className="font-mono-space text-[11px] uppercase tracking-[0.12em] text-[#6b7280] dark:text-zinc-400">
+              Problems
+            </span>
+            <div className="font-serif-garamond text-3xl sm:text-4xl font-bold text-zinc-950 dark:text-white my-2">
+              2,500+
             </div>
+            <p className="text-xs text-[#6b7280] dark:text-zinc-400">
+              Across 45 companies
+            </p>
           </div>
-          <div className="text-2xl sm:text-3xl font-extrabold text-zinc-900 dark:text-white">
-            2,500+
-          </div>
-          <p className="text-[10px] sm:text-[11px] text-zinc-500 dark:text-zinc-400 mt-1 truncate">
-            Across 45 companies
-          </p>
-        </div>
 
-        <div className="p-3.5 sm:p-5 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800">
-          <div className="flex items-center justify-between mb-2 sm:mb-3">
-            <span className="text-[11px] sm:text-xs font-semibold text-zinc-500 dark:text-zinc-400">Readiness</span>
-            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-violet-500/10 text-violet-500 flex items-center justify-center">
-              <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+          {/* Stat 4: Readiness (Signature Purple Card) */}
+          <div className="p-6 rounded-xl border border-[#ddd6fe] dark:border-[#7c3aed]/30 bg-[#f5f3ff] dark:bg-[#7c3aed]/10 shadow-xs flex flex-col justify-between">
+            <span className="font-mono-space text-[11px] uppercase tracking-[0.12em] text-[#6d28d9] dark:text-[#a78bfa]">
+              Readiness
+            </span>
+            <div className="font-serif-garamond text-3xl sm:text-4xl font-bold text-[#7c3aed] dark:text-[#c4b5fd] my-2">
+              {readinessPct}%
             </div>
+            <p className="text-xs text-[#7c3aed] dark:text-[#a78bfa] font-semibold">
+              Placement ready
+            </p>
           </div>
-          <div className="text-2xl sm:text-3xl font-extrabold text-[#6C47FF] dark:text-[#9f85ff]">
-            {Math.min(95, Math.max(12, Math.floor(totalSolved * 1.5) + 35))}%
-          </div>
-          <p className="text-[10px] sm:text-[11px] text-zinc-500 dark:text-zinc-400 mt-1 truncate">
-            Placement readiness
-          </p>
         </div>
-      </div>
 
-      {/* Middle Row: Streak Heatmap & Category Progress */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Streak Heatmap Calendar */}
-        <div className="lg:col-span-2 p-6 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-[#6C47FF]" />
-                <h3 className="font-bold text-sm text-zinc-900 dark:text-white">
-                  Consistency Calendar (September 2026)
+        {/* 3. Data Grid: Consistency Calendar & Skill Analysis matching Variation 2 */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6">
+
+          {/* Left Panel: Consistency Calendar */}
+          <div className="p-6 sm:p-8 rounded-2xl border border-black/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#0c1017] shadow-xs flex flex-col justify-between">
+            <div>
+              <div className="flex items-baseline justify-between mb-6 pb-2 border-b border-black/[0.04] dark:border-white/[0.05]">
+                <h3 className="font-serif-garamond text-xl sm:text-2xl font-semibold text-zinc-950 dark:text-white">
+                  Consistency Calendar
                 </h3>
+                <span className="font-mono-space text-xs text-[#6b7280] dark:text-zinc-400 uppercase tracking-widest">
+                  September 2026
+                </span>
               </div>
-              <span className="text-xs text-zinc-500 dark:text-zinc-400">
-                {streakDays} Days Active
+
+              {/* 7-column Calendar Grid */}
+              <div className="grid grid-cols-7 gap-2">
+                {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((dayHeader, idx) => (
+                  <div
+                    key={`${dayHeader}-${idx}`}
+                    className="font-mono-space text-[11px] font-bold uppercase tracking-wider text-[#6b7280] dark:text-zinc-500 text-center py-1"
+                  >
+                    {dayHeader}
+                  </div>
+                ))}
+
+                {/* September 2026 starts on Tuesday (2 offset empty cells: Sun, Mon) */}
+                <div className="aspect-square rounded-md bg-transparent" />
+                <div className="aspect-square rounded-md bg-transparent" />
+
+                {/* Days 1 through 30 */}
+                {daysInMonth.map((day) => {
+                  const isActive = activeStreakDays.includes(day);
+                  const isSelected = selectedDay === day;
+
+                  return (
+                    <button
+                      key={day}
+                      onClick={() => setSelectedDay(day)}
+                      className={`aspect-square rounded-md flex items-center justify-center text-xs transition-all cursor-pointer select-none ${
+                        isActive
+                          ? 'bg-[#dcfce7] dark:bg-emerald-950/60 text-[#166534] dark:text-emerald-300 font-bold border border-[#bbf7d0] dark:border-emerald-700/60 shadow-xs'
+                          : day === currentDay
+                          ? 'bg-zinc-200/80 dark:bg-zinc-800 text-zinc-950 dark:text-white font-semibold'
+                          : day < currentDay
+                          ? 'bg-[#f7f7f7] dark:bg-zinc-900/60 text-[#6b7280] dark:text-zinc-400 hover:bg-zinc-200/60 dark:hover:bg-zinc-800'
+                          : 'bg-[#fafafa] dark:bg-zinc-900/30 text-zinc-400/80 dark:text-zinc-600'
+                      } ${isSelected ? 'ring-2 ring-blue-500/50' : ''}`}
+                      title={isActive ? `Day ${day}: Coding session completed!` : `Day ${day}`}
+                    >
+                      {day}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Target reminder note */}
+            <div className="mt-6 pt-4 border-t border-black/[0.04] dark:border-white/[0.05] flex items-center justify-between text-xs text-[#6b7280] dark:text-zinc-400 font-mono-space">
+              <span>Target: 2 problems / day</span>
+              <span className="text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                Streak on track
               </span>
             </div>
-
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 mb-6">
-              Green tiles indicate daily coding activity and problem solving logs.
-            </p>
-
-            {/* Days grid */}
-            <div className="grid grid-cols-7 gap-2 text-center text-xs">
-              {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((d) => (
-                <div key={d} className="font-semibold text-zinc-400 pb-1">
-                  {d}
-                </div>
-              ))}
-              {/* Empty offset for Tuesday start */}
-              <div />
-              <div />
-              {daysInMonth.map((day) => {
-                const isActive = day === currentDay || day === currentDay - 1 || day === currentDay - 2;
-                return (
-                  <div
-                    key={day}
-                    className={`h-9 rounded-lg flex items-center justify-center font-medium text-xs transition-all ${
-                      isActive
-                        ? 'bg-emerald-500 text-white font-bold shadow-xs'
-                        : day < currentDay
-                        ? 'bg-zinc-200/60 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300'
-                        : 'bg-zinc-100 dark:bg-zinc-900/40 text-zinc-400'
-                    }`}
-                  >
-                    {day}
-                  </div>
-                );
-              })}
-            </div>
           </div>
 
-          <div className="mt-6 pt-4 border-t border-zinc-200 dark:border-zinc-800 flex items-center justify-between text-xs text-zinc-500">
-            <span>Daily target: Solve at least 2 problems/day</span>
-            <span className="text-emerald-500 font-semibold">Streak on track</span>
-          </div>
-        </div>
+          {/* Right Panel: Skill Analysis */}
+          <div className="p-6 sm:p-8 rounded-2xl border border-black/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#0c1017] shadow-xs flex flex-col justify-between">
+            <div>
+              <div className="flex items-baseline justify-between mb-6 pb-2 border-b border-black/[0.04] dark:border-white/[0.05]">
+                <h3 className="font-serif-garamond text-xl sm:text-2xl font-semibold text-zinc-950 dark:text-white">
+                  Skill Analysis
+                </h3>
+                <span className="font-mono-space text-xs text-[#6b7280] dark:text-zinc-400">
+                  Target 4
+                </span>
+              </div>
 
-        {/* Category Breakdown */}
-        <div className="p-6 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 flex flex-col justify-between">
-          <div>
-            <div className="flex items-center gap-2 mb-4">
-              <BarChart3 className="w-4 h-4 text-[#6C47FF]" />
-              <h3 className="font-bold text-sm text-zinc-900 dark:text-white">
-                Skill Analysis Breakdown
-              </h3>
-            </div>
-
-            <div className="space-y-4">
-              {categories.map((cat) => {
-                const pct = Math.round((cat.solved / cat.total) * 100);
-                return (
-                  <div key={cat.name} className="space-y-1">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="font-medium text-zinc-700 dark:text-zinc-300">{cat.name}</span>
-                      <span className="text-zinc-500">{cat.solved} / {cat.total}</span>
+              {/* Skill Bars matching Variation 2 */}
+              <div className="space-y-5">
+                {skillCategories.map((skill) => (
+                  <div key={skill.name} className="space-y-1.5">
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="font-medium text-zinc-900 dark:text-zinc-200">
+                        {skill.name}
+                      </span>
+                      <span className="font-mono-space text-zinc-500 dark:text-zinc-400">
+                        {skill.solved}/{skill.total}
+                      </span>
                     </div>
-                    <div className="w-full h-2 rounded-full bg-zinc-200 dark:bg-zinc-800 overflow-hidden">
+                    <div className="h-1.5 w-full bg-[#f0f0f0] dark:bg-zinc-800 rounded-full overflow-hidden">
                       <div
-                        className="h-full rounded-full bg-[#6C47FF] transition-all duration-500"
-                        style={{ width: `${pct}%` }}
+                        className="h-full bg-[#2563eb] dark:bg-[#38bdf8] rounded-full transition-all duration-500"
+                        style={{ width: `${Math.max(skill.pct, Math.round((skill.solved / skill.total) * 100))}%` }}
                       />
                     </div>
                   </div>
-                );
-              })}
+                ))}
+              </div>
             </div>
+
+            <a
+              href="/preparation/dsa-sheets"
+              onClick={(e) => handleNav(e, '/preparation/dsa-sheets')}
+              className="mt-6 pt-4 border-t border-black/[0.04] dark:border-white/[0.05] flex items-center justify-between text-xs font-semibold text-[#2563eb] dark:text-blue-400 hover:underline cursor-pointer group"
+            >
+              <span>Solve more problems to level up</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            </a>
+          </div>
+        </div>
+
+        {/* 4. Primary Resource Grid (#01 - #04) matching Variation 2 */}
+        <div className="space-y-4">
+          <div className="flex items-baseline justify-between">
+            <h2 className="font-serif-garamond text-2xl font-semibold text-zinc-950 dark:text-white">
+              Essential Tools
+            </h2>
+            <span className="font-mono-space text-xs text-[#6b7280] dark:text-zinc-400 uppercase tracking-wider">
+              High-Yield
+            </span>
           </div>
 
-          <a
-            href="/preparation/dsa-sheets"
-            onClick={(e) => handleNav(e, '/preparation/dsa-sheets')}
-            className="mt-6 pt-4 border-t border-zinc-200 dark:border-zinc-800 flex items-center justify-between text-xs font-semibold text-[#6C47FF] dark:text-[#9f85ff] hover:underline"
-          >
-            <span>Solve more problems to level up</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </a>
-        </div>
-      </div>
-
-      {/* Quick Launchpad to all 12 Prep Tools */}
-      <div>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-bold text-zinc-900 dark:text-white">
-            Preparation Library &amp; Tools
-          </h2>
-          <span className="text-xs text-zinc-500">12 Curated Resources</span>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {quickLinks.map((item) => {
-            const Icon = item.icon;
-            return (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            {primaryResourceCards.map((res) => (
               <a
-                key={item.title}
-                href={item.href}
-                onClick={(e) => handleNav(e, item.href)}
-                className="group p-5 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 hover:-translate-y-0.5 transition-all shadow-xs flex flex-col justify-between"
+                key={res.id}
+                href={res.href}
+                onClick={(e) => handleNav(e, res.href)}
+                className="group p-6 rounded-xl border border-black/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#0c1017] text-inherit no-underline transition-all duration-300 hover:border-[#2563eb] dark:hover:border-blue-500 hover:shadow-xl hover:-translate-y-1 flex flex-col justify-between"
               >
                 <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <div className={`w-9 h-9 rounded-xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center ${item.color}`}>
-                      <Icon className="w-4 h-4" />
-                    </div>
-                    <span className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">
-                      {item.count}
-                    </span>
+                  <div className="font-mono-space text-xs font-bold text-[#2563eb] dark:text-[#38bdf8] opacity-80 mb-3">
+                    {res.id}
                   </div>
-
-                  <h3 className="font-bold text-sm text-zinc-900 dark:text-white group-hover:text-[#6C47FF] dark:group-hover:text-[#9f85ff] transition-colors mb-1">
-                    {item.title}
+                  <h3 className="font-inter font-semibold text-base text-zinc-950 dark:text-white mb-1 group-hover:text-[#2563eb] dark:group-hover:text-[#38bdf8] transition-colors">
+                    {res.title}
                   </h3>
-                  <span className="text-xs text-zinc-500 dark:text-zinc-400">
-                    {item.tag}
-                  </span>
+                  <p className="font-mono-space text-xs text-[#6b7280] dark:text-zinc-400 mb-2">
+                    {res.meta}
+                  </p>
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400 line-clamp-2 leading-relaxed">
+                    {res.desc}
+                  </p>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-between text-xs text-[#6C47FF] dark:text-[#9f85ff] font-semibold">
-                  <span>Open Tool</span>
+                <div className="mt-4 pt-3 border-t border-black/[0.04] dark:border-white/[0.06] flex items-center justify-between text-xs font-semibold text-[#2563eb] dark:text-blue-400 opacity-90 group-hover:opacity-100">
+                  <span>Open Resource</span>
                   <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                 </div>
               </a>
-            );
-          })}
+            ))}
+          </div>
         </div>
+
+        {/* 5. Complete Curated Resource Library */}
+        <div className="space-y-4 pt-2">
+          <div className="flex items-baseline justify-between">
+            <h2 className="font-serif-garamond text-xl sm:text-2xl font-semibold text-zinc-950 dark:text-white">
+              Preparation Library
+            </h2>
+            <span className="font-mono-space text-xs text-[#6b7280] dark:text-zinc-400">
+              8 More Curated Tracks
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {allCuratedTools.map((tool) => {
+              const Icon = tool.icon;
+              return (
+                <a
+                  key={tool.title}
+                  href={tool.href}
+                  onClick={(e) => handleNav(e, tool.href)}
+                  className="p-4 rounded-xl border border-black/[0.06] dark:border-white/[0.06] bg-white/70 dark:bg-[#0c1017]/70 hover:border-black/[0.15] dark:hover:border-white/[0.15] transition-all flex items-center gap-3.5 group cursor-pointer"
+                >
+                  <div className={`w-9 h-9 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center ${tool.color} shrink-0 group-hover:scale-105 transition-transform`}>
+                    <Icon className="w-4 h-4" />
+                  </div>
+                  <div className="min-w-0">
+                    <h4 className="font-semibold text-xs sm:text-sm text-zinc-900 dark:text-zinc-100 group-hover:text-[#2563eb] dark:group-hover:text-blue-400 transition-colors truncate">
+                      {tool.title}
+                    </h4>
+                    <p className="text-[11px] text-[#6b7280] dark:text-zinc-400 font-mono-space truncate">
+                      {tool.meta}
+                    </p>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        </div>
+
       </div>
     </div>
   );

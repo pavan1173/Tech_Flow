@@ -102,8 +102,11 @@ export const PreparationSidebar: React.FC<SidebarProps> = ({
         </a>
       </div>
 
-      {/* Overview Group: Dashboard */}
+      {/* Main Group: Dashboard */}
       <div>
+        <div className="px-3 pb-2 text-[10px] font-bold uppercase font-mono-space tracking-[0.12em] text-zinc-500 dark:text-zinc-400">
+          MAIN
+        </div>
         <a
           href="/preparation"
           onClick={(e) => handleNav(e, '/preparation')}
@@ -120,7 +123,7 @@ export const PreparationSidebar: React.FC<SidebarProps> = ({
 
       {/* Sheets Group */}
       <div>
-        <div className="px-3 pb-2 text-[11px] font-bold uppercase tracking-wider text-zinc-500">
+        <div className="px-3 pb-2 text-[10px] font-bold uppercase font-mono-space tracking-[0.12em] text-zinc-500 dark:text-zinc-400">
           SHEETS
         </div>
         <div className="space-y-1">
@@ -252,10 +255,10 @@ export const PreparationSidebar: React.FC<SidebarProps> = ({
         </div>
       </div>
 
-      {/* Start Learning Group matching screenshot */}
+      {/* Playlists Group */}
       <div>
-        <div className="px-3 pb-2 text-[11px] font-bold uppercase tracking-wider text-zinc-500">
-          START LEARNING
+        <div className="px-3 pb-2 text-[10px] font-bold uppercase font-mono-space tracking-[0.12em] text-zinc-500 dark:text-zinc-400">
+          PLAYLISTS
         </div>
         <div className="space-y-1">
           {/* 1. DSA Playlists Expandable */}
@@ -641,7 +644,7 @@ export const PreparationSidebar: React.FC<SidebarProps> = ({
 
       {/* Resources Group */}
       <div>
-        <div className="px-3 pb-2 text-[11px] font-bold uppercase tracking-wider text-zinc-500">
+        <div className="px-3 pb-2 text-[10px] font-bold uppercase font-mono-space tracking-[0.12em] text-zinc-500 dark:text-zinc-400">
           RESOURCES
         </div>
         <div className="space-y-1">

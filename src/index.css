@@ -39,6 +39,18 @@
 }
 
 /* Custom Scrollbar Utilities */
+.font-serif-garamond {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+}
+
+.font-mono-space {
+  font-family: 'Space Mono', ui-monospace, SFMono-Regular, monospace;
+}
+
+.font-inter {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
 .custom-scrollbar {
   scrollbar-width: thin;
   scrollbar-color: #27272a transparent;
