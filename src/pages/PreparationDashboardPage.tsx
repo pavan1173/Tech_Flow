@@ -20,7 +20,8 @@ import {
   BarChart3,
   Calendar,
   ExternalLink,
-  ChevronRight
+  ChevronRight,
+  Workflow
 } from 'lucide-react';
 
 interface PrepDashboardProps {
@@ -108,14 +109,14 @@ export const PreparationDashboardPage: React.FC<PrepDashboardProps> = ({ navigat
 
   // All additional tools available in the preparation ecosystem
   const allCuratedTools = [
-    { title: 'Curated DSA Sheets', meta: '7+ Creator Sheets', href: '/preparation/dsa-sheets', icon: Code, color: 'text-blue-500' },
-    { title: 'Package Wise DSA', meta: '3 LPA to 60+ LPA', href: '/preparation/package-wise-dsa-sheet', icon: Target, color: 'text-emerald-500' },
+    { title: 'Career Roadmaps & Mindmaps', meta: 'Frontend, Backend, AI & DSA', href: '/preparation/roadmaps', icon: Workflow, color: 'text-blue-500' },
+    { title: 'Curated DSA Sheets', meta: '7+ Creator Sheets', href: '/preparation/dsa-sheets', icon: Code, color: 'text-emerald-500' },
+    { title: 'Package Wise DSA', meta: '3 LPA to 60+ LPA', href: '/preparation/package-wise-dsa-sheet', icon: Target, color: 'text-amber-500' },
     { title: 'System Design Sheet', meta: '32 HLD & LLD Topics', href: '/preparation/system-design-sheet', icon: Layers, color: 'text-rose-500' },
     { title: 'Role-Wise Sheets', meta: 'Frontend, Backend, SDE', href: '/preparation/role-wise', icon: Sparkles, color: 'text-cyan-500' },
-    { title: 'Core CS Notes', meta: 'OS, DBMS, CN & OOPs', href: '/preparation/notes', icon: FileText, color: 'text-amber-500' },
-    { title: 'HR & STAR Prep', meta: '100 Behavioral Qs', href: '/preparation/hr-questions', icon: MessageSquareQuote, color: 'text-purple-500' },
+    { title: 'Core CS Notes', meta: 'OS, DBMS, CN & OOPs', href: '/preparation/notes', icon: FileText, color: 'text-purple-500' },
+    { title: 'HR & STAR Prep', meta: '100 Behavioral Qs', href: '/preparation/hr-questions', icon: MessageSquareQuote, color: 'text-pink-500' },
     { title: 'Cold Outreach Templates', meta: 'Referral & Recruiter Emails', href: '/preparation/cold-email-templets', icon: Mail, color: 'text-indigo-500' },
-    { title: 'DSA Video Courses', meta: 'Striver & Free Playlists', href: '/preparation/dsa-playlists', icon: Youtube, color: 'text-red-500' },
   ];
 
   return (
@@ -320,6 +321,38 @@ export const PreparationDashboardPage: React.FC<PrepDashboardProps> = ({ navigat
             >
               <span>Solve more problems to level up</span>
               <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            </a>
+          </div>
+        </div>
+
+        {/* 3.5 Featured Career Roadmaps & Mindmaps Banner (roadmap.sh aligned) */}
+        <div className="p-6 sm:p-8 rounded-2xl bg-gradient-to-r from-blue-900/40 via-indigo-950/40 to-purple-900/30 border border-blue-500/30 dark:border-blue-500/20 shadow-lg relative overflow-hidden flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div className="space-y-2 max-w-2xl relative z-10">
+            <div className="flex items-center gap-2">
+              <span className="font-mono-space text-[11px] font-bold uppercase tracking-widest text-blue-400 flex items-center gap-1.5">
+                <Workflow className="w-3.5 h-3.5" />
+                NEW ROADMAPS
+              </span>
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                roadmap.sh aligned
+              </span>
+            </div>
+            <h3 className="font-serif-garamond text-2xl sm:text-3xl font-bold text-white">
+              Interactive Career Roadmaps &amp; Mindmaps
+            </h3>
+            <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
+              Explore visual step-by-step learning tracks for Frontend, Backend, DSA, System Design, DevOps, and AI. Track your progress, study curated guides, and view interactive mindmap trees.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3 shrink-0 relative z-10">
+            <a
+              href="/preparation/roadmaps"
+              onClick={(e) => handleNav(e, '/preparation/roadmaps')}
+              className="px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs sm:text-sm shadow-md shadow-blue-500/30 transition-all flex items-center gap-2 cursor-pointer group"
+            >
+              <span>Explore All Roadmaps</span>
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </a>
           </div>
         </div>

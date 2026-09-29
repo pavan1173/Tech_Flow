@@ -1,4 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+import sharp from 'sharp';
+import fs from 'fs';
+
+const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <defs>
     <!-- Background Space Gradient -->
     <radialGradient id="bgGlow" cx="50%" cy="38%" r="65%">
@@ -214,4 +217,15 @@
           fill="#0284c7"
           opacity="0.7"/>
   </g>
-</svg>
+</svg>`;
+
+async function render() {
+  fs.writeFileSync('public/logo.svg', svgContent);
+  await sharp(Buffer.from(svgContent))
+    .resize(1024, 1024)
+    .png()
+    .toFile('public/logo.png');
+  console.log('Successfully written public/logo.svg and public/logo.png (1024x1024)');
+}
+
+render().catch(console.error);

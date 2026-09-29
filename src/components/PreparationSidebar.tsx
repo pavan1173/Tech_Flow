@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { TeachFlowLogo } from './TeachFlowLogo';
 import {
   LayoutDashboard,
+  Workflow,
   FileCode,
   Building2,
   Sparkles,
@@ -102,23 +103,43 @@ export const PreparationSidebar: React.FC<SidebarProps> = ({
         </a>
       </div>
 
-      {/* Main Group: Dashboard */}
+      {/* Main Group: Dashboard & Roadmaps */}
       <div>
         <div className="px-3 pb-2 text-[10px] font-bold uppercase font-mono-space tracking-[0.12em] text-zinc-500 dark:text-zinc-400">
           MAIN
         </div>
-        <a
-          href="/preparation"
-          onClick={(e) => handleNav(e, '/preparation')}
-          className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all ${
-            currentPath === '/preparation'
-              ? 'bg-zinc-800/80 text-white font-semibold'
-              : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
-          }`}
-        >
-          <LayoutDashboard className="w-4 h-4 text-zinc-400 shrink-0" />
-          <span>Dashboard</span>
-        </a>
+        <div className="space-y-1">
+          <a
+            href="/preparation"
+            onClick={(e) => handleNav(e, '/preparation')}
+            className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all ${
+              currentPath === '/preparation'
+                ? 'bg-zinc-800/80 text-white font-semibold'
+                : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+            }`}
+          >
+            <LayoutDashboard className="w-4 h-4 text-zinc-400 shrink-0" />
+            <span>Dashboard</span>
+          </a>
+
+          <a
+            href="/preparation/roadmaps"
+            onClick={(e) => handleNav(e, '/preparation/roadmaps')}
+            className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all group ${
+              currentPath.startsWith('/preparation/roadmaps')
+                ? 'bg-blue-600/15 text-blue-400 font-semibold border border-blue-500/25'
+                : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+            }`}
+          >
+            <div className="flex items-center gap-2.5">
+              <Workflow className="w-4 h-4 text-blue-400 shrink-0 group-hover:scale-110 transition-transform" />
+              <span>Roadmaps</span>
+            </div>
+            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-blue-500/20 text-blue-400 font-mono-space">
+              NEW
+            </span>
+          </a>
+        </div>
       </div>
 
       {/* Sheets Group */}

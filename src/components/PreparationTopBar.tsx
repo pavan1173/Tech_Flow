@@ -37,6 +37,18 @@ export const PreparationTopBar: React.FC<PreparationTopBarProps> = ({
     if (currentPath === '/preparation/company-wise-dsa-sheet') {
       return [{ label: 'Preparation', href: '/preparation' }, { label: 'Company Wise DSA' }];
     }
+    if (currentPath === '/preparation/roadmaps' || currentPath === '/roadmaps') {
+      return [{ label: 'Preparation', href: '/preparation' }, { label: 'Career Roadmaps & Mindmaps' }];
+    }
+    if (currentPath.startsWith('/preparation/roadmaps/')) {
+      const slug = currentPath.replace('/preparation/roadmaps/', '');
+      const rmName = slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+      return [
+        { label: 'Preparation', href: '/preparation' },
+        { label: 'Roadmaps', href: '/preparation/roadmaps' },
+        { label: `${rmName} Roadmap` },
+      ];
+    }
     if (currentPath.startsWith('/preparation/company-wise-dsa-sheet/')) {
       const slug = currentPath.replace('/preparation/company-wise-dsa-sheet/', '');
       const compName = slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
