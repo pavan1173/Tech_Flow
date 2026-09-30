@@ -1,1054 +1,677 @@
-export interface RoadmapResource {
-  title: string;
-  url: string;
-  type: 'doc' | 'video' | 'practice' | 'guide';
-}
-
-export interface RoadmapNode {
+export interface RoadmapTopic {
   id: string;
   title: string;
-  badge?: 'recommended' | 'essential' | 'optional' | 'alternative';
+  status?: 'not_started' | 'in_progress' | 'completed';
+  type: 'mandatory' | 'recommended' | 'alternative' | 'optional';
   summary: string;
   keyPoints: string[];
-  resources: RoadmapResource[];
-  children?: {
-    id: string;
-    title: string;
-    badge?: 'recommended' | 'essential' | 'optional' | 'alternative';
-    summary?: string;
-  }[];
+  resources?: { title: string; url: string; type: 'doc' | 'video' | 'practice' }[];
+  codeSnippet?: string;
+  interviewTip?: string;
 }
 
-export interface RoadmapStage {
+export interface RoadmapPhase {
   id: string;
   title: string;
+  duration?: string;
   description: string;
-  color?: string;
-  nodes: RoadmapNode[];
+  topics: RoadmapTopic[];
 }
 
-export interface RoadmapItem {
-  id: string;
+export interface RoadmapProject {
   title: string;
+  level: 'Beginner' | 'Intermediate' | 'Advanced' | 'Capstone';
+  description: string;
+  deliverables: string[];
+}
+
+export interface RoadmapDetail {
   slug: string;
-  shortDesc: string;
-  description: string;
-  iconName: string;
-  badge: string;
-  level: 'Beginner' | 'Intermediate' | 'Advanced' | 'All Levels';
-  estimatedHours: string;
-  stages: RoadmapStage[];
+  title: string;
+  subtitle: string;
+  category: string;
+  type: 'role' | 'skill' | 'new';
+  isNew?: boolean;
+  isPopular?: boolean;
+  duration: string;
+  difficulty: 'Beginner' | 'Intermediate' | 'Advanced' | 'All Levels' | 'Beginner to Advanced' | 'Intermediate to Advanced' | string;
+  summary: string;
+  targetRoles: string[];
+  relatedRoleSheetSlug?: string;
+  relatedDsaSlug?: string;
+  phases: RoadmapPhase[];
+  projects: RoadmapProject[];
 }
 
-export const ROADMAPS: RoadmapItem[] = [
-  // ==========================================
-  // 1. FRONTEND DEVELOPER ROADMAP (inspired by roadmap.sh/frontend)
-  // ==========================================
-  {
-    id: 'frontend',
+export interface RoadmapSummaryItem {
+  slug: string;
+  title: string;
+  category: string; // e.g. "Web Development", "AI & Machine Learning", etc.
+  type: 'role' | 'skill' | 'new';
+  isNew?: boolean;
+  isPopular?: boolean;
+  tags: string[];
+  description: string;
+  nodeCount: number;
+}
+
+export const ROADMAP_CATEGORIES = [
+  { id: 'all', name: 'All Roadmaps', count: 95 },
+  { id: 'beginners', name: 'Absolute Beginners', count: 34 },
+  { id: 'web', name: 'Web Development', count: 70 },
+  { id: 'frameworks', name: 'Frameworks', count: 9 },
+  { id: 'languages', name: 'Languages / Platforms', count: 23 },
+  { id: 'ai', name: 'AI & Machine Learning', count: 25 },
+  { id: 'devops', name: 'DevOps', count: 49 },
+  { id: 'mobile', name: 'Mobile Development', count: 9 },
+  { id: 'databases', name: 'Databases', count: 26 },
+  { id: 'cs', name: 'Computer Science', count: 31 },
+  { id: 'management', name: 'Management', count: 10 },
+  { id: 'games', name: 'Game Development', count: 7 },
+  { id: 'design', name: 'Design', count: 4 },
+  { id: 'blockchain', name: 'Blockchain', count: 4 },
+  { id: 'cybersecurity', name: 'Cyber Security', count: 11 },
+  { id: 'bestpractices', name: 'Best Practices', count: 5 },
+] as const;
+
+export const ALL_ROADMAPS_SUMMARY: RoadmapSummaryItem[] = [
+  // NEW ROADMAPS
+  { slug: 'r-programming', title: 'R Programming', category: 'Languages / Platforms', type: 'new', isNew: true, tags: ['Data Science', 'Statistics', 'R'], description: 'Learn statistical computing, exploratory data analysis, ggplot2, and R Shiny.', nodeCount: 32 },
+  { slug: 'seo', title: 'SEO', category: 'Best Practices', type: 'new', isNew: true, tags: ['Technical SEO', 'Core Web Vitals', 'Indexing'], description: 'Technical SEO, schema markup, site speed, crawl budgets, and content strategy.', nodeCount: 28 },
+
+  // ROLE BASED ROADMAPS
+  { slug: 'frontend', title: 'Frontend', category: 'Web Development', type: 'role', isPopular: true, tags: ['HTML', 'CSS', 'JavaScript', 'React', 'Next.js'], description: 'Comprehensive roadmap to becoming a modern Frontend Engineer in 2026.', nodeCount: 48 },
+  { slug: 'backend', title: 'Backend', category: 'Web Development', type: 'role', isPopular: true, tags: ['Node.js', 'Python', 'Go', 'Databases', 'APIs'], description: 'Learn server architecture, relational & NoSQL databases, caching, and microservices.', nodeCount: 52 },
+  { slug: 'full-stack', title: 'Full Stack', category: 'Web Development', type: 'role', isPopular: true, tags: ['React', 'Node.js', 'PostgreSQL', 'Docker', 'Cloud'], description: 'Master both client and server development, database modeling, and deployment.', nodeCount: 58 },
+  { slug: 'android', title: 'Android', category: 'Mobile Development', type: 'role', tags: ['Kotlin', 'Jetpack Compose', 'Coroutines', 'Architecture'], description: 'Native Android engineering with Kotlin, Modern Android Architecture, and Gradle.', nodeCount: 38 },
+  { slug: 'devops', title: 'DevOps', category: 'DevOps', type: 'role', isPopular: true, tags: ['Linux', 'Docker', 'Kubernetes', 'CI/CD', 'Terraform'], description: 'Infrastructure as Code, container orchestration, telemetry, and cloud reliability.', nodeCount: 46 },
+  { slug: 'devsecops', title: 'DevSecOps', category: 'Cyber Security', type: 'role', tags: ['Security', 'CI/CD', 'SAST/DAST', 'Compliance'], description: 'Embed security into CI/CD pipelines, container scanning, and secret management.', nodeCount: 34 },
+  { slug: 'data-analyst', title: 'Data Analyst', category: 'Databases', type: 'role', tags: ['SQL', 'Python', 'Tableau', 'PowerBI', 'Statistics'], description: 'Transform raw business data into actionable dashboards and predictive metrics.', nodeCount: 36 },
+  { slug: 'ai-engineer', title: 'AI Engineer', category: 'AI & Machine Learning', type: 'role', isPopular: true, tags: ['LLMs', 'RAG', 'Prompt Eng', 'LangChain', 'Vector DBs'], description: 'Build enterprise GenAI apps, agentic workflows, embeddings, and fine-tuning.', nodeCount: 44 },
+  { slug: 'ai-and-data-scientist', title: 'AI and Data Scientist', category: 'AI & Machine Learning', type: 'role', tags: ['Deep Learning', 'PyTorch', 'Math', 'NLP'], description: 'Statistical modeling, deep learning architectures, feature engineering, and MLOps.', nodeCount: 50 },
+  { slug: 'data-engineer', title: 'Data Engineer', category: 'Databases', type: 'role', tags: ['Spark', 'Kafka', 'ETL', 'Snowflake', 'Airflow'], description: 'Design scalable batch & real-time streaming data pipelines and data warehouses.', nodeCount: 42 },
+  { slug: 'machine-learning', title: 'Machine Learning', category: 'AI & Machine Learning', type: 'role', tags: ['Supervised', 'Unsupervised', 'Scikit-learn', 'PyTorch'], description: 'Foundations of mathematical modeling, classification, regression, and neural networks.', nodeCount: 40 },
+  { slug: 'postgresql', title: 'PostgreSQL', category: 'Databases', type: 'role', tags: ['Indexing', 'Query Optimization', 'Transactions', 'ACID'], description: 'Deep dive into PostgreSQL internals, EXPLAIN ANALYZE, WAL, and partitioning.', nodeCount: 30 },
+  { slug: 'ios', title: 'iOS', category: 'Mobile Development', type: 'role', tags: ['Swift', 'SwiftUI', 'Combine', 'CoreData'], description: 'Native Apple ecosystem development with modern Swift, SwiftUI, and App Store guidelines.', nodeCount: 36 },
+  { slug: 'blockchain', title: 'Blockchain', category: 'Blockchain', type: 'role', tags: ['Solidity', 'Smart Contracts', 'EVM', 'Web3.js'], description: 'Decentralized applications, cryptographic proofs, consensus, and security auditing.', nodeCount: 32 },
+  { slug: 'qa', title: 'QA', category: 'Best Practices', type: 'role', tags: ['Cypress', 'Playwright', 'Selenium', 'Unit Testing'], description: 'Automated end-to-end testing, test suites, regression, and load testing.', nodeCount: 28 },
+  { slug: 'software-architect', title: 'Software Architect', category: 'Computer Science', type: 'role', isPopular: true, tags: ['Distributed Systems', 'DDD', 'Event-Driven', 'Scale'], description: 'High-level system decomposition, fault tolerance, scalability, and design trade-offs.', nodeCount: 44 },
+  { slug: 'api-design', title: 'API Design', category: 'Web Development', type: 'role', tags: ['REST', 'GraphQL', 'gRPC', 'OpenAPI', 'Idempotency'], description: 'Designing robust, versioned, backward-compatible, and high-performance APIs.', nodeCount: 26 },
+  { slug: 'cyber-security', title: 'Cyber Security', category: 'Cyber Security', type: 'role', tags: ['Penetration Testing', 'Network', 'OWASP', 'Cryptography'], description: 'Offensive and defensive security, vulnerability assessments, and SOC workflows.', nodeCount: 40 },
+  { slug: 'ux-design', title: 'UX Design', category: 'Design', type: 'role', tags: ['Figma', 'Wireframing', 'User Research', 'Usability'], description: 'Information architecture, user testing, interaction design, and design systems.', nodeCount: 28 },
+  { slug: 'technical-writer', title: 'Technical Writer', category: 'Management', type: 'role', tags: ['Docs', 'API Docs', 'Markdown', 'Information Architecture'], description: 'Authoring developer portals, SDK guides, and architectural whitepapers.', nodeCount: 22 },
+  { slug: 'game-developer', title: 'Game Developer', category: 'Game Development', type: 'role', tags: ['Unity', 'Unreal', 'C#', 'C++', 'Shaders'], description: 'Physics engines, game loops, rendering pipelines, and asset pipelines.', nodeCount: 38 },
+  { slug: 'server-side-game-developer', title: 'Server Side Game Developer', category: 'Game Development', type: 'role', tags: ['UDP', 'WebSockets', 'Tick Rates', 'Spatial Hashing'], description: 'Multiplayer game networking, state synchronization, and lag compensation.', nodeCount: 30 },
+  { slug: 'mlops', title: 'MLOps', category: 'AI & Machine Learning', type: 'role', tags: ['Model Registry', 'MLflow', 'Kubeflow', 'Drift Monitoring'], description: 'Operationalizing machine learning models into high-availability production APIs.', nodeCount: 34 },
+  { slug: 'product-manager', title: 'Product Manager', category: 'Management', type: 'role', tags: ['Agile', 'Roadmapping', 'User Feedback', 'Metrics'], description: 'Product discovery, prioritization matrices, PRDs, and cross-functional alignment.', nodeCount: 30 },
+  { slug: 'engineering-manager', title: 'Engineering Manager', category: 'Management', type: 'role', tags: ['1-on-1s', 'Hiring', 'Sprint Planning', 'Org Design'], description: 'Leading engineering teams, 1:1 mentorship, delivery cadence, and technical strategy.', nodeCount: 28 },
+  { slug: 'developer-relations', title: 'Developer Relations', category: 'Management', type: 'role', tags: ['Community', 'Speaking', 'Open Source', 'Hackathons'], description: 'Developer advocacy, content creation, community health, and developer feedback loops.', nodeCount: 24 },
+  { slug: 'bi-analyst', title: 'BI Analyst', category: 'Databases', type: 'role', tags: ['Data Warehousing', 'DAX', 'Looker', 'ETL'], description: 'Enterprise business intelligence, KPI governance, and executive analytics.', nodeCount: 28 },
+  { slug: 'ai-red-teaming', title: 'AI Red Teaming', category: 'Cyber Security', type: 'role', tags: ['Jailbreaks', 'Prompt Injection', 'Safety Auditing', 'OWASP LLM'], description: 'Testing LLM vulnerability against prompt injection, data leakage, and alignment evasion.', nodeCount: 26 },
+  { slug: 'network-engineer', title: 'Network Engineer', category: 'Computer Science', type: 'role', tags: ['TCP/IP', 'BGP', 'OSPF', 'Subnetting', 'Wireshark'], description: 'Routing protocols, switching, firewalls, VPNs, and software-defined networking.', nodeCount: 34 },
+  { slug: 'forward-deployed-engineer', title: 'Forward Deployed Engineer', category: 'Web Development', type: 'role', tags: ['Customer Tech', 'Integration', 'Full Stack', 'Enterprise'], description: 'Integrating enterprise platforms, client custom extensions, and bespoke deployments.', nodeCount: 32 },
+
+  // SKILL BASED ROADMAPS
+  { slug: 'claude-code', title: 'Claude Code', category: 'AI & Machine Learning', type: 'skill', tags: ['Agentic Coding', 'Terminal CLI', 'Anthropic', 'Workflows'], description: 'Supercharge daily terminal workflows using Claude Code agentic coding.', nodeCount: 18 },
+  { slug: 'vibe-coding', title: 'Vibe Coding', category: 'AI & Machine Learning', type: 'skill', tags: ['AI Prompting', 'Cursor', 'Copilot', 'Fast Prototyping'], description: 'Modern flow state development leveraging AI generation, Cursor, and instant iteration.', nodeCount: 16 },
+  { slug: 'python', title: 'Python', category: 'Languages / Platforms', type: 'skill', isPopular: true, tags: ['OOP', 'Asyncio', 'Typing', 'Package Mgmt'], description: 'Core syntax, generators, decorators, virtual environments, and concurrency.', nodeCount: 36 },
+  { slug: 'python-for-data-analysis', title: 'Python for Data Analysis', category: 'Databases', type: 'skill', tags: ['Pandas', 'NumPy', 'Matplotlib', 'Seaborn'], description: 'Data wrangling, cleaning, pivot tables, and statistical visualizations in Jupyter.', nodeCount: 28 },
+  { slug: 'computer-science', title: 'Computer Science', category: 'Computer Science', type: 'skill', isPopular: true, tags: ['DSA', 'OS', 'Networking', 'Compilers'], description: 'Foundations of computing, algorithmic analysis, memory layouts, and discrete math.', nodeCount: 45 },
+  { slug: 'javascript', title: 'JavaScript', category: 'Languages / Platforms', type: 'skill', isPopular: true, tags: ['ES6+', 'Event Loop', 'Promises', 'Prototypes'], description: 'Core runtime mechanics, DOM, asynchronous JavaScript, and modern modules.', nodeCount: 40 },
+  { slug: 'typescript', title: 'TypeScript', category: 'Languages / Platforms', type: 'skill', isPopular: true, tags: ['Generics', 'Utility Types', 'Strict Null', 'Decorators'], description: 'Type safety, mapped types, declaration merging, and enterprise architecture.', nodeCount: 32 },
+  { slug: 'react', title: 'React', category: 'Frameworks', type: 'skill', isPopular: true, tags: ['Hooks', 'Fiber', 'Server Components', 'State'], description: 'Modern React 19, custom hooks, context, state machines, and performance.', nodeCount: 36 },
+  { slug: 'nodejs', title: 'Node.js', category: 'Languages / Platforms', type: 'skill', tags: ['Streams', 'Cluster', 'Event Loop', 'Buffers'], description: 'Event-driven I/O, native addons, Express/Fastify, and microservices.', nodeCount: 34 },
+  { slug: 'docker', title: 'Docker', category: 'DevOps', type: 'skill', isPopular: true, tags: ['Containers', 'Images', 'Volumes', 'Compose'], description: 'Container fundamentals, multi-stage builds, networking, and security.', nodeCount: 24 },
+  { slug: 'kubernetes', title: 'Kubernetes', category: 'DevOps', type: 'skill', tags: ['Pods', 'Deployments', 'Ingress', 'Helm'], description: 'Container orchestration, autoscaling, service meshes, and stateful sets.', nodeCount: 32 },
+  { slug: 'git-github', title: 'Git & GitHub', category: 'Best Practices', type: 'skill', isPopular: true, tags: ['Rebase', 'Bisect', 'Actions', 'Merge Conflicts'], description: 'Version control workflows, interactive rebase, cherry-pick, and CI automation.', nodeCount: 22 },
+  { slug: 'sql', title: 'SQL', category: 'Databases', type: 'skill', isPopular: true, tags: ['Joins', 'CTEs', 'Window Functions', 'Indexes'], description: 'Advanced query authoring, analytical functions, query plans, and transactions.', nodeCount: 28 },
+  { slug: 'system-design', title: 'System Design', category: 'Computer Science', type: 'skill', isPopular: true, tags: ['Caching', 'Load Balancing', 'Sharding', 'CAP Theorem'], description: 'Architecting large scale systems for 10M+ users with low latency and high availability.', nodeCount: 42 },
+  { slug: 'graphql', title: 'GraphQL', category: 'Web Development', type: 'skill', tags: ['Schema', 'Resolvers', 'Apollo', 'Federation'], description: 'Type-safe querying, n+1 problem mitigation, subscriptions, and federated graphs.', nodeCount: 24 },
+  { slug: 'rust', title: 'Rust', category: 'Languages / Platforms', type: 'skill', tags: ['Borrow Checker', 'Lifetimes', 'Concurrency', 'Cargo'], description: 'Memory safety without garbage collection, traits, smart pointers, and async Rust.', nodeCount: 34 },
+  { slug: 'golang', title: 'Go / Golang', category: 'Languages / Platforms', type: 'skill', tags: ['Goroutines', 'Channels', 'Interfaces', 'Microservices'], description: 'Concurrency patterns, standard library mastery, benchmarking, and high-concurrency servers.', nodeCount: 30 },
+  { slug: 'linux', title: 'Linux', category: 'DevOps', type: 'skill', tags: ['Bash', 'Permissions', 'systemd', 'Process Mgmt'], description: 'Command line mastery, IPC, file system hierarchies, shell scripting, and monitoring.', nodeCount: 28 },
+];
+
+export const ROADMAP_DETAILS: Record<string, RoadmapDetail> = {
+  frontend: {
     slug: 'frontend',
-    title: 'Frontend Developer',
-    shortDesc: 'Step by step guide to becoming a modern frontend developer in 2026',
-    description: 'Community-driven roadmap for modern frontend web development. Follow this structured learning path from internet foundations to modern React frameworks, CSS architectures, performance tuning, and progressive web apps.',
-    iconName: 'Globe',
-    badge: 'Most Popular',
-    level: 'All Levels',
-    estimatedHours: '120-160 Hours',
-    stages: [
+    title: 'Frontend Developer Roadmap',
+    subtitle: 'Step by step guide to becoming a modern Frontend Engineer in 2026',
+    category: 'Web Development',
+    type: 'role',
+    isPopular: true,
+    duration: '6 - 9 Months',
+    difficulty: 'Beginner to Advanced',
+    summary: 'Master the building blocks of the web, modern JavaScript & TypeScript, component-driven development with React & Next.js, web performance, accessibility, and interview coding challenges.',
+    targetRoles: ['Frontend Engineer', 'UI Developer', 'Full Stack Engineer', 'Web Developer'],
+    relatedRoleSheetSlug: 'frontend-developer',
+    relatedDsaSlug: 'blind-75-dsa-sheet',
+    phases: [
       {
-        id: 'internet-basics',
-        title: '1. Internet Fundamentals',
-        description: 'Understand how the web works before writing a single line of frontend code.',
-        nodes: [
+        id: 'phase-1',
+        title: 'Phase 1: Internet & Web Fundamentals',
+        duration: 'Weeks 1-3',
+        description: 'Understand how the web works from browser DNS lookup to rendering HTML pixels on screen.',
+        topics: [
           {
-            id: 'how-internet-works',
-            title: 'How does the Internet work?',
-            badge: 'essential',
-            summary: 'Understanding packets, routers, TCP/IP, client-server models, and global network infrastructure.',
+            id: 'fe-internet',
+            title: 'How the Internet Works',
+            type: 'mandatory',
+            summary: 'Understanding DNS resolution, IP routing, HTTP/HTTPS protocols, TCP/IP handshakes, and SSL/TLS certificates.',
             keyPoints: [
-              'Packets, IP addressing (IPv4 vs IPv6)',
-              'Routers, switches, and internet service providers (ISPs)',
-              'Client-Server architecture and request-response cycles',
-              'Latency, bandwidth, and ping'
+              'Browser requests resolve IP via recursive DNS lookup',
+              'TCP 3-way handshake (SYN, SYN-ACK, ACK) and TLS negotiation',
+              'HTTP/1.1 vs HTTP/2 multiplexing vs HTTP/3 (QUIC)'
             ],
-            resources: [
-              { title: 'MDN: How does the Internet work?', url: 'https://developer.mozilla.org/en-US/docs/Learn/Common_questions/Web_mechanics/How_does_the_Internet_work', type: 'doc' },
-              { title: 'CrashCourse: How the Internet Works (YouTube)', url: 'https://www.youtube.com/watch?v=Dxcc6ycZ73M', type: 'video' }
-            ],
-            children: [
-              { id: 'tcp-ip', title: 'TCP / IP Protocol', badge: 'essential' },
-              { id: 'isp-routing', title: 'ISP & Routing', badge: 'recommended' }
-            ]
+            interviewTip: 'Be prepared to answer: "What happens when you type google.com into your browser address bar and press Enter?"'
           },
           {
-            id: 'http-https',
-            title: 'What is HTTP & HTTPS?',
-            badge: 'essential',
-            summary: 'The application layer protocol that powers all web communications, headers, status codes, and TLS encryption.',
+            id: 'fe-html',
+            title: 'Semantic HTML5 & Accessibility (a11y)',
+            type: 'mandatory',
+            summary: 'Writing accessible, semantic markup that screen readers and search engines understand effortlessly.',
             keyPoints: [
-              'HTTP Verbs: GET, POST, PUT, PATCH, DELETE, OPTIONS',
-              'Status Codes: 2xx (Success), 3xx (Redirect), 4xx (Client Error), 5xx (Server Error)',
-              'HTTP Headers: Content-Type, Authorization, Cache-Control, CORS',
-              'HTTPS: SSL/TLS handshake, symmetric vs asymmetric encryption, certificates',
-              'HTTP/2 multiplexing and modern HTTP/3 over QUIC'
+              'Use semantic tags: header, main, nav, article, section, footer',
+              'ARIA attributes (aria-label, role, aria-expanded)',
+              'Forms with accessible labels, input validation, and focus management'
             ],
-            resources: [
-              { title: 'MDN: An overview of HTTP', url: 'https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview', type: 'doc' },
-              { title: 'Fireship: HTTP in 100 Seconds', url: 'https://www.youtube.com/watch?v=iYM2zFP3Zn0', type: 'video' }
-            ],
-            children: [
-              { id: 'http-status-codes', title: 'Status Codes (200, 404, 500)', badge: 'essential' },
-              { id: 'http-headers', title: 'Request & Response Headers', badge: 'recommended' },
-              { id: 'ssl-tls', title: 'TLS / SSL Handshake', badge: 'essential' }
-            ]
+            codeSnippet: `<button aria-expanded="false" aria-controls="mobile-menu">\n  <span class="sr-only">Toggle Navigation</span>\n  <svg aria-hidden="true">...</svg>\n</button>`
           },
           {
-            id: 'browsers-dns',
-            title: 'DNS & How Browsers Work',
-            badge: 'essential',
-            summary: 'How domain names resolve to IP addresses, and how browser rendering engines parse HTML/CSS into pixels on screen.',
+            id: 'fe-css-core',
+            title: 'Modern CSS & Layout Systems',
+            type: 'mandatory',
+            summary: 'Box model, Flexbox, CSS Grid, Custom Properties (CSS variables), and media queries.',
             keyPoints: [
-              'DNS lookup: Root servers, TLD servers, Authoritative nameservers, DNS caching',
-              'Browser Critical Rendering Path: DOM -> CSSOM -> Render Tree -> Layout (Reflow) -> Paint (Repaint) -> Composite',
-              'V8 engine, SpiderMonkey, WebKit JavaScript runtimes',
-              'Event Loop and Call Stack overview'
-            ],
-            resources: [
-              { title: 'MDN: Populating the page: how browsers work', url: 'https://developer.mozilla.org/en-US/docs/Web/Performance/How_browsers_work', type: 'doc' },
-              { title: 'Cloudflare: What is DNS?', url: 'https://www.cloudflare.com/learning/dns/what-is-dns/', type: 'doc' }
-            ],
-            children: [
-              { id: 'dns-records', title: 'DNS Records (A, CNAME, MX, TXT)', badge: 'recommended' },
-              { id: 'render-tree', title: 'DOM & CSSOM Render Tree', badge: 'essential' },
-              { id: 'reflow-repaint', title: 'Reflow vs Repaint', badge: 'recommended' }
+              'Box model sizing (border-box vs content-box)',
+              'Flexbox 1D alignment vs CSS Grid 2D layout control',
+              'Mobile-first responsive design and fluid clamp() typography'
             ]
           }
         ]
       },
       {
-        id: 'html-css',
-        title: '2. HTML & CSS Foundations',
-        description: 'The semantic skeleton and visual styling layers of every web application.',
-        nodes: [
+        id: 'phase-2',
+        title: 'Phase 2: JavaScript Mastery (ES6+)',
+        duration: 'Weeks 4-9',
+        description: 'The heartbeat of frontend engineering. Master language mechanics, memory models, and async execution.',
+        topics: [
           {
-            id: 'html5',
-            title: 'HTML5 & Semantic Web',
-            badge: 'essential',
-            summary: 'Structuring pages semantically for search engines, screen readers, and human accessibility.',
+            id: 'fe-js-basics',
+            title: 'Language Core & Execution Context',
+            type: 'mandatory',
+            summary: 'Scoping, closures, hoisting, Temporal Dead Zone, and primitive vs reference memory allocation.',
             keyPoints: [
-              'Semantic elements: <header>, <nav>, <main>, <article>, <section>, <aside>, <footer>',
-              'Forms: inputs, labels, validation attributes (required, pattern, type)',
-              'Web Accessibility (a11y): ARIA roles, tabindex, alt text, screen reader friendly markup',
-              'SEO Fundamentals: Title tags, meta descriptions, OpenGraph, Canonical URLs'
+              'Call Stack vs Memory Heap mechanics',
+              'Lexical scoping and closure persistence in memory',
+              'Arrow functions vs regular function this binding'
             ],
-            resources: [
-              { title: 'MDN: HTML Developer Guide', url: 'https://developer.mozilla.org/en-US/docs/Learn/HTML', type: 'doc' },
-              { title: 'Web.dev: Learn Accessibility', url: 'https://web.dev/learn/accessibility/', type: 'guide' }
-            ],
-            children: [
-              { id: 'html-forms', title: 'Forms & Validation', badge: 'essential' },
-              { id: 'html-a11y', title: 'Accessibility (ARIA)', badge: 'recommended' },
-              { id: 'html-seo', title: 'SEO & Meta Tags', badge: 'recommended' }
+            interviewTip: 'Closures and "this" binding are in the top 3 most frequently tested frontend screening questions.'
+          },
+          {
+            id: 'fe-event-loop',
+            title: 'The Event Loop & Asynchronous JavaScript',
+            type: 'mandatory',
+            summary: 'Single-threaded non-blocking concurrency, Call Stack, Web APIs, Microtask Queue vs Macrotask Queue.',
+            keyPoints: [
+              'Microtasks (Promise.then, MutationObserver, queueMicrotask) run before Macrotasks (setTimeout, setInterval, setImmediate)',
+              'Async/await desugars to native Promises under the hood',
+              'Error handling with try/catch and unhandledrejection events'
             ]
           },
           {
-            id: 'css-basics',
-            title: 'CSS3, Box Model & Responsive Layouts',
-            badge: 'essential',
-            summary: 'Mastering styling, cascading rules, specificity, Flexbox, and CSS Grid.',
+            id: 'fe-dom-events',
+            title: 'DOM Manipulation & Event Propagation',
+            type: 'mandatory',
+            summary: 'Capturing, targeting, bubbling, and event delegation for scalable interactive UIs.',
             keyPoints: [
-              'Box Model: Margin, Border, Padding, Content (box-sizing: border-box)',
-              'Specificity calculation: Inline > IDs > Classes/Attributes > Elements',
-              'Flexbox: flex-direction, justify-content, align-items, flex-wrap, gap',
-              'CSS Grid: grid-template-columns, fr units, minmax(), auto-fit, auto-fill',
-              'Responsive design: Mobile-first media queries, clamp(), rem/em vs px'
-            ],
-            resources: [
-              { title: 'CSS-Tricks: A Complete Guide to Flexbox', url: 'https://css-tricks.com/snippets/css/a-guide-to-flexbox/', type: 'guide' },
-              { title: 'CSS-Tricks: A Complete Guide to Grid', url: 'https://css-tricks.com/snippets/css/complete-guide-grid/', type: 'guide' }
-            ],
-            children: [
-              { id: 'box-model', title: 'Box Model & Sizing', badge: 'essential' },
-              { id: 'flexbox', title: 'Flexbox Architecture', badge: 'essential' },
-              { id: 'css-grid', title: 'CSS Grid Layouts', badge: 'essential' },
-              { id: 'media-queries', title: 'Responsive Media Queries', badge: 'essential' }
+              'Event delegation attaches one listener to a common ancestor',
+              'event.stopPropagation() vs event.preventDefault()',
+              'Custom events and dispatchEvent()'
             ]
           }
         ]
       },
       {
-        id: 'javascript-deep',
-        title: '3. JavaScript (ECMAScript 6+)',
-        description: 'The programming language of the web. Essential for dynamic interactions and state.',
-        nodes: [
+        id: 'phase-3',
+        title: 'Phase 3: React & Modern UI Architecture',
+        duration: 'Weeks 10-16',
+        description: 'Component lifecycles, hook internals, reconciliation, and modern state modeling.',
+        topics: [
           {
-            id: 'js-core',
-            title: 'JavaScript Core & DOM Manipulation',
-            badge: 'essential',
-            summary: 'Variables, data types, DOM APIs, event delegation, and browser interactions.',
+            id: 'fe-react-core',
+            title: 'React Fundamentals & JSX',
+            type: 'mandatory',
+            summary: 'Virtual DOM, JSX compilation, unidirectional data flow, and pure rendering principles.',
             keyPoints: [
-              'Primitives vs Reference Types (Stack vs Heap)',
-              'Scoping: let vs const vs var, function scope vs block scope',
-              'DOM: querySelector, createElement, appendChild, classList',
-              'Event Handling: addEventListener, Event Bubbling, Event Capturing, Event Delegation',
-              'Local Storage, Session Storage, Cookies, IndexedDB'
-            ],
-            resources: [
-              { title: 'javascript.info: Modern JS Tutorial', url: 'https://javascript.info/', type: 'doc' },
-              { title: 'Wes Bos: JavaScript30', url: 'https://javascript30.com/', type: 'practice' }
-            ],
-            children: [
-              { id: 'dom-api', title: 'DOM Query & Manipulation', badge: 'essential' },
-              { id: 'event-delegation', title: 'Event Bubbling & Delegation', badge: 'recommended' },
-              { id: 'storage-apis', title: 'Storage (LocalStorage, Cookies)', badge: 'recommended' }
+              'Props vs State: immutability principles',
+              'Component lifecycles via useEffect dependencies',
+              'Why keys matter in list rendering (reconciliation diffing)'
             ]
           },
           {
-            id: 'js-es6-async',
-            title: 'ES6+ Features & Asynchronous JS',
-            badge: 'essential',
-            summary: 'Modern JavaScript syntax, arrow functions, destructuring, and asynchronous workflows.',
+            id: 'fe-react-hooks',
+            title: 'Advanced React Hooks',
+            type: 'mandatory',
+            summary: 'useMemo, useCallback, useRef, useTransition, useDeferredValue, and custom hooks.',
             keyPoints: [
-              'ES6+: Arrow functions, destructuring, spread/rest operators, optional chaining, nullish coalescing',
-              'The Event Loop: Call Stack, Web APIs, Microtask Queue (Promises), Macrotask Queue (setTimeout)',
-              'Promises: resolve, reject, .then(), .catch(), .finally()',
-              'Async/Await: clean async code handling and try/catch error traps',
-              'Fetch API and handling JSON responses with error boundaries'
-            ],
-            resources: [
-              { title: 'Lydia Hallie: JavaScript Event Loop Visualized', url: 'https://www.youtube.com/watch?v=eiC58R16hb8', type: 'video' },
-              { title: 'MDN: How to use Promises', url: 'https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Promises', type: 'doc' }
-            ],
-            children: [
-              { id: 'async-await', title: 'Async / Await & Promises', badge: 'essential' },
-              { id: 'event-loop', title: 'Event Loop & Microtasks', badge: 'recommended' },
-              { id: 'es6-modules', title: 'ES Modules (import / export)', badge: 'essential' }
+              'Memoization trade-offs: don’t prematurely optimize without measuring',
+              'useRef for mutable values that don’t trigger re-renders',
+              'React 18/19 concurrent rendering transitions'
+            ]
+          },
+          {
+            id: 'fe-state-mgmt',
+            title: 'State Management Strategies',
+            type: 'recommended',
+            summary: 'Choosing between local state, URL state, Zustand, Jotai, TanStack Query, and Redux Toolkit.',
+            keyPoints: [
+              'Server state (caching, deduplication) belongs in TanStack Query/SWR',
+              'Client UI state is best served by Zustand or Context',
+              'URL state (query params) provides deep-linkable shareability'
             ]
           }
         ]
       },
       {
-        id: 'tools-version-control',
-        title: '4. Version Control & Tooling',
-        description: 'Collaborating in professional teams with Git, GitHub, and package managers.',
-        nodes: [
+        id: 'phase-4',
+        title: 'Phase 4: Next.js & Fullstack Frontend',
+        duration: 'Weeks 17-21',
+        description: 'Server Components, SSR/SSG/ISR, streaming hydration, and backend edge functions.',
+        topics: [
           {
-            id: 'git-github',
-            title: 'Git & GitHub Workflow',
-            badge: 'essential',
-            summary: 'Version control commands, branching strategies, Pull Requests, merge conflicts, and GitHub Actions.',
+            id: 'fe-nextjs',
+            title: 'Next.js App Router & Server Components',
+            type: 'mandatory',
+            summary: 'React Server Components (RSC) vs Client Components, nested layouts, and server actions.',
             keyPoints: [
-              'Git basics: init, status, add, commit, push, pull, log',
-              'Branching: checkout -b, branch, switch, merge vs rebase',
-              'Resolving merge conflicts calmly and methodically',
-              'Pull Requests, code reviews, and Git flow / trunk-based development'
-            ],
-            resources: [
-              { title: 'Git Official Documentation', url: 'https://git-scm.com/doc', type: 'doc' },
-              { title: 'Learn Git Branching (Interactive Sandbox)', url: 'https://learngitbranching.js.org/', type: 'practice' }
-            ],
-            children: [
-              { id: 'git-cli', title: 'Git CLI Essentials', badge: 'essential' },
-              { id: 'git-rebase', title: 'Rebase vs Merge', badge: 'recommended' },
-              { id: 'pr-workflow', title: 'Pull Requests & Code Review', badge: 'recommended' }
+              'Zero-bundle-size React Server Components executed on server',
+              'Client boundaries marked with "use client"',
+              'Server actions for form mutations without separate REST routes'
             ]
           },
           {
-            id: 'package-managers',
-            title: 'Package Managers: npm / pnpm / yarn',
-            badge: 'essential',
-            summary: 'Managing dependencies, package.json scripts, lockfiles, and semantic versioning.',
+            id: 'fe-typescript',
+            title: 'TypeScript for Production',
+            type: 'mandatory',
+            summary: 'Generics, union types, discriminated unions, utility types, and strict mode typing.',
             keyPoints: [
-              'Understanding package.json and package-lock.json',
-              'dependencies vs devDependencies vs peerDependencies',
-              'Semantic Versioning: Major.Minor.Patch (^ vs ~)',
-              'pnpm hard-linking efficiency vs npm vs bun'
-            ],
-            resources: [
-              { title: 'npm Docs: package.json guide', url: 'https://docs.npmjs.com/cli/v10/configuring-npm/package-json', type: 'doc' }
-            ],
-            children: [
-              { id: 'npm-scripts', title: 'npm / pnpm Scripts', badge: 'essential' },
-              { id: 'semver', title: 'Semantic Versioning (^ vs ~)', badge: 'recommended' }
+              'Type narrowing using type guards and in operator',
+              'Discriminated unions for clean state machine modeling',
+              'Component Props typing with React.ComponentPropsWithoutRef'
             ]
           }
         ]
       },
       {
-        id: 'modern-frameworks',
-        title: '5. Pick a Frontend Framework',
-        description: 'Component-driven architectures, reactive state, and declarative UI development.',
-        nodes: [
+        id: 'phase-5',
+        title: 'Phase 5: Performance, Security & Placement Prep',
+        duration: 'Weeks 22-26',
+        description: 'Core Web Vitals, bundle optimization, security hygiene, and coding interviews.',
+        topics: [
           {
-            id: 'react-ecosystem',
-            title: 'React.js (Recommended)',
-            badge: 'recommended',
-            summary: 'The industry-standard UI library: JSX, Components, Hooks, State Management, and routing.',
+            id: 'fe-performance',
+            title: 'Core Web Vitals & Web Performance',
+            type: 'mandatory',
+            summary: 'LCP (Largest Contentful Paint), INP (Interaction to Next Paint), CLS (Cumulative Layout Shift).',
             keyPoints: [
-              'JSX & Component Lifecycle (render phases, Virtual DOM diffing)',
-              'Core Hooks: useState, useEffect, useRef, useMemo, useCallback, useContext',
-              'Custom Hooks for reusable logic abstraction',
-              'Client-side Routing: React Router v6 / TanStack Router',
-              'Global State: Zustand (Recommended), Redux Toolkit, Context API',
-              'Server State & Caching: TanStack Query (React Query)'
-            ],
-            resources: [
-              { title: 'React Official Documentation (react.dev)', url: 'https://react.dev/', type: 'doc' },
-              { title: 'TanStack Query Docs', url: 'https://tanstack.com/query/latest', type: 'doc' },
-              { title: 'Zustand GitHub Documentation', url: 'https://github.com/pmndrs/zustand', type: 'doc' }
-            ],
-            children: [
-              { id: 'react-hooks', title: 'React Hooks (State, Effects, Refs)', badge: 'essential' },
-              { id: 'react-router', title: 'Client Routing (React Router)', badge: 'essential' },
-              { id: 'zustand-state', title: 'Zustand / Redux Toolkit', badge: 'recommended' },
-              { id: 'tanstack-query', title: 'TanStack Query (Server State)', badge: 'recommended' }
+              'Image optimization with modern formats (AVIF/WebP) and srcset',
+              'Code splitting and lazy loading dynamic imports',
+              'Critical CSS inlining and font display: swap'
             ]
           },
           {
-            id: 'vue-angular',
-            title: 'Alternative Frameworks: Vue.js / Angular',
-            badge: 'alternative',
-            summary: 'Popular enterprise alternatives with powerful composition and dependency injection features.',
+            id: 'fe-security',
+            title: 'Web Security (OWASP Top 10)',
+            type: 'mandatory',
+            summary: 'Cross-Site Scripting (XSS), CSRF tokens, Content Security Policy (CSP), CORS, and secure cookies.',
             keyPoints: [
-              'Vue 3: Composition API, Single File Components (.vue), Pinia state, Vue Router',
-              'Angular: TypeScript-first, Signals, RxJS Observables, Dependency Injection'
-            ],
-            resources: [
-              { title: 'Vue.js Documentation', url: 'https://vuejs.org/', type: 'doc' },
-              { title: 'Angular Documentation', url: 'https://angular.dev/', type: 'doc' }
-            ],
-            children: [
-              { id: 'vue-composition', title: 'Vue 3 Composition API', badge: 'alternative' },
-              { id: 'angular-signals', title: 'Angular Signals & RxJS', badge: 'alternative' }
-            ]
-          }
-        ]
-      },
-      {
-        id: 'modern-styling-builds',
-        title: '6. Modern Styling & Build Tools',
-        description: 'Utility-first styling, bundle bundlers, and developer ergonomics.',
-        nodes: [
-          {
-            id: 'tailwind-css',
-            title: 'Tailwind CSS (Utility-First)',
-            badge: 'recommended',
-            summary: 'Utility-first CSS framework for rapid, responsive UI development without leaving your JSX.',
-            keyPoints: [
-              'Utility classes for typography, flex/grid layouts, borders, and spacing',
-              'Pseudo-class modifiers: hover:, focus:, active:, dark:, group-hover:',
-              'Responsive design modifiers: sm:, md:, lg:, xl:, 2xl:',
-              'Arbitrary values, theme customization, Tailwind v4 @import syntax'
-            ],
-            resources: [
-              { title: 'Tailwind CSS Official Documentation', url: 'https://tailwindcss.com/docs', type: 'doc' }
-            ],
-            children: [
-              { id: 'tailwind-responsive', title: 'Responsive & Dark Mode', badge: 'essential' },
-              { id: 'tailwind-v4', title: 'Tailwind v4 Engine', badge: 'recommended' }
-            ]
-          },
-          {
-            id: 'vite-build-tools',
-            title: 'Vite & Modern Bundlers',
-            badge: 'essential',
-            summary: 'Lightning fast development server using native ES Modules and Rollup production builds.',
-            keyPoints: [
-              'Native ESM based dev server with instant Hot Module Replacement (HMR)',
-              'Rollup-based optimized production tree-shaking and asset hashing',
-              'Environment variables: import.meta.env.VITE_*',
-              'TypeScript compilation & Babel / SWC / esbuild transpilation'
-            ],
-            resources: [
-              { title: 'Vite Official Guide', url: 'https://vite.dev/guide/', type: 'doc' }
-            ],
-            children: [
-              { id: 'vite-config', title: 'vite.config.ts & Plugins', badge: 'essential' },
-              { id: 'ts-setup', title: 'TypeScript Integration (tsconfig)', badge: 'essential' }
-            ]
-          }
-        ]
-      },
-      {
-        id: 'ssr-nextjs',
-        title: '7. SSR & Full-Stack Meta-Frameworks',
-        description: 'Server-Side Rendering, Static Site Generation, and Edge Computing with Next.js.',
-        nodes: [
-          {
-            id: 'nextjs',
-            title: 'Next.js (App Router)',
-            badge: 'recommended',
-            summary: 'The leading React framework: React Server Components (RSC), App Router, dynamic routing, and API routes.',
-            keyPoints: [
-              'React Server Components (RSC) vs Client Components ("use client")',
-              'File-system based App Router: layout.tsx, page.tsx, loading.tsx, error.tsx',
-              'Data fetching: Server actions, fetch caching, revalidatePath, ISR',
-              'Metadata API and SEO generation (OpenGraph, Twitter cards)',
-              'Edge Runtime and middleware authentication'
-            ],
-            resources: [
-              { title: 'Next.js App Router Documentation', url: 'https://nextjs.org/docs', type: 'doc' },
-              { title: 'Learn Next.js (Official Interactive Course)', url: 'https://nextjs.org/learn', type: 'practice' }
-            ],
-            children: [
-              { id: 'rsc', title: 'Server Components vs Client Components', badge: 'essential' },
-              { id: 'server-actions', title: 'Server Actions & Mutations', badge: 'recommended' },
-              { id: 'isr-caching', title: 'Incremental Static Regeneration (ISR)', badge: 'recommended' }
-            ]
-          }
-        ]
-      },
-      {
-        id: 'testing-security-perf',
-        title: '8. Testing, Security & Web Performance',
-        description: 'Delivering bulletproof, blazing-fast, and secure web applications.',
-        nodes: [
-          {
-            id: 'frontend-testing',
-            title: 'Frontend Testing (Vitest & Playwright)',
-            badge: 'essential',
-            summary: 'Unit testing, integration testing, and end-to-end browser automation.',
-            keyPoints: [
-              'Unit testing with Vitest / Jest: test suites, expect assertions, mocking',
-              'React Testing Library: testing user behavior instead of implementation details',
-              'End-to-End (E2E) testing with Playwright or Cypress across browsers',
-              'Accessibility automated testing with axe-core'
-            ],
-            resources: [
-              { title: 'Vitest Official Guide', url: 'https://vitest.dev/guide/', type: 'doc' },
-              { title: 'Testing Library Docs', url: 'https://testing-library.com/docs/react-testing-library/intro/', type: 'doc' }
-            ],
-            children: [
-              { id: 'vitest-unit', title: 'Vitest & React Testing Library', badge: 'essential' },
-              { id: 'playwright-e2e', title: 'Playwright E2E Automation', badge: 'recommended' }
-            ]
-          },
-          {
-            id: 'web-performance-vitals',
-            title: 'Core Web Vitals & Optimization',
-            badge: 'essential',
-            summary: 'LCP, FID/INP, CLS, lazy loading, image optimization, and bundle splitting.',
-            keyPoints: [
-              'LCP (Largest Contentful Paint), INP (Interaction to Next Paint), CLS (Cumulative Layout Shift)',
-              'Image optimization: modern formats (WebP, AVIF), responsive srcset, lazy loading',
-              'Dynamic imports (React.lazy) and route-level code splitting',
-              'Minimizing JavaScript execution time and bundle size'
-            ],
-            resources: [
-              { title: 'web.dev: Core Web Vitals', url: 'https://web.dev/vitals/', type: 'guide' },
-              { title: 'Lighthouse Performance Auditing', url: 'https://developer.chrome.com/docs/lighthouse/overview/', type: 'doc' }
-            ],
-            children: [
-              { id: 'cwv-metrics', title: 'Core Web Vitals (LCP, INP, CLS)', badge: 'essential' },
-              { id: 'code-splitting', title: 'Code Splitting & Lazy Loading', badge: 'recommended' }
+              'Sanitize user inputs to prevent stored and reflected XSS',
+              'SameSite=Lax/Strict and httpOnly flags on auth cookies',
+              'Strict Content-Security-Policy headers'
             ]
           }
         ]
       }
+    ],
+    projects: [
+      {
+        title: 'Minimalist Markdown Note Editor',
+        level: 'Beginner',
+        description: 'Build a browser-based split-pane markdown note-taking app with live preview and local storage autosave.',
+        deliverables: ['Real-time markdown parser', 'Keyboard shortcuts (Cmd+S, Cmd+B)', 'Tag-based search and filtering']
+      },
+      {
+        title: 'Real-Time Collaborative Kanban Board',
+        level: 'Intermediate',
+        description: 'Trello-style drag-and-drop task board with optimistic UI updates and live multi-tab synchronization.',
+        deliverables: ['Custom drag-and-drop reordering', 'Optimistic UI rollback on error', 'Filter by assignee and status']
+      },
+      {
+        title: 'High-Scale E-Commerce Storefront with Next.js',
+        level: 'Capstone',
+        description: 'Production-ready e-commerce store with server components, search filtering, cart state, and Lighthouse 95+ score.',
+        deliverables: ['Next.js App Router with ISR', 'Stripe checkout flow', 'Sub-second LCP and zero layout shift']
+      }
     ]
   },
 
-  // ==========================================
-  // 2. BACKEND DEVELOPER ROADMAP
-  // ==========================================
-  {
-    id: 'backend',
+  backend: {
     slug: 'backend',
-    title: 'Backend Developer',
-    shortDesc: 'Step by step guide to server architecture, databases, APIs, and cloud deployments',
-    description: 'Learn modern backend engineering: language mastery (Node.js/Go/Python), relational and NoSQL databases, RESTful and GraphQL APIs, caching, authentication, Docker, and distributed systems.',
-    iconName: 'Server',
-    badge: 'High Demand',
-    level: 'Intermediate',
-    estimatedHours: '150-180 Hours',
-    stages: [
+    title: 'Backend Developer Roadmap',
+    subtitle: 'Step by step guide to becoming an enterprise Backend Engineer in 2026',
+    category: 'Web Development',
+    type: 'role',
+    isPopular: true,
+    duration: '6 - 9 Months',
+    difficulty: 'Intermediate to Advanced',
+    summary: 'Master server runtimes, REST & gRPC API design, relational and document databases, caching, asynchronous message queues, distributed systems, and cloud deployment.',
+    targetRoles: ['Backend Engineer', 'API Developer', 'System Engineer', 'Platform Engineer'],
+    relatedRoleSheetSlug: 'backend-developer',
+    relatedDsaSlug: 'blind-75-dsa-sheet',
+    phases: [
       {
-        id: 'backend-language',
-        title: '1. Pick a Backend Language',
-        description: 'Choose a primary programming language and master its concurrency and runtime model.',
-        nodes: [
+        id: 'be-phase-1',
+        title: 'Phase 1: Programming Language & Runtime',
+        duration: 'Weeks 1-4',
+        description: 'Choose a primary backend language (Node.js, Go, or Python) and master its concurrency model.',
+        topics: [
           {
-            id: 'nodejs-typescript',
-            title: 'Node.js & TypeScript (Recommended)',
-            badge: 'recommended',
-            summary: 'Asynchronous event-driven JavaScript/TypeScript backend runtime powered by Chrome V8.',
-            keyPoints: [
-              'Event-driven, non-blocking I/O model and libuv thread pool',
-              'TypeScript typing: interfaces, generics, type narrowing, strict mode',
-              'Frameworks: Express.js (classic), Fastify (high-performance), NestJS (enterprise architecture)'
-            ],
-            resources: [
-              { title: 'Node.js Official Documentation', url: 'https://nodejs.org/docs/latest/api/', type: 'doc' },
-              { title: 'TypeScript Official Handbook', url: 'https://www.typescriptlang.org/docs/handbook/intro.html', type: 'doc' }
-            ],
-            children: [
-              { id: 'express-fastify', title: 'Express.js & Fastify', badge: 'essential' },
-              { id: 'nestjs', title: 'NestJS Architecture', badge: 'recommended' }
-            ]
+            id: 'be-lang-choice',
+            title: 'Backend Language Mastery (Go / Node.js / Python)',
+            type: 'mandatory',
+            summary: 'Deep understanding of memory management, standard libraries, I/O primitives, and concurrency.',
+            keyPoints: ['Node.js Event Loop vs Go Goroutines vs Python Asyncio', 'Package managers and dependency isolation', 'Graceful server shutdown signal handling (SIGTERM)']
           },
           {
-            id: 'python-go',
-            title: 'Python / Go / Java',
-            badge: 'alternative',
-            summary: 'High performance or AI-friendly backend languages widely used in cloud microservices.',
-            keyPoints: [
-              'Python: FastAPI, Django, AsyncIO, Pydantic data validation',
-              'Go (Golang): Goroutines, Channels, Gin framework, microsecond latency',
-              'Java: Spring Boot, JVM garbage collection, enterprise reliability'
-            ],
-            resources: [
-              { title: 'FastAPI Documentation', url: 'https://fastapi.tiangolo.com/', type: 'doc' },
-              { title: 'Tour of Go', url: 'https://go.dev/tour/', type: 'practice' }
-            ],
-            children: [
-              { id: 'fastapi-python', title: 'FastAPI & AsyncIO', badge: 'alternative' },
-              { id: 'golang-goroutines', title: 'Go & Goroutines', badge: 'alternative' }
-            ]
+            id: 'be-http-api',
+            title: 'RESTful API Architecture & HTTP Standards',
+            type: 'mandatory',
+            summary: 'Stateless endpoints, standard HTTP verbs, status codes, payload validation, and content negotiation.',
+            keyPoints: ['Idempotency of GET, PUT, DELETE vs POST', 'Pagination strategies (Cursor-based vs Offset-based)', 'Rate limiting and header conventions (Retry-After, RateLimit-Limit)']
           }
         ]
       },
       {
-        id: 'databases',
-        title: '2. Relational & NoSQL Databases',
-        description: 'Storing, indexing, modeling, and querying persistent data at scale.',
-        nodes: [
+        id: 'be-phase-2',
+        title: 'Phase 2: Relational & NoSQL Databases',
+        duration: 'Weeks 5-10',
+        description: 'Master data modeling, ACID transactions, index structures, and query execution plans.',
+        topics: [
           {
-            id: 'postgresql-sql',
-            title: 'PostgreSQL & Relational Data (ACID)',
-            badge: 'recommended',
-            summary: 'The world\'s most advanced open-source relational database: transactions, schemas, and complex joins.',
-            keyPoints: [
-              'ACID Properties: Atomicity, Consistency, Isolation, Durability',
-              'SQL Schema design: 1-to-1, 1-to-Many, Many-to-Many relationships and Foreign Keys',
-              'Indexing: B-Tree indexes, Composite indexes, EXPLAIN ANALYZE query planning',
-              'ORMs: Drizzle ORM (lightweight, typesafe), Prisma, TypeORM'
-            ],
-            resources: [
-              { title: 'PostgreSQL Official Documentation', url: 'https://www.postgresql.org/docs/', type: 'doc' },
-              { title: 'Use The Index, Luke (SQL Indexing Guide)', url: 'https://use-the-index-luke.com/', type: 'guide' }
-            ],
-            children: [
-              { id: 'sql-queries-joins', title: 'Complex JOINs & Aggregations', badge: 'essential' },
-              { id: 'indexing-explain', title: 'B-Tree Indexing & Query Tuning', badge: 'essential' },
-              { id: 'drizzle-prisma', title: 'Drizzle ORM & Prisma', badge: 'recommended' }
-            ]
+            id: 'be-postgres',
+            title: 'PostgreSQL & Relational Modeling',
+            type: 'mandatory',
+            summary: 'Foreign keys, normalization (1NF to 3NF), transactions, isolation levels, and EXPLAIN ANALYZE.',
+            keyPoints: ['B-Tree indexes vs Hash indexes vs GIN indexes', 'Transaction isolation: Read Committed vs Repeatable Read vs Serializable', 'Mitigating N+1 queries using JOINs or batching']
           },
           {
-            id: 'nosql-caching',
-            title: 'Redis & NoSQL (Document / Key-Value)',
-            badge: 'essential',
-            summary: 'In-memory caching and non-relational document databases for high write throughput.',
-            keyPoints: [
-              'Redis: In-memory key-value data store, TTL expiration, Rate limiting, Pub/Sub',
-              'Cache strategies: Cache-Aside, Write-Through, Write-Behind, Cache Invalidation',
-              'MongoDB: Document database, BSON, horizontal sharding'
-            ],
-            resources: [
-              { title: 'Redis University & Documentation', url: 'https://redis.io/docs/', type: 'doc' }
-            ],
-            children: [
-              { id: 'redis-cache-aside', title: 'Redis Caching & Invalidation', badge: 'essential' },
-              { id: 'redis-rate-limit', title: 'Rate Limiting (Sliding Window)', badge: 'recommended' }
-            ]
+            id: 'be-redis',
+            title: 'Redis Caching & In-Memory Data Structures',
+            type: 'mandatory',
+            summary: 'Cache-Aside, Write-Through patterns, cache invalidation, TTLs, and distributed locks.',
+            keyPoints: ['Mitigating Cache Stampede, Cache Avalanche, and Cache Penetration', 'Redis strings, hashes, sorted sets, and pub/sub', 'Redlock distributed locking considerations']
           }
         ]
       },
       {
-        id: 'apis-auth',
-        title: '3. API Design & Authentication',
-        description: 'Building secure, well-documented endpoints for mobile and web clients.',
-        nodes: [
+        id: 'be-phase-3',
+        title: 'Phase 3: Asynchronous Queues & Microservices',
+        duration: 'Weeks 11-18',
+        description: 'Decouple heavy tasks, event-driven architectures, and messaging systems.',
+        topics: [
           {
-            id: 'rest-graphql',
-            title: 'RESTful API & GraphQL Design',
-            badge: 'essential',
-            summary: 'Resource-oriented design, HTTP methods, pagination, and query flexibility.',
-            keyPoints: [
-              'REST principles: Statelessness, idempotent methods, standard status codes',
-              'Pagination: Offset-based vs Cursor-based pagination (best for large feeds)',
-              'GraphQL: Schema Definition Language (SDL), Queries, Mutations, Resolvers, N+1 query problem & DataLoader'
-            ],
-            resources: [
-              { title: 'RESTful API Design Best Practices', url: 'https://restfulapi.net/', type: 'guide' }
-            ],
-            children: [
-              { id: 'cursor-pagination', title: 'Cursor-based Pagination', badge: 'recommended' },
-              { id: 'graphql-dataloader', title: 'GraphQL & DataLoader', badge: 'alternative' }
-            ]
+            id: 'be-queues',
+            title: 'Message Brokers (RabbitMQ / Apache Kafka)',
+            type: 'mandatory',
+            summary: 'Publish-subscribe, consumer groups, partitions, dead-letter queues, and at-least-once delivery.',
+            keyPoints: ['RabbitMQ queue exchanges vs Kafka distributed log streams', 'Idempotent consumer processing', 'Backpressure management and consumer scaling']
           },
           {
-            id: 'auth-security',
-            title: 'Authentication & Authorization',
-            badge: 'essential',
-            summary: 'Securing APIs using JWTs, OAuth 2.0, Role-Based Access Control, and hashing.',
-            keyPoints: [
-              'Passwords: bcrypt / Argon2 password hashing with salt',
-              'JWT (JSON Web Tokens): Access tokens vs Refresh tokens, token rotation',
-              'OAuth 2.0 & OpenID Connect: Authorization Code Flow with PKCE',
-              'RBAC (Role-Based Access Control) & ABAC (Attribute-Based Access Control)'
-            ],
-            resources: [
-              { title: 'Auth0: OAuth 2.0 and OpenID Connect Overview', url: 'https://auth0.com/intro-to-iam/what-is-oauth-2', type: 'guide' }
-            ],
-            children: [
-              { id: 'jwt-refresh', title: 'JWT Access + Refresh Tokens', badge: 'essential' },
-              { id: 'oauth-pkce', title: 'OAuth 2.0 + PKCE', badge: 'recommended' },
-              { id: 'rbac-security', title: 'Role-Based Access Control', badge: 'essential' }
-            ]
+            id: 'be-auth',
+            title: 'Authentication & Authorization Security',
+            type: 'mandatory',
+            summary: 'JWT tokens, OAuth 2.0, OpenID Connect, RBAC (Role-Based Access Control), and password hashing.',
+            keyPoints: ['Argon2id and bcrypt for secure password hashing', 'Access token short TTL + refresh token rotation', 'Secure token transmission (httpOnly cookies)']
           }
         ]
+      },
+      {
+        id: 'be-phase-4',
+        title: 'Phase 4: Distributed Systems & Scalability',
+        duration: 'Weeks 19-26',
+        description: 'Scale systems to millions of users, load balancing, sharding, and resilience.',
+        topics: [
+          {
+            id: 'be-dist-scale',
+            title: 'Load Balancing & Database Sharding',
+            type: 'mandatory',
+            summary: 'Horizontal scaling, consistent hashing, database read-replicas, and connection pooling.',
+            keyPoints: ['Round Robin vs Least Connections load balancing', 'Read replicas for query scaling + PgBouncer connection pooling', 'Consistent hashing for partition distribution']
+          },
+          {
+            id: 'be-observability',
+            title: 'Logging, Metrics & Distributed Tracing',
+            type: 'mandatory',
+            summary: 'Prometheus, Grafana, OpenTelemetry, structured JSON logs, and APM tracing.',
+            keyPoints: ['RED Method: Rate, Errors, Duration', 'Distributed trace context propagation across microservices', 'Health checks (/healthz, /readyz) for orchestrators']
+          }
+        ]
+      }
+    ],
+    projects: [
+      {
+        title: 'High-Throughput URL Shortener (Bitly Clone)',
+        level: 'Beginner',
+        description: 'Build a distributed URL shortener with Base62 encoding, Redis caching, and real-time click analytics.',
+        deliverables: ['Sub-10ms redirect latency using Redis cache', 'PostgreSQL persistent store with unique indexes', 'Rate-limiting per IP address']
+      },
+      {
+        title: 'Asynchronous Video Transcoding Service',
+        level: 'Intermediate',
+        description: 'Background worker service that receives video uploads, splits jobs via RabbitMQ/Kafka, and uploads HLS chunks to S3.',
+        deliverables: ['Worker pool with concurrency limits', 'Dead-letter queue for failed encoding jobs', 'Webhook notification upon task completion']
+      },
+      {
+        title: 'Fintech Wallet & Ledger System',
+        level: 'Capstone',
+        description: 'Double-entry bookkeeping financial ledger guaranteeing zero double-spending and strict ACID transactions.',
+        deliverables: ['Idempotency keys on all transaction APIs', 'PostgreSQL Serializable transactions with advisory locks', 'Complete audit trail log for every balance movement']
       }
     ]
   },
 
-  // ==========================================
-  // 3. DATA STRUCTURES & ALGORITHMS (DSA ROADMAP)
-  // ==========================================
-  {
-    id: 'dsa',
-    slug: 'dsa',
-    title: 'Data Structures & Algorithms',
-    shortDesc: 'A comprehensive coding roadmap from Big O to Dynamic Programming and Graphs',
-    description: 'Master technical interview coding questions. Follow this structured roadmap from asymptotic analysis to Arrays, Binary Search, Trees, Graphs, and Advanced Dynamic Programming.',
-    iconName: 'Cpu',
-    badge: 'Interviews',
-    level: 'All Levels',
-    estimatedHours: '100-140 Hours',
-    stages: [
+  'ai-engineer': {
+    slug: 'ai-engineer',
+    title: 'AI Engineer Roadmap',
+    subtitle: 'Step by step guide to building production GenAI applications & Agentic Systems in 2026',
+    category: 'AI & Machine Learning',
+    type: 'role',
+    isPopular: true,
+    duration: '5 - 8 Months',
+    difficulty: 'Intermediate to Advanced',
+    summary: 'Master foundation LLMs, prompt engineering, Retrieval-Augmented Generation (RAG), vector databases, autonomous agentic workflows, fine-tuning, and LLM evaluation & safety.',
+    targetRoles: ['AI Engineer', 'GenAI Developer', 'LLM Architect', 'Applied AI Specialist'],
+    relatedRoleSheetSlug: 'machine-learning-engineer',
+    relatedDsaSlug: 'blind-75-dsa-sheet',
+    phases: [
       {
-        id: 'complexity-arrays',
-        title: '1. Foundations & Linear Structures',
-        description: 'Big-O notation, memory representation, and fundamental pointer manipulation.',
-        nodes: [
+        id: 'ai-phase-1',
+        title: 'Phase 1: Foundation Models & Prompt Engineering',
+        duration: 'Weeks 1-4',
+        description: 'Understand transformers, tokenization, context windows, and advanced structured prompting.',
+        topics: [
           {
-            id: 'big-o-analysis',
-            title: 'Big-O Asymptotic Analysis',
-            badge: 'essential',
-            summary: 'Analyze time and space complexity: O(1), O(log N), O(N), O(N log N), O(N²), O(2^N).',
-            keyPoints: [
-              'Worst case (Big-O), Best case (Omega), Average case (Theta)',
-              'Space complexity: Auxiliary space vs input space, recursion stack space',
-              'Constant factors and amortized analysis (e.g., dynamic array resizing)'
-            ],
-            resources: [
-              { title: 'Big-O Cheat Sheet', url: 'https://www.bigocheatsheet.com/', type: 'guide' }
-            ]
+            id: 'ai-foundations',
+            title: 'Transformers & LLM Fundamentals',
+            type: 'mandatory',
+            summary: 'Self-attention mechanism, autoregressive generation, temperature, top-p, and context windows.',
+            keyPoints: ['Token economics: input tokens vs output generation costs', 'Temperature controls determinism vs creative exploration', 'Context window limits and needle-in-a-haystack recall']
           },
           {
-            id: 'two-pointers-sliding',
-            title: 'Arrays, Two Pointers & Sliding Window',
-            badge: 'essential',
-            summary: 'High-frequency coding patterns for continuous subarrays and sorted pairs.',
-            keyPoints: [
-              'Two pointers: converging pointers (left & right), fast and slow runner (Tortoise & Hare)',
-              'Fixed size sliding window vs dynamic shrinkable sliding window',
-              'Prefix sums for instant O(1) range queries'
-            ],
-            resources: [
-              { title: 'LeetCode Pattern: Two Pointers', url: 'https://leetcode.com/tag/two-pointers/', type: 'practice' }
-            ],
-            children: [
-              { id: 'prefix-sum', title: 'Prefix Sums & Running Totals', badge: 'essential' },
-              { id: 'sliding-window-dyn', title: 'Dynamic Sliding Window', badge: 'essential' }
-            ]
+            id: 'ai-prompt-eng',
+            title: 'Structured Prompting & Function Calling',
+            type: 'mandatory',
+            summary: 'Few-shot prompting, Chain-of-Thought (CoT), JSON schema enforcement, and tool definitions.',
+            keyPoints: ['System instructions vs user prompts vs tool outputs', 'Function calling / tool use for deterministic external action', 'Constrained decoding for 100% reliable JSON schema responses']
           }
         ]
       },
       {
-        id: 'linked-lists-stacks',
-        title: '2. Linked Lists, Stacks & Queues',
-        description: 'Node based data structures and LIFO/FIFO processing logic.',
-        nodes: [
+        id: 'ai-phase-2',
+        title: 'Phase 2: Retrieval-Augmented Generation (RAG)',
+        duration: 'Weeks 5-10',
+        description: 'Connect private company data to foundation models with high retrieval precision.',
+        topics: [
           {
-            id: 'linked-lists',
-            title: 'Singly & Doubly Linked Lists',
-            badge: 'essential',
-            summary: 'Pointer manipulation, reversal, cycle detection, and merging.',
-            keyPoints: [
-              'In-place list reversal (iterative and recursive)',
-              'Floyd’s Cycle Finding Algorithm (detecting loops)',
-              'Dummy head node technique for edge-case simplification'
-            ],
-            resources: [
-              { title: 'NeetCode Linked List Playlist', url: 'https://www.youtube.com/playlist?list=PLot-Xpze53leU0T69tM_hO759yG-T4Q6O', type: 'video' }
-            ]
+            id: 'ai-embeddings-vectors',
+            title: 'Embeddings & Vector Databases',
+            type: 'mandatory',
+            summary: 'Dense vector representations, cosine similarity, HNSW indexing, pgvector, and Pinecone/Qdrant.',
+            keyPoints: ['Chunking strategies: semantic, recursive, and windowed', 'HNSW (Hierarchical Navigable Small World) index trade-offs', 'Hybrid search: combining BM25 keyword search with dense vectors']
           },
           {
-            id: 'monotonic-stack',
-            title: 'Monotonic Stacks & Queues',
-            badge: 'recommended',
-            summary: 'Finding the Next Greater Element, Daily Temperatures, and Largest Rectangle in Histogram in linear O(N) time.',
-            keyPoints: [
-              'Monotonic increasing vs monotonic decreasing stack invariant',
-              'Deque for sliding window maximum in O(N)',
-              'Stack evaluation for postfix, prefix, and calculator expressions'
-            ],
-            resources: [
-              { title: 'Next Greater Element Pattern Guide', url: 'https://leetcode.com/problems/next-greater-element-i/', type: 'practice' }
-            ]
+            id: 'ai-advanced-rag',
+            title: 'Advanced RAG & Reranking',
+            type: 'mandatory',
+            summary: 'Cross-encoder reranking, hypothetical document embeddings (HyDE), and context compression.',
+            keyPoints: ['Cohere/BGE cross-encoders for precision reranking', 'Parent-document retrieval to preserve surrounding context', 'Query expansion and multi-query generation']
           }
         ]
       },
       {
-        id: 'trees-bst-heaps',
-        title: '3. Trees, BSTs & Priority Queues',
-        description: 'Hierarchical data structures, recursion, binary search trees, and heaps.',
-        nodes: [
+        id: 'ai-phase-3',
+        title: 'Phase 3: Agentic Workflows & Multi-Agent Systems',
+        duration: 'Weeks 11-16',
+        description: 'Build autonomous agents that plan, iterate, self-correct, and invoke tools.',
+        topics: [
           {
-            id: 'binary-trees',
-            title: 'Binary Tree Traversals (DFS & BFS)',
-            badge: 'essential',
-            summary: 'Preorder, Inorder, Postorder, and Level-Order traversals.',
-            keyPoints: [
-              'Depth First Search (DFS): recursive stack and iterative with explicit stack',
-              'Breadth First Search (BFS): Level order traversal using a Queue',
-              'Tree properties: maximum depth, diameter of binary tree, lowest common ancestor (LCA)'
-            ],
-            resources: [
-              { title: 'Binary Tree Algorithms Visualizer', url: 'https://visualgo.net/en/bst', type: 'practice' }
-            ]
+            id: 'ai-agents',
+            title: 'Agent Architectures (ReAct, LangGraph, AutoGen)',
+            type: 'mandatory',
+            summary: 'Reasoning + Acting loops, state machines, cyclic graphs, and human-in-the-loop approvals.',
+            keyPoints: ['ReAct (Reason + Act + Observe) paradigm', 'LangGraph cyclic state graph execution', 'Memory: short-term conversation buffers vs long-term vector recall']
           },
           {
-            id: 'heaps-priority-queues',
-            title: 'Heaps & Priority Queues',
-            badge: 'essential',
-            summary: 'Min-heaps, max-heaps, finding Top K Frequent Elements, and median in a data stream.',
-            keyPoints: [
-              'Binary heap array representation (parent = (i-1)//2, left = 2i+1, right = 2i+2)',
-              'Heapify operation in O(N) time vs N insertions in O(N log N)',
-              'Top K elements pattern using bounded size heap'
-            ],
-            resources: [
-              { title: 'Heap Data Structure Explained', url: 'https://en.wikipedia.org/wiki/Binary_heap', type: 'doc' }
-            ]
+            id: 'ai-evals-security',
+            title: 'LLM Evaluation & AI Red Teaming',
+            type: 'mandatory',
+            summary: 'RAG Triad (Context Relevance, Groundedness, Answer Relevance), prompt injection defenses.',
+            keyPoints: ['Ragas & TruLens automated evaluation frameworks', 'Guarding against indirect prompt injection in external data', 'Latency budgeting, streaming outputs, and fallbacks']
           }
         ]
+      }
+    ],
+    projects: [
+      {
+        title: 'Enterprise Knowledge RAG Engine',
+        level: 'Intermediate',
+        description: 'Upload PDF/Doc files, parse semantic tables, index in pgvector, and provide cited answers.',
+        deliverables: ['Recursive chunking with source citations', 'Hybrid search (pgvector + full text search)', 'Hallucination checker before response output']
       },
       {
-        id: 'graphs-dp',
-        title: '4. Graphs & Dynamic Programming',
-        description: 'The highest yield and most challenging algorithmic domains.',
-        nodes: [
-          {
-            id: 'graph-algorithms',
-            title: 'Graph Traversals (BFS, DFS, Dijkstra)',
-            badge: 'essential',
-            summary: 'Adjacency list representations, cycle detection, topological sort, and shortest paths.',
-            keyPoints: [
-              'Adjacency List vs Adjacency Matrix',
-              'Connected components and Number of Islands (Grid DFS/BFS)',
-              'Topological Sort (Kahn\'s BFS algorithm & DFS with post-order reversal)',
-              'Dijkstra’s Algorithm with Min-Heap for single-source shortest path'
-            ],
-            resources: [
-              { title: 'WilliamFiset Graph Theory Playlist', url: 'https://www.youtube.com/playlist?list=PLDV1Zeh2NRsDGO4--qE8yH72HFL1Km93P', type: 'video' }
-            ],
-            children: [
-              { id: 'topological-sort', title: 'Topological Sort (Course Schedule)', badge: 'essential' },
-              { id: 'dijkstra', title: 'Dijkstra\'s Shortest Path', badge: 'essential' },
-              { id: 'disjoint-set', title: 'Disjoint Set Union (Union-Find)', badge: 'recommended' }
-            ]
-          },
-          {
-            id: 'dynamic-programming',
-            title: 'Dynamic Programming (1D & 2D)',
-            badge: 'essential',
-            summary: 'Overlapping subproblems, optimal substructure, memoization, and tabulation.',
-            keyPoints: [
-              'Top-down Memoization (Recursion + Cache) vs Bottom-up Tabulation',
-              '1D DP: Climbing Stairs, Coin Change, House Robber, Longest Increasing Subsequence',
-              '2D DP: Unique Paths, Edit Distance, Longest Common Subsequence (LCS), 0/1 Knapsack',
-              'Space optimization: rolling array technique from O(N*M) to O(M)'
-            ],
-            resources: [
-              { title: 'Striver\'s DP Playlist (Take U Forward)', url: 'https://takeuforward.org/strivers-a2z-dsa-course/strivers-a2z-dsa-course-sheet-2/', type: 'video' }
-            ],
-            children: [
-              { id: '1d-dp', title: '1D DP (Coin Change, LIS)', badge: 'essential' },
-              { id: '2d-dp-grid', title: '2D DP Grid & Strings (Edit Distance)', badge: 'essential' },
-              { id: 'knapsack-pattern', title: '0/1 Knapsack Patterns', badge: 'recommended' }
-            ]
-          }
-        ]
+        title: 'Autonomous Research & Synthesis Agent',
+        level: 'Capstone',
+        description: 'An AI research agent that searches the web, verifies sources across 5 URLs, synthesizes findings into an executive report.',
+        deliverables: ['Cyclic ReAct execution loop with error recovery', 'Dynamic tool calling (Web Search, Calculator, Markdown Formatter)', 'Streaming token output to frontend']
       }
     ]
   },
 
-  // ==========================================
-  // 4. SYSTEM DESIGN ROADMAP
-  // ==========================================
-  {
-    id: 'system-design',
-    slug: 'system-design',
-    title: 'System Design',
-    shortDesc: 'Architecting scalable, fault-tolerant, and high-availability distributed systems',
-    description: 'Master high-level architecture: horizontal scaling, load balancers, caching tiers, database sharding, message queues, microservices, and design interview problems (URL shortener, Twitter, Uber).',
-    iconName: 'Layers',
-    badge: 'Senior & Staff',
-    level: 'Advanced',
-    estimatedHours: '80-120 Hours',
-    stages: [
-      {
-        id: 'system-design-basics',
-        title: '1. Fundamentals & Core Metrics',
-        description: 'Scalability, latency, throughput, and the CAP theorem.',
-        nodes: [
-          {
-            id: 'scalability-concepts',
-            title: 'Horizontal vs Vertical Scaling & Availability',
-            badge: 'essential',
-            summary: 'Scaling out with distributed instances versus scaling up single machines.',
-            keyPoints: [
-              'Vertical scaling (Scale-up) limits and Single Point of Failure (SPOF)',
-              'Horizontal scaling (Scale-out) with stateless services and load balancers',
-              'Availability numbers: 99.9% (Three Nines) vs 99.999% (Five Nines)',
-              'Latency (p50, p95, p99) vs Throughput (QPS / TPS)'
-            ],
-            resources: [
-              { title: 'System Design Primer (GitHub)', url: 'https://github.com/donnemartin/system-design-primer', type: 'guide' }
-            ]
-          },
-          {
-            id: 'cap-theorem',
-            title: 'CAP Theorem & PACELC Theorem',
-            badge: 'essential',
-            summary: 'Trade-offs between Consistency, Availability, and Partition Tolerance.',
-            keyPoints: [
-              'Consistency: Every read receives the most recent write',
-              'Availability: Every non-failing node returns a response',
-              'Partition Tolerance: The system continues to operate despite network drops',
-              'PACELC: If Partition -> Availability or Consistency; Else -> Latency or Consistency'
-            ],
-            resources: [
-              { title: 'Martin Kleppmann: Designing Data-Intensive Applications', url: 'https://dataintensive.net/', type: 'doc' }
-            ]
-          }
-        ]
-      },
-      {
-        id: 'load-balancing-caching',
-        title: '2. Load Balancing, CDNs & Caching',
-        description: 'Distributing incoming traffic and serving hot data at sub-millisecond speeds.',
-        nodes: [
-          {
-            id: 'load-balancers',
-            title: 'Load Balancers & Reverse Proxies',
-            badge: 'essential',
-            summary: 'Layer 4 (Transport) vs Layer 7 (Application) routing, health checks, and algorithms.',
-            keyPoints: [
-              'Algorithms: Round Robin, Weighted Round Robin, Least Connections, Consistent Hashing',
-              'Layer 4 (TCP/UDP IP routing) vs Layer 7 (HTTP header, path, cookie routing)',
-              'Nginx, HAProxy, AWS ALB, Cloudflare Reverse Proxy'
-            ],
-            resources: [
-              { title: 'Nginx Reverse Proxy Documentation', url: 'https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/', type: 'doc' }
-            ]
-          },
-          {
-            id: 'caching-layers',
-            title: 'Distributed Caching (Redis / Memcached)',
-            badge: 'essential',
-            summary: 'Cache invalidation, eviction policies, and preventing stampedes.',
-            keyPoints: [
-              'Eviction policies: LRU (Least Recently Used), LFU, FIFO',
-              'Cache Penetration, Cache Breakdown, and Cache Avalanche solutions',
-              'Bloom Filters for fast existence checks before hitting the database'
-            ],
-            resources: [
-              { title: 'Redis Architecture Deep Dive', url: 'https://redis.io/topics/architecture', type: 'doc' }
-            ]
-          }
-        ]
-      },
-      {
-        id: 'messaging-distributed',
-        title: '3. Asynchronous Messaging & Microservices',
-        description: 'Decoupling services with message queues, event streaming, and saga patterns.',
-        nodes: [
-          {
-            id: 'message-queues-kafka',
-            title: 'Apache Kafka & RabbitMQ',
-            badge: 'essential',
-            summary: 'Pub/Sub event streaming versus point-to-point message queuing.',
-            keyPoints: [
-              'Kafka: Distributed commit log, topics, partitions, consumer groups, offsets',
-              'RabbitMQ: AMQP protocol, exchanges (direct, fanout, topic), ACK acknowledgments',
-              'Dead Letter Queues (DLQ) for poison pill message handling'
-            ],
-            resources: [
-              { title: 'Confluent: Kafka 101 Course', url: 'https://developer.confluent.io/courses/apache-kafka/overview/', type: 'video' }
-            ]
-          }
-        ]
-      }
-    ]
-  },
-
-  // ==========================================
-  // 5. DEVOPS & CLOUD ENGINEER ROADMAP
-  // ==========================================
-  {
-    id: 'devops',
+  devops: {
     slug: 'devops',
-    title: 'DevOps & Cloud Engineer',
-    shortDesc: 'Docker containers, Kubernetes, CI/CD pipelines, Terraform, and cloud infrastructure',
-    description: 'Bridging development and IT operations: Linux shell mastery, Docker containerization, Kubernetes orchestration, Infrastructure as Code with Terraform, and Prometheus observability.',
-    iconName: 'Terminal',
-    badge: 'High Salary',
-    level: 'Intermediate',
-    estimatedHours: '130-160 Hours',
-    stages: [
+    title: 'DevOps & Cloud Engineer Roadmap',
+    subtitle: 'Step by step guide to mastering Infrastructure as Code, CI/CD, and Kubernetes in 2026',
+    category: 'DevOps',
+    type: 'role',
+    isPopular: true,
+    duration: '6 - 9 Months',
+    difficulty: 'Intermediate to Advanced',
+    summary: 'Master Linux systems, containerization with Docker, orchestration with Kubernetes, CI/CD pipelines, Infrastructure as Code with Terraform, and cloud observability.',
+    targetRoles: ['DevOps Engineer', 'Site Reliability Engineer (SRE)', 'Cloud Engineer', 'Platform Engineer'],
+    relatedRoleSheetSlug: 'devops-engineer',
+    relatedDsaSlug: 'blind-75-dsa-sheet',
+    phases: [
       {
-        id: 'linux-containers',
-        title: '1. Linux & Containerization (Docker)',
-        description: 'Packaging applications into reproducible, isolated container environments.',
-        nodes: [
+        id: 'devops-phase-1',
+        title: 'Phase 1: Linux & Networking Fundamentals',
+        duration: 'Weeks 1-4',
+        description: 'The foundation of all server infrastructure.',
+        topics: [
           {
-            id: 'docker-fundamentals',
-            title: 'Docker & Container Basics',
-            badge: 'essential',
-            summary: 'Dockerfiles, multi-stage builds, container images, volumes, and Docker Compose.',
-            keyPoints: [
-              'Containers vs Virtual Machines (cgroups, namespaces, shared kernel)',
-              'Writing efficient multi-stage Dockerfiles for minimal image footprint',
-              'Docker Compose for multi-container local microservice orchestration'
-            ],
-            resources: [
-              { title: 'Docker Official Get Started Tutorial', url: 'https://docs.docker.com/get-started/', type: 'doc' }
-            ]
-          }
-        ]
-      },
-      {
-        id: 'kubernetes-k8s',
-        title: '2. Container Orchestration (Kubernetes)',
-        description: 'Automating deployment, scaling, and management of containerized applications.',
-        nodes: [
-          {
-            id: 'k8s-core',
-            title: 'Kubernetes Architecture & Core Primitives',
-            badge: 'essential',
-            summary: 'Pods, Deployments, Services, ConfigMaps, Secrets, and Ingress controllers.',
-            keyPoints: [
-              'Control plane (API Server, etcd, Scheduler, Controller Manager) vs Worker Nodes (kubelet, kube-proxy)',
-              'Deployments, ReplicaSets, Rolling updates, and Rollbacks',
-              'ClusterIP, NodePort, and LoadBalancer service types'
-            ],
-            resources: [
-              { title: 'Kubernetes Official Documentation', url: 'https://kubernetes.io/docs/home/', type: 'doc' }
-            ]
-          }
-        ]
-      },
-      {
-        id: 'cicd-iac',
-        title: '3. CI/CD & Infrastructure as Code (Terraform)',
-        description: 'Automating software releases and declarative cloud provisioning.',
-        nodes: [
-          {
-            id: 'github-actions',
-            title: 'CI/CD with GitHub Actions',
-            badge: 'essential',
-            summary: 'Automating test runs, linting, building Docker images, and deploying to staging/production.',
-            keyPoints: [
-              'Workflows, triggers (push, pull_request), jobs, and steps',
-              'Matrix builds for multi-version testing',
-              'Secure secret management in pipelines'
-            ],
-            resources: [
-              { title: 'GitHub Actions Documentation', url: 'https://docs.github.com/en/actions', type: 'doc' }
-            ]
+            id: 'do-linux',
+            title: 'Linux Systems & Shell Scripting',
+            type: 'mandatory',
+            summary: 'File permissions, process management, systemd services, SSH keys, and Bash automation.',
+            keyPoints: ['systemctl service creation and journalctl debugging', 'File descriptors, pipes, grep, sed, and awk', 'Process signals (SIGTERM, SIGKILL, SIGHUP)']
           },
           {
-            id: 'terraform',
-            title: 'Terraform (IaC)',
-            badge: 'recommended',
-            summary: 'Declarative cloud provisioning on AWS, GCP, or Azure using HCL (HashiCorp Configuration Language).',
-            keyPoints: [
-              'State file management (remote state in S3 with DynamoDB locking)',
-              'terraform init, plan, apply, destroy lifecycle',
-              'Modular infrastructure components'
-            ],
-            resources: [
-              { title: 'HashiCorp Terraform Tutorials', url: 'https://developer.hashicorp.com/terraform/tutorials', type: 'practice' }
-            ]
+            id: 'do-networking',
+            title: 'Networking & Protocols for Cloud',
+            type: 'mandatory',
+            summary: 'DNS, TCP/UDP, CIDR subnetting, load balancers, reverse proxies, and TLS termination.',
+            keyPoints: ['IP subnetting and VPC network design', 'Reverse proxy configuration (Nginx / Caddy / Envoy)', 'TLS certificate renewal with Let’s Encrypt certbot']
+          }
+        ]
+      },
+      {
+        id: 'devops-phase-2',
+        title: 'Phase 2: Containers & Orchestration',
+        duration: 'Weeks 5-12',
+        description: 'Container packaging, minimal attack surfaces, and production Kubernetes clusters.',
+        topics: [
+          {
+            id: 'do-docker',
+            title: 'Docker & Container Security',
+            type: 'mandatory',
+            summary: 'Multi-stage builds, non-root users, volume mounts, and container registries.',
+            keyPoints: ['Multi-stage Dockerfiles for minimal production images (<50MB)', 'Linux namespaces and cgroups under the hood', 'Vulnerability scanning with Trivy']
+          },
+          {
+            id: 'do-k8s',
+            title: 'Kubernetes Architecture & Manifests',
+            type: 'mandatory',
+            summary: 'Control plane, worker nodes, Pods, Deployments, Services, Ingress, and Helm charts.',
+            keyPoints: ['Cluster architecture: kube-apiserver, etcd, kube-scheduler, kubelet', 'Rolling updates, rollback strategies, and readiness probes', 'ConfigMaps and Secrets separation']
+          }
+        ]
+      },
+      {
+        id: 'devops-phase-3',
+        title: 'Phase 3: CI/CD & Infrastructure as Code (IaC)',
+        duration: 'Weeks 13-20',
+        description: 'Automate build, test, scan, and deploy pipelines with declarative Terraform code.',
+        topics: [
+          {
+            id: 'do-terraform',
+            title: 'Terraform & Declarative Cloud Provisioning',
+            type: 'mandatory',
+            summary: 'HCL syntax, state files, remote backends with S3/GCS locks, and reusable modules.',
+            keyPoints: ['State management and DynamoDB state locking', 'Resource dependencies and terraform plan safety', 'Drift detection and immutable infrastructure']
+          },
+          {
+            id: 'do-cicd',
+            title: 'CI/CD Pipelines (GitHub Actions / GitLab CI)',
+            type: 'mandatory',
+            summary: 'Automated test runners, matrix builds, artifact promotion, and blue/green deployments.',
+            keyPoints: ['Secret masking and OIDC cloud authentication (no long-lived AWS keys)', 'Caching node_modules/docker layers for fast pipelines', 'Canary and Blue-Green release patterns']
           }
         ]
       }
-    ]
-  },
-
-  // ==========================================
-  // 6. AI & MACHINE LEARNING ROADMAP
-  // ==========================================
-  {
-    id: 'ai-ml',
-    slug: 'ai-ml',
-    title: 'AI & Machine Learning',
-    shortDesc: 'From Python and Linear Algebra to PyTorch, LLMs, RAG, and Vector Databases',
-    description: 'Learn applied Artificial Intelligence and Machine Learning: Python data tools (NumPy, Pandas), Scikit-Learn algorithms, Deep Learning with PyTorch, Transformer models, and building modern LLM/RAG pipelines.',
-    iconName: 'Sparkles',
-    badge: 'Trending',
-    level: 'Advanced',
-    estimatedHours: '160-200 Hours',
-    stages: [
+    ],
+    projects: [
       {
-        id: 'math-python-data',
-        title: '1. Mathematics & Data Engineering',
-        description: 'Linear Algebra, Probability, Statistics, NumPy, and Pandas.',
-        nodes: [
-          {
-            id: 'python-data-stack',
-            title: 'Python, NumPy & Pandas',
-            badge: 'essential',
-            summary: 'Vectorized array computations, DataFrame filtering, aggregations, and data preprocessing.',
-            keyPoints: [
-              'NumPy ndarrays, broadcasting, vectorization (eliminating slow for-loops)',
-              'Pandas DataFrames: groupby, pivot tables, handling missing values',
-              'Exploratory Data Analysis (EDA) with Matplotlib & Seaborn'
-            ],
-            resources: [
-              { title: 'Python Data Science Handbook', url: 'https://jakevdp.github.io/PythonDataScienceHandbook/', type: 'doc' }
-            ]
-          }
-        ]
+        title: 'Zero-Downtime CI/CD Pipeline for Microservices',
+        level: 'Intermediate',
+        description: 'Build a complete GitHub Actions pipeline that lints, builds multi-stage Docker containers, scans for CVEs, and deploys to Kubernetes.',
+        deliverables: ['Automated PR testing and preview environments', 'Trivy security vulnerability scan', 'Rolling deployment with health check probes']
       },
       {
-        id: 'deep-learning-llms',
-        title: '2. Deep Learning & Large Language Models (LLMs)',
-        description: 'Neural networks, PyTorch, Transformers, Prompt Engineering, and RAG architectures.',
-        nodes: [
-          {
-            id: 'pytorch-neural-nets',
-            title: 'PyTorch & Neural Networks',
-            badge: 'essential',
-            summary: 'Tensors, Autograd automatic differentiation, backpropagation, and training loops.',
-            keyPoints: [
-              'Loss functions: CrossEntropyLoss, MSELoss; Optimizers: Adam, SGD',
-              'Preventing overfitting: Dropout, Batch Normalization, Weight Decay'
-            ],
-            resources: [
-              { title: 'PyTorch Deep Learning with PyTorch (Free Course)', url: 'https://pytorch.org/tutorials/', type: 'doc' }
-            ]
-          },
-          {
-            id: 'llm-rag-vector',
-            title: 'LLMs, Transformers & RAG Architecture',
-            badge: 'essential',
-            summary: 'Attention mechanism, HuggingFace, embeddings, Vector Databases (Pinecone, ChromaDB), and LangChain / LlamaIndex.',
-            keyPoints: [
-              'Self-Attention and the Transformer architecture (Encoder vs Decoder models)',
-              'Text embeddings and semantic similarity (Cosine similarity)',
-              'Retrieval-Augmented Generation (RAG): chunking, vector indexing, retrieval, augmented prompting',
-              'Function calling, tool use, and evaluation benchmarks'
-            ],
-            resources: [
-              { title: 'Jay Alammar: The Illustrated Transformer', url: 'https://jalammar.github.io/illustrated-transformer/', type: 'guide' },
-              { title: 'DeepLearning.AI: LangChain for LLM Application Development', url: 'https://www.deeplearning.ai/short-courses/langchain-for-llm-application-development/', type: 'video' }
-            ]
-          }
-        ]
+        title: 'Production Multi-Region Cloud Infrastructure with Terraform',
+        level: 'Capstone',
+        description: 'Write modular Terraform infrastructure provisioning a secure VPC, managed Kubernetes cluster, RDS database, and Cloudflare CDN.',
+        deliverables: ['Remote S3 state backend with state locking', 'Bastion host with strict security group access', 'Grafana/Prometheus monitoring stack dashboard']
       }
     ]
   }
-];
+};

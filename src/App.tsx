@@ -32,6 +32,7 @@ import { ColdEmailPage } from './pages/ColdEmailPage';
 import { NotesPage } from './pages/NotesPage';
 import { ResumeTemplatesPage } from './pages/ResumeTemplatesPage';
 import { RoadmapsPage } from './pages/RoadmapsPage';
+import { RoadmapDetailPage } from './pages/RoadmapDetailPage';
 
 // Public & Information Pages
 import { HomePage } from './pages/HomePage';
@@ -50,22 +51,9 @@ export default function App() {
   }, [currentPath]);
 
   // Helper to determine if current route is part of preparation shell
-  const isPrepRoute = currentPath.startsWith('/preparation') || currentPath.startsWith('/roadmaps');
+  const isPrepRoute = currentPath.startsWith('/preparation');
 
   const renderPrepContent = () => {
-    // Roadmaps Experience (roadmap.sh aligned):
-    if (currentPath === '/preparation/roadmaps' || currentPath === '/roadmaps') {
-      return <RoadmapsPage navigate={navigate} initialRoadmapSlug="frontend" />;
-    }
-    if (currentPath.startsWith('/preparation/roadmaps/')) {
-      const slug = currentPath.replace('/preparation/roadmaps/', '');
-      return <RoadmapsPage navigate={navigate} initialRoadmapSlug={slug} />;
-    }
-    if (currentPath.startsWith('/roadmaps/')) {
-      const slug = currentPath.replace('/roadmaps/', '');
-      return <RoadmapsPage navigate={navigate} initialRoadmapSlug={slug} />;
-    }
-
     // Individual DSA Sheet: /preparation/dsa-sheets/:slug
     if (currentPath.startsWith('/preparation/dsa-sheets/')) {
       const slug = currentPath.replace('/preparation/dsa-sheets/', '');
@@ -96,6 +84,14 @@ export default function App() {
     if (currentPath.startsWith('/preparation/most-asked-questions/')) {
       const slug = currentPath.replace('/preparation/most-asked-questions/', '');
       return <MostAskedDetailPage slug={slug} navigate={navigate} />;
+    }
+
+    if (currentPath.startsWith('/preparation/roadmaps/')) {
+      const slug = currentPath.replace('/preparation/roadmaps/', '');
+      return <RoadmapDetailPage slug={slug} navigate={navigate} />;
+    }
+    if (currentPath === '/preparation/roadmaps') {
+      return <RoadmapsPage navigate={navigate} />;
     }
 
     if (currentPath === '/preparation/dsa-sheets') {
@@ -296,6 +292,30 @@ export default function App() {
         </>
       );
     }
+    if (currentPath.startsWith('/roadmaps/')) {
+      const slug = currentPath.replace('/roadmaps/', '');
+      return (
+        <>
+          <Navbar currentPath={currentPath} navigate={navigate} />
+          <main className="flex-1">
+            <RoadmapDetailPage slug={slug} navigate={navigate} />
+          </main>
+          <Footer navigate={navigate} />
+        </>
+      );
+    }
+    if (currentPath === '/roadmaps') {
+      return (
+        <>
+          <Navbar currentPath={currentPath} navigate={navigate} />
+          <main className="flex-1">
+            <RoadmapsPage navigate={navigate} />
+          </main>
+          <Footer navigate={navigate} />
+        </>
+      );
+    }
+
     if (currentPath === '/terms') {
       return (
         <>

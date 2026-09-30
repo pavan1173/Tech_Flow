@@ -20,6 +20,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate }) => {
   const navLinks = [
     { label: 'Home', href: '/' },
     { label: 'Preparation', href: '/preparation' },
+    { label: 'Roadmaps', href: '/roadmaps' },
     { label: 'Community', href: '#community', isAction: true },
     { label: 'About', href: '/about' },
     { label: 'Contact', href: '/contact' },

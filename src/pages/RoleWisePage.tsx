@@ -10,7 +10,9 @@ import {
   AlignLeft,
   Check,
   Star,
-  ArrowLeft
+  ArrowLeft,
+  Compass,
+  ArrowRight
 } from 'lucide-react';
 
 interface RoleWisePageProps {
@@ -227,6 +229,29 @@ export const RoleWisePage: React.FC<RoleWisePageProps> = ({ roleSlug, navigate }
                 {solvedCount}/{counts.total}
               </div>
             </div>
+          </div>
+
+          {/* Interactive Role Roadmap Discovery Banner */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl bg-gradient-to-r from-blue-900/30 to-indigo-900/20 border border-blue-500/30 text-blue-200">
+            <div className="flex items-center gap-2.5">
+              <Compass className="w-4 h-4 text-blue-400 shrink-0" />
+              <span className="text-xs sm:text-sm font-medium">
+                Want a complete, step-by-step learning path for <strong>{selectedRole.displayName}</strong>?
+              </span>
+            </div>
+            <button
+              onClick={() => {
+                const targetSlug = selectedRole.slug
+                  .replace('-developer', '')
+                  .replace('-engineer', '')
+                  .replace('-specialist', '');
+                navigate(`/preparation/roadmaps/${targetSlug}`);
+              }}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold transition-colors cursor-pointer self-start sm:self-auto shrink-0 shadow-2xs"
+            >
+              <span>Explore Interactive Roadmap</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
           </div>
 
           {/* Difficulty Filter Tabs */}
