@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
 import { TeachFlowLogo } from './TeachFlowLogo';
-import { Sun, Moon, PanelLeft, ChevronRight, LogOut, Sparkles } from 'lucide-react';
+import { Sun, Moon, PanelLeft, ChevronRight, LogOut, Sparkles, Search, Command } from 'lucide-react';
+import { GlobalSearchModal } from './GlobalSearchModal';
 
 interface PreparationTopBarProps {
   currentPath: string;
@@ -17,6 +18,29 @@ export const PreparationTopBar: React.FC<PreparationTopBarProps> = ({
 }) => {
   const { theme, toggleTheme } = useTheme();
   const { user, isAuthenticated, openAuthModal, logout } = useAuth();
+  const [searchModalOpen, setSearchModalOpen] = useState(false);
+
+  // Global Keyboard Shortcut: Cmd/Ctrl + K or '/'
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Cmd + K (Mac) or Ctrl + K (Windows/Linux)
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setSearchModalOpen((prev) => !prev);
+      }
+      // Single slash '/' when not typing in an input
+      if (
+        e.key === '/' &&
+        !['INPUT', 'TEXTAREA', 'SELECT'].includes((e.target as HTMLElement)?.tagName)
+      ) {
+        e.preventDefault();
+        setSearchModalOpen(true);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const getBreadcrumbs = () => {
     if (currentPath === '/preparation') {
@@ -235,6 +259,28 @@ export const PreparationTopBar: React.FC<PreparationTopBarProps> = ({
         </nav>
       </div>
 
+      {/* Center: Global Search Bar Trigger with Cmd/Ctrl + K shortcut */}
+      <div className="flex-1 max-w-xs sm:max-w-sm md:max-w-md mx-1 sm:mx-4">
+        <button
+          onClick={() => setSearchModalOpen(true)}
+          className="w-full flex items-center justify-between gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border border-zinc-800/90 hover:border-zinc-700 text-zinc-400 hover:text-zinc-200 transition-all cursor-pointer shadow-2xs group"
+          title="Search DSA sheets, roadmaps, patterns (Cmd/Ctrl + K)"
+        >
+          <div className="flex items-center gap-2 min-w-0">
+            <Search className="w-3.5 h-3.5 text-zinc-500 group-hover:text-blue-400 transition-colors shrink-0" />
+            <span className="text-xs truncate text-zinc-400 group-hover:text-zinc-300 font-sans">
+              <span className="hidden md:inline">Search DSA sheets, roadmaps, patterns...</span>
+              <span className="md:hidden">Search...</span>
+            </span>
+          </div>
+          <div className="flex items-center gap-1 shrink-0">
+            <kbd className="hidden sm:inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-zinc-950 border border-zinc-700/80 text-[10px] font-mono font-medium text-zinc-400 shadow-2xs">
+              <span className="text-[11px]">⌘</span>K
+            </kbd>
+          </div>
+        </button>
+      </div>
+
       {/* Right: Dark mode toggle & Google Sign In button */}
       <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
         {/* Dark Mode Switch Pill */}
@@ -290,6 +336,13 @@ export const PreparationTopBar: React.FC<PreparationTopBarProps> = ({
           </div>
         )}
       </div>
+
+      {/* Global Command Palette / Search Modal */}
+      <GlobalSearchModal
+        isOpen={searchModalOpen}
+        onClose={() => setSearchModalOpen(false)}
+        navigate={navigate}
+      />
     </header>
   );
 };

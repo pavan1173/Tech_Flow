@@ -187,7 +187,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate }) => {
 
             <div className="flex items-center gap-2 text-indigo-500 font-semibold text-xs tracking-wider uppercase mb-2">
               <MessageSquare className="w-4 h-4 text-[#6C47FF]" />
-              Official TeachFlow Community
+              Official HackPath Community
             </div>
             <h3 className="text-2xl font-bold font-lexend tracking-tight mb-2">
               Connect With 100k+ Engineers
@@ -209,7 +209,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate }) => {
                   </div>
                   <div>
                     <h4 className="font-semibold text-sm text-zinc-900 dark:text-white group-hover:text-emerald-500 transition-colors">
-                      TeachFlow Placement Alerts WhatsApp
+                      HackPath Placement Alerts WhatsApp
                     </h4>
                     <p className="text-xs text-zinc-500 dark:text-zinc-400">
                       Real-time off-campus hiring alerts & OA questions
@@ -231,7 +231,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate }) => {
                   </div>
                   <div>
                     <h4 className="font-semibold text-sm text-zinc-900 dark:text-white">
-                      TeachFlow on X (Twitter)
+                      HackPath on X (Twitter)
                     </h4>
                     <p className="text-xs text-zinc-500 dark:text-zinc-400">
                       Engineering insights, daily tips, and updates

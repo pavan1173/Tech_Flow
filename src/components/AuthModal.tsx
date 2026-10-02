@@ -48,7 +48,7 @@ export const AuthModal: React.FC = () => {
         <div className="px-6 pt-6 pb-2 flex items-center justify-between relative z-10">
           <div className="flex items-center gap-2.5">
             <TeachFlowLogo size={28} />
-            <span className="font-bold text-sm tracking-tight text-white">TeachFlow</span>
+            <span className="font-bold text-sm tracking-tight text-white">HackPath</span>
             <span className="text-[11px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 font-semibold border border-blue-500/20">
               Free Access
             </span>
@@ -202,7 +202,7 @@ export const AuthModal: React.FC = () => {
 
           {/* Privacy & Terms Note */}
           <p className="text-[10px] text-zinc-400 text-center leading-relaxed">
-            By signing in, you agree to TeachFlow's Terms of Service and Privacy Policy. Your progress and study notes will be safely saved.
+            By signing in, you agree to HackPath's Terms of Service and Privacy Policy. Your progress and study notes will be safely saved.
           </p>
         </div>
       </div>

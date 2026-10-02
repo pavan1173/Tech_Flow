@@ -96,9 +96,24 @@ export const Footer: React.FC<FooterProps> = ({ navigate }) => {
           </div>
         </div>
 
-        {/* Copyright */}
-        <div className="text-center text-xs text-zinc-500 italic pt-6 border-t border-zinc-900/80">
-          Copyright © 2026 TeachFlow | All rights reserved
+        {/* Developer Attribution & Copyright */}
+        <div className="pt-6 border-t border-zinc-900/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-500">
+          <div className="flex items-center gap-2">
+            <span>Designed &amp; Developed with <span className="text-red-500">❤️</span> by</span>
+            <a
+              href="https://www.instagram.com/tech_by.pavan/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-bold text-zinc-300 hover:text-amber-400 transition-colors inline-flex items-center gap-1 font-mono"
+            >
+              <span>Pavan Kumar</span>
+              <span className="text-blue-400">(@tech_by.pavan)</span>
+            </a>
+          </div>
+
+          <div className="italic">
+            Copyright © 2026 HackPath | All rights reserved
+          </div>
         </div>
       </div>
     </footer>

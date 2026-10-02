@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { faqData, testimonialsData } from '../data/common';
 import { TeachFlowLogo } from '../components/TeachFlowLogo';
+import { DeveloperProfileCard } from '../components/DeveloperProfileCard';
 import {
   ArrowRight,
   Code2,
@@ -131,7 +132,7 @@ export const HomePage: React.FC<HomePageProps> = ({ navigate }) => {
 
           {/* Subtitle */}
           <p className="text-base sm:text-lg md:text-xl text-zinc-600 dark:text-zinc-400 max-w-3xl mx-auto mb-10 leading-relaxed">
-            TeachFlow gives you everything to crack tech interviews — real job openings, genuine interview experiences, and preparation resources, all in one place.
+            HackPath gives you everything to crack tech interviews — real job openings, genuine interview experiences, and preparation resources, all in one place.
           </p>
 
           {/* Action CTAs */}
@@ -163,13 +164,13 @@ export const HomePage: React.FC<HomePageProps> = ({ navigate }) => {
         <div className="text-center max-w-3xl mx-auto mb-16">
           <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#6C47FF] dark:text-[#9c81ff] mb-3">
             <Sparkles className="w-3.5 h-3.5" />
-            TeachFlow Career Toolkit
+            HackPath Career Toolkit
           </div>
           <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-zinc-900 dark:text-white mb-4">
             Your Unfair Advantage Starts Here
           </h2>
           <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
-            Ditch the scattered tabs, unorganized directories, and endless bookmark lists. TeachFlow gathers high-quality sheets, targeted company queries, role-wise roadmaps, and ready-to-use developer templates into one cohesive dashboard built for placement success.
+            Ditch the scattered tabs, unorganized directories, and endless bookmark lists. HackPath gathers high-quality sheets, targeted company queries, role-wise roadmaps, and ready-to-use developer templates into one cohesive dashboard built for placement success.
           </p>
         </div>
 
@@ -213,65 +214,29 @@ export const HomePage: React.FC<HomePageProps> = ({ navigate }) => {
 
       {/* ── FOUNDER / CREATOR STORY ("One Of You, Who Built This For You") ── */}
       <section className="py-20 bg-zinc-50/60 dark:bg-zinc-950 border-y border-zinc-200 dark:border-zinc-800/80">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6">
-          <div className="rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 p-8 md:p-12 shadow-sm relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-bl from-[#6C47FF]/10 to-transparent blur-3xl pointer-events-none" />
-
-            <div className="flex flex-col md:flex-row items-center gap-8 mb-8">
-              <div className="w-24 h-24 rounded-2xl bg-gradient-to-tr from-violet-600 to-indigo-600 p-1 shrink-0 shadow-lg">
-                <img
-                  src="https://api.dicebear.com/8.x/bottts/svg?seed=TeachFlowEngineer&backgroundColor=6366f1"
-                  alt="TeachFlow Creator"
-                  className="w-full h-full object-cover rounded-[14px]"
-                />
-              </div>
-
-              <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-[#6C47FF] dark:text-[#9c81ff]">
-                  Behind TeachFlow
-                </span>
-                <h2 className="text-2xl sm:text-3xl font-bold text-zinc-900 dark:text-white mt-1">
-                  One Of You, Who Built This For You
-                </h2>
-                <div className="flex items-center gap-3 text-xs text-zinc-500 dark:text-zinc-400 mt-2 font-medium">
-                  <span>Founder &amp; Engineering Team</span>
-                  <span>·</span>
-                  <span>Software Engineers</span>
-                  <span>·</span>
-                  <span className="text-emerald-500 font-semibold">100% Free Forever</span>
-                </div>
-              </div>
-            </div>
-
-            <blockquote className="border-l-4 border-[#6C47FF] pl-4 italic text-base sm:text-lg text-zinc-700 dark:text-zinc-300 font-medium mb-6">
-              "Your first offer letter is our biggest achievement."
-            </blockquote>
-
-            <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed mb-4">
-              We started TeachFlow with a simple mission. During college and early career placement seasons, we spent countless evenings and weekends frustrated by scattered bookmarks, outdated PDFs, paywalled DSA problem lists, and generic prep tips.
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 space-y-6">
+          <div className="text-center space-y-2 mb-8">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#6C47FF] dark:text-[#9c81ff] font-mono">
+              BEHIND HACKPATH
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-zinc-950 dark:text-white">
+              One Of You, Who Built This For You
+            </h2>
+            <p className="text-sm text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto">
+              Created by software engineer Pavan Kumar (@tech_by.pavan) to give every student the exact roadmap and tools to land their dream offer.
             </p>
-            <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed mb-6">
-              Remember: <strong className="text-zinc-900 dark:text-white font-semibold">You don't need a tier-1 college to land your dream engineering job.</strong> You just need the right direction, discipline, and the courage to keep going. Let's crack it together, one problem, one pattern, one offer at a time.
-            </p>
-
-            <a
-              href="/preparation"
-              onClick={(e) => handleNav(e, '/preparation')}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#6C47FF] hover:bg-[#5b37ea] text-white font-semibold text-sm transition-all shadow-md shadow-indigo-500/20"
-            >
-              <span>Get Started Now</span>
-              <ArrowRight className="w-4 h-4" />
-            </a>
           </div>
+
+          <DeveloperProfileCard navigate={navigate} />
         </div>
       </section>
 
-      {/* ── TESTIMONIALS MARQUEE ("Students who cracked it with TeachFlow") ── */}
+      {/* ── TESTIMONIALS MARQUEE ("Students who cracked it with HackPath") ── */}
       <section className="py-20 md:py-28 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-12">
           <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-zinc-900 dark:text-white">
             Students who cracked it <br />
-            <span className="text-zinc-400 dark:text-zinc-500">with TeachFlow</span>
+            <span className="text-zinc-400 dark:text-zinc-500">with HackPath</span>
           </h2>
         </div>
 
@@ -331,7 +296,7 @@ export const HomePage: React.FC<HomePageProps> = ({ navigate }) => {
               Frequently Asked Questions
             </h2>
             <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400">
-              Everything you need to know about TeachFlow, resources, and career prep.
+              Everything you need to know about HackPath, resources, and career prep.
             </p>
           </div>
 
@@ -394,7 +359,7 @@ export const HomePage: React.FC<HomePageProps> = ({ navigate }) => {
             Ready to Crack Your Dream Tech Role?
           </h2>
           <p className="text-sm sm:text-base text-indigo-100 max-w-2xl mx-auto mb-8 relative z-10">
-            Join thousands of developers using TeachFlow's verified problem sets, patterns, and roadmaps to land their highest-paying offers.
+            Join thousands of developers using HackPath's verified problem sets, patterns, and roadmaps to land their highest-paying offers.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 relative z-10">

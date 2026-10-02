@@ -44,8 +44,8 @@ export const ContactPage: React.FC<ContactPageProps> = () => {
             </span>
             <div className="flex items-center gap-2 mt-2 text-sm font-semibold text-zinc-900 dark:text-white">
               <Mail className="w-4 h-4 text-[#6C47FF]" />
-              <a href="mailto:support@TeachFlow.in" className="hover:underline">
-                support@TeachFlow.in
+              <a href="mailto:support@hackpath.in" className="hover:underline">
+                support@hackpath.in
               </a>
             </div>
           </div>

@@ -150,7 +150,7 @@ export const RoadmapsPage: React.FC<RoadmapsPageProps> = ({ navigate }) => {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#07090e] text-zinc-900 dark:text-zinc-100 transition-colors">
+    <div className="min-h-screen bg-white text-zinc-950 transition-colors">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
 
         {/* Outer Layout: Left Category Sidebar + Main Content Grid (Exact screenshot presentui) */}
@@ -159,10 +159,10 @@ export const RoadmapsPage: React.FC<RoadmapsPageProps> = ({ navigate }) => {
           {/* Left Column: Title, Subtitle, Search, Category Filter Panel */}
           <aside className="space-y-6">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-950 dark:text-white">
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-950">
                 Developer Roadmaps
               </h1>
-              <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+              <p className="mt-2 text-sm text-zinc-600 leading-relaxed">
                 Community driven, up-to-date paths to learn any tool or technology.
               </p>
             </div>
@@ -175,12 +175,12 @@ export const RoadmapsPage: React.FC<RoadmapsPageProps> = ({ navigate }) => {
                 placeholder="Search roadmaps"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-sm text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 transition-all shadow-2xs"
+                className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-zinc-200 bg-white text-sm text-zinc-900 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 transition-all shadow-2xs"
               />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600"
                 >
                   <X className="w-3.5 h-3.5" />
                 </button>
@@ -197,16 +197,16 @@ export const RoadmapsPage: React.FC<RoadmapsPageProps> = ({ navigate }) => {
                     onClick={() => setSelectedCategory(cat.id)}
                     className={`w-full flex items-center justify-between px-3.5 py-2 rounded-lg text-sm transition-colors text-left cursor-pointer ${
                       isSelected
-                        ? 'bg-zinc-200/80 dark:bg-zinc-800 font-semibold text-zinc-950 dark:text-white'
-                        : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-900/60 hover:text-zinc-950 dark:hover:text-zinc-200'
+                        ? 'bg-zinc-100 font-semibold text-zinc-950'
+                        : 'text-zinc-600 hover:bg-zinc-50 hover:text-zinc-950'
                     }`}
                   >
                     <span className="truncate">{cat.name}</span>
                     <span
-                      className={`text-xs font-mono ml-2 shrink-0 ${
+                      className={`text-xs font-mono ml-2 shrink-0 px-1.5 py-0.5 rounded bg-white border border-zinc-200 ${
                         isSelected
-                          ? 'text-zinc-700 dark:text-zinc-300 font-medium'
-                          : 'text-zinc-400 dark:text-zinc-500'
+                          ? 'text-zinc-900 font-semibold'
+                          : 'text-zinc-500'
                       }`}
                     >
                       {cat.count}
@@ -218,7 +218,7 @@ export const RoadmapsPage: React.FC<RoadmapsPageProps> = ({ navigate }) => {
 
             {/* Bookmarked Filter Pill */}
             {safeBookmarks.length > 0 && (
-              <div className="pt-4 border-t border-zinc-200 dark:border-zinc-800">
+              <div className="pt-4 border-t border-zinc-200">
                 <div className="flex items-center justify-between text-xs text-zinc-500 mb-2">
                   <span className="flex items-center gap-1.5 font-medium">
                     <Bookmark className="w-3.5 h-3.5 text-blue-500 fill-blue-500" />
@@ -232,7 +232,7 @@ export const RoadmapsPage: React.FC<RoadmapsPageProps> = ({ navigate }) => {
                       <button
                         key={slug}
                         onClick={() => handleOpenRoadmap(slug)}
-                        className="px-2.5 py-1 rounded-md text-xs bg-zinc-100 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 hover:bg-blue-50 dark:hover:bg-blue-950/40 hover:text-blue-600 transition-colors border border-zinc-200 dark:border-zinc-800 cursor-pointer"
+                        className="px-2.5 py-1 rounded-md text-xs bg-white text-zinc-800 hover:bg-blue-50 hover:text-blue-600 transition-colors border border-zinc-200 cursor-pointer shadow-2xs"
                       >
                         {found?.title || slug}
                       </button>
@@ -249,7 +249,7 @@ export const RoadmapsPage: React.FC<RoadmapsPageProps> = ({ navigate }) => {
             {/* 1. NEW ROADMAPS SECTION */}
             {newRoadmaps.length > 0 && (
               <section className="space-y-3">
-                <div className="text-[11px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 font-mono">
+                <div className="text-[11px] font-bold uppercase tracking-wider text-blue-600 font-mono">
                   NEW ROADMAPS
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
@@ -259,9 +259,9 @@ export const RoadmapsPage: React.FC<RoadmapsPageProps> = ({ navigate }) => {
                       <div
                         key={roadmap.slug}
                         onClick={() => handleOpenRoadmap(roadmap.slug)}
-                        className="group flex items-center justify-between p-4 rounded-xl border border-zinc-200 dark:border-zinc-800/80 bg-white dark:bg-[#0c1017] hover:border-zinc-300 dark:hover:border-zinc-700 hover:shadow-xs transition-all cursor-pointer"
+                        className="group flex items-center justify-between p-4 rounded-xl border border-zinc-200 bg-white hover:border-zinc-400 hover:shadow-xs transition-all cursor-pointer shadow-2xs"
                       >
-                        <span className="font-semibold text-sm sm:text-base text-zinc-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                        <span className="font-semibold text-sm sm:text-base text-zinc-900 group-hover:text-blue-600 transition-colors">
                           {roadmap.title}
                         </span>
                         <button
@@ -287,7 +287,7 @@ export const RoadmapsPage: React.FC<RoadmapsPageProps> = ({ navigate }) => {
             {/* 2. ROLE BASED ROADMAPS SECTION */}
             {roleRoadmaps.length > 0 && (
               <section className="space-y-3.5">
-                <div className="text-[11px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 font-mono">
+                <div className="text-[11px] font-bold uppercase tracking-wider text-zinc-500 font-mono">
                   ROLE BASED ROADMAPS
                 </div>
 
@@ -300,9 +300,9 @@ export const RoadmapsPage: React.FC<RoadmapsPageProps> = ({ navigate }) => {
                       <div
                         key={roadmap.slug}
                         onClick={() => handleOpenRoadmap(roadmap.slug)}
-                        className="group flex items-center justify-between p-4 rounded-xl border border-zinc-200 dark:border-zinc-800/80 bg-white dark:bg-[#0c1017] hover:border-zinc-300 dark:hover:border-zinc-700 hover:shadow-xs transition-all cursor-pointer"
+                        className="group flex items-center justify-between p-4 rounded-xl border border-zinc-200 bg-white hover:border-zinc-400 hover:shadow-xs transition-all cursor-pointer shadow-2xs"
                       >
-                        <span className="font-semibold text-sm sm:text-base text-zinc-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                        <span className="font-semibold text-sm sm:text-base text-zinc-900 group-hover:text-blue-600 transition-colors">
                           {roadmap.title}
                         </span>
                         <button
@@ -325,16 +325,16 @@ export const RoadmapsPage: React.FC<RoadmapsPageProps> = ({ navigate }) => {
                   {/* AI Generator Banner (spanning full 2 columns inside the grid, exactly as in screenshot!) */}
                   <div
                     onClick={() => setAiModalOpen(true)}
-                    className="sm:col-span-2 flex items-center justify-between px-5 py-3.5 rounded-xl bg-[#fef9c3] dark:bg-amber-950/25 border border-[#fde047] dark:border-amber-700/40 text-amber-950 dark:text-amber-200 hover:bg-[#fef08a] dark:hover:bg-amber-950/40 transition-all cursor-pointer group shadow-2xs"
+                    className="sm:col-span-2 flex items-center justify-between px-5 py-3.5 rounded-xl bg-[#fef9c3] border border-[#fde047] text-amber-950 hover:bg-[#fef08a] transition-all cursor-pointer group shadow-2xs"
                   >
                     <div className="flex items-center gap-2.5">
-                      <Sparkles className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
+                      <Sparkles className="w-4 h-4 text-amber-600 shrink-0" />
                       <span className="text-sm font-semibold">
                         Not seeing what you need?{' '}
                         <span className="font-normal opacity-90">Create one using AI</span>
                       </span>
                     </div>
-                    <ArrowRight className="w-4 h-4 text-amber-700 dark:text-amber-400 group-hover:translate-x-1 transition-transform" />
+                    <ArrowRight className="w-4 h-4 text-amber-700 group-hover:translate-x-1 transition-transform" />
                   </div>
 
                   {/* Remaining Role Cards */}
@@ -344,9 +344,9 @@ export const RoadmapsPage: React.FC<RoadmapsPageProps> = ({ navigate }) => {
                       <div
                         key={roadmap.slug}
                         onClick={() => handleOpenRoadmap(roadmap.slug)}
-                        className="group flex items-center justify-between p-4 rounded-xl border border-zinc-200 dark:border-zinc-800/80 bg-white dark:bg-[#0c1017] hover:border-zinc-300 dark:hover:border-zinc-700 hover:shadow-xs transition-all cursor-pointer"
+                        className="group flex items-center justify-between p-4 rounded-xl border border-zinc-200 bg-white hover:border-zinc-400 hover:shadow-xs transition-all cursor-pointer shadow-2xs"
                       >
-                        <span className="font-semibold text-sm sm:text-base text-zinc-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                        <span className="font-semibold text-sm sm:text-base text-zinc-900 group-hover:text-blue-600 transition-colors">
                           {roadmap.title}
                         </span>
                         <button
@@ -372,7 +372,7 @@ export const RoadmapsPage: React.FC<RoadmapsPageProps> = ({ navigate }) => {
             {/* 3. SKILL BASED ROADMAPS SECTION */}
             {skillRoadmaps.length > 0 && (
               <section className="space-y-3.5">
-                <div className="text-[11px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 font-mono">
+                <div className="text-[11px] font-bold uppercase tracking-wider text-zinc-500 font-mono">
                   SKILL BASED ROADMAPS
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
@@ -382,9 +382,9 @@ export const RoadmapsPage: React.FC<RoadmapsPageProps> = ({ navigate }) => {
                       <div
                         key={roadmap.slug}
                         onClick={() => handleOpenRoadmap(roadmap.slug)}
-                        className="group flex items-center justify-between p-4 rounded-xl border border-zinc-200 dark:border-zinc-800/80 bg-white dark:bg-[#0c1017] hover:border-zinc-300 dark:hover:border-zinc-700 hover:shadow-xs transition-all cursor-pointer"
+                        className="group flex items-center justify-between p-4 rounded-xl border border-zinc-200 bg-white hover:border-zinc-400 hover:shadow-xs transition-all cursor-pointer shadow-2xs"
                       >
-                        <span className="font-semibold text-sm sm:text-base text-zinc-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                        <span className="font-semibold text-sm sm:text-base text-zinc-900 group-hover:text-blue-600 transition-colors">
                           {roadmap.title}
                         </span>
                         <button

@@ -26,7 +26,7 @@ export interface DiagramMilestone {
     actionLabel?: string;
     actionType?: 'project' | 'dsa' | 'resource';
   };
-  centerNodes?: string[]; // Multiple items in the central vertical stack
+  centerNodes?: string[];
   branches?: DiagramBranch[];
 }
 
@@ -43,13 +43,14 @@ export interface RoleDiagramData {
 }
 
 export const ROLE_DIAGRAMS: Record<string, RoleDiagramData> = {
+  // 1. FRONTEND DEVELOPER
   frontend: {
     slug: 'frontend',
     title: 'Frontend Developer',
     subtitle: 'Step by step guide to becoming a modern frontend developer in 2026',
     rootLabel: 'Front-end',
     learnerCount: '148,287+',
-    overviewDescription: 'A Frontend Developer is responsible for building the user interface and user experience of web applications using HTML, CSS, JavaScript, and modern frameworks like React and Next.js.',
+    overviewDescription: 'A Frontend Developer builds user interfaces and client-side applications using HTML, CSS, JavaScript, and modern frameworks like React and Next.js, optimizing for performance and accessibility.',
     beginnerNote: 'HTML, CSS and JavaScript are the backbone of web development. Make sure to practice by building lots of projects.',
     relatedRoadmaps: [
       { title: 'JavaScript Roadmap', slug: 'javascript' },
@@ -72,10 +73,10 @@ export const ROLE_DIAGRAMS: Record<string, RoleDiagramData> = {
           {
             side: 'right',
             nodes: [
-              { id: 'fe-net-1', label: 'How does the Internet work?', badge: 'recommended', summary: 'Computers interconnected through physical fiber, switches, and routers exchanging packets via IP addresses.' },
-              { id: 'fe-net-2', label: 'What is HTTP?', badge: 'recommended', summary: 'Hypertext Transfer Protocol powering client-server requests, verbs (GET, POST), and status codes.' },
+              { id: 'fe-net-1', label: 'How does the Internet work?', badge: 'recommended', summary: 'Global network of computers exchanging IP packets through physical fiber, switches, and BGP routing.' },
+              { id: 'fe-net-2', label: 'What is HTTP?', badge: 'recommended', summary: 'Hypertext Transfer Protocol defining client requests (GET, POST), response headers, and status codes.' },
               { id: 'fe-net-3', label: 'What is Domain Name?', badge: 'recommended', summary: 'Human-friendly web address (e.g. google.com) mapped to numeric server IP addresses.' },
-              { id: 'fe-net-4', label: 'What is hosting?', badge: 'recommended', summary: 'Allocating server hardware space and compute to serve your website files to the public.' },
+              { id: 'fe-net-4', label: 'What is hosting?', badge: 'recommended', summary: 'Allocating compute and storage on remote servers to serve files to global users.' },
               { id: 'fe-net-5', label: 'DNS and how it works?', badge: 'recommended', summary: 'The phonebook of the Internet resolving domain names into IP addresses through recursive resolvers.' },
               { id: 'fe-net-6', label: 'Browsers and how they work?', badge: 'recommended', summary: 'Parsing HTML into DOM tree, CSS into CSSOM tree, executing layout, and rasterizing pixels.' }
             ]
@@ -155,8 +156,7 @@ export const ROLE_DIAGRAMS: Record<string, RoleDiagramData> = {
             nodes: [
               { id: 'fe-ai-1', label: 'How LLMs work', badge: 'recommended', summary: 'Next-token prediction, transformer self-attention, and reasoning dynamics.' },
               { id: 'fe-ai-2', label: 'AI vs Traditional Coding', badge: 'optional', summary: 'Leveraging AI for scaffolding and boilerplate while maintaining deep architectural oversight.' },
-              { id: 'fe-ai-3', label: 'Code Reviews with AI', badge: 'recommended', summary: 'Automated vulnerability scanning, edge case detection, and accessibility linting.' },
-              { id: 'fe-ai-4', label: 'Refactoring & Docs', badge: 'optional', summary: 'Instant markdown documentation, JSDoc comment generation, and TypeScript conversion.' }
+              { id: 'fe-ai-3', label: 'Code Reviews with AI', badge: 'recommended', summary: 'Automated vulnerability scanning, edge case detection, and accessibility linting.' }
             ]
           }
         ]
@@ -171,8 +171,7 @@ export const ROLE_DIAGRAMS: Record<string, RoleDiagramData> = {
             nodes: [
               { id: 'fe-ai-claude', label: 'Claude Code', badge: 'recommended', summary: 'Anthropic terminal CLI agent for autonomous multi-file edits, test runs, and git commits.' },
               { id: 'fe-ai-cursor', label: 'Cursor', badge: 'alternative', summary: 'AI-first code editor with deep repository indexing and multi-cursor generation.' },
-              { id: 'fe-ai-copilot', label: 'GitHub Copilot', badge: 'alternative', summary: 'Context-aware inline tab completions integrated directly into VS Code and JetBrains.' },
-              { id: 'fe-ai-prompt', label: 'Prompt Engineering', badge: 'recommended', summary: 'Chain-of-Thought, few-shot examples, and strict JSON schemas for predictable outputs.' }
+              { id: 'fe-ai-copilot', label: 'GitHub Copilot', badge: 'alternative', summary: 'Context-aware inline tab completions integrated directly into VS Code and JetBrains.' }
             ]
           },
           {
@@ -180,30 +179,6 @@ export const ROLE_DIAGRAMS: Record<string, RoleDiagramData> = {
             nodes: [
               { id: 'fe-prompt-tech', label: 'Prompting Techniques', badge: 'recommended', summary: 'System prompts, context constraints, persona anchoring, and zero-shot instructions.' },
               { id: 'fe-agents-mcp', label: 'Agents & MCP (Model Context Protocol)', badge: 'recommended', summary: 'Standardized protocols connecting AI models to local filesystems, DBs, and tools.' }
-            ]
-          }
-        ]
-      },
-      {
-        id: 'fe-implementing-ai',
-        title: 'Implementing AI',
-        subtitle: 'Connecting modern frontend applications to AI APIs',
-        branches: [
-          {
-            side: 'left',
-            title: 'AI Providers & SDKs',
-            nodes: [
-              { id: 'fe-ai-gemini', label: 'Google Gemini SDK', badge: 'recommended', summary: 'High context windows, multimodal processing, and low-latency structured JSON calls.' },
-              { id: 'fe-ai-openai', label: 'OpenAI API', badge: 'alternative', summary: 'GPT-4o, function calling, streaming tokens, and Whisper speech models.' },
-              { id: 'fe-ai-anthropic', label: 'Anthropic Claude', badge: 'alternative', summary: 'Sonnet models with extended thinking and benchmark-leading coding abilities.' }
-            ]
-          },
-          {
-            side: 'right',
-            title: 'Advanced Frontend',
-            nodes: [
-              { id: 'fe-adv-state', label: 'State Management (Zustand / TanStack)', badge: 'recommended', summary: 'Decoupled store architecture and server state caching with automatic revalidation.' },
-              { id: 'fe-adv-perf', label: 'Web Vitals & Performance', badge: 'recommended', summary: 'LCP, INP, and CLS metric optimization, bundle splitting, and dynamic imports.' }
             ]
           }
         ]
@@ -225,8 +200,7 @@ export const ROLE_DIAGRAMS: Record<string, RoleDiagramData> = {
             title: 'Bundler Tools',
             nodes: [
               { id: 'fe-bnd-vite', label: 'Vite', badge: 'recommended', summary: 'Ultra-fast ES modules dev server powered by esbuild and Rollup.' },
-              { id: 'fe-bnd-swc', label: 'SWC / esbuild', badge: 'alternative', summary: 'Rust and Go transpilers executing orders of magnitude faster than Babel.' },
-              { id: 'fe-bnd-rollup', label: 'Rollup / Rolldown', badge: 'alternative', summary: 'ES module tree-shaking bundler with C++ Rust rewrite (Rolldown).' }
+              { id: 'fe-bnd-swc', label: 'SWC / esbuild', badge: 'alternative', summary: 'Rust and Go transpilers executing orders of magnitude faster than Babel.' }
             ]
           },
           {
@@ -234,8 +208,7 @@ export const ROLE_DIAGRAMS: Record<string, RoleDiagramData> = {
             title: 'Linters & Formatters',
             nodes: [
               { id: 'fe-fmt-prettier', label: 'Prettier', badge: 'recommended', summary: 'Opinionated code formatter enforcing consistent styling across team codebases.' },
-              { id: 'fe-fmt-eslint', label: 'ESLint', badge: 'recommended', summary: 'Static code analysis detecting syntax traps, hook dependency bugs, and anti-patterns.' },
-              { id: 'fe-fmt-biome', label: 'Biome', badge: 'alternative', summary: 'Single Rust toolchain combining fast linting and formatting without Node runtime overhead.' }
+              { id: 'fe-fmt-eslint', label: 'ESLint', badge: 'recommended', summary: 'Static code analysis detecting syntax traps, hook dependency bugs, and anti-patterns.' }
             ]
           }
         ]
@@ -252,12 +225,11 @@ export const ROLE_DIAGRAMS: Record<string, RoleDiagramData> = {
         branches: [
           {
             side: 'left',
-            title: 'Testing',
+            title: 'Testing Tools',
             nodes: [
               { id: 'fe-tst-vitest', label: 'Vitest', badge: 'recommended', summary: 'Vite-native unit testing runner with instant HMR and Jest-compatible API.' },
               { id: 'fe-tst-playwright', label: 'Playwright', badge: 'recommended', summary: 'End-to-end browser automation testing across Chromium, Firefox, and WebKit.' },
-              { id: 'fe-tst-cypress', label: 'Cypress', badge: 'alternative', summary: 'Developer-friendly browser testing runner with interactive time-travel debugging.' },
-              { id: 'fe-tst-jest', label: 'Jest', badge: 'alternative', summary: 'Classic battle-tested JavaScript testing framework with built-in mocking.' }
+              { id: 'fe-tst-cypress', label: 'Cypress', badge: 'alternative', summary: 'Developer-friendly browser testing runner with interactive time-travel debugging.' }
             ]
           },
           {
@@ -266,8 +238,7 @@ export const ROLE_DIAGRAMS: Record<string, RoleDiagramData> = {
             nodes: [
               { id: 'fe-sec-cors', label: 'CORS', badge: 'recommended', summary: 'Cross-Origin Resource Sharing HTTP headers restricting untrusted cross-domain fetches.' },
               { id: 'fe-sec-https', label: 'HTTPS & TLS', badge: 'recommended', summary: 'Encrypted channel communication ensuring confidentiality and data integrity in transit.' },
-              { id: 'fe-sec-csp', label: 'CSP (Content Security Policy)', badge: 'recommended', summary: 'Defense-in-depth header blocking inline script injection and unauthorized scripts.' },
-              { id: 'fe-sec-owasp', label: 'OWASP Top 10 Risks', badge: 'recommended', summary: 'Defending against XSS, clickjacking, insecure deserialization, and CSRF.' }
+              { id: 'fe-sec-csp', label: 'CSP (Content Security Policy)', badge: 'recommended', summary: 'Defense-in-depth header blocking inline script injection and unauthorized scripts.' }
             ]
           }
         ]
@@ -283,8 +254,7 @@ export const ROLE_DIAGRAMS: Record<string, RoleDiagramData> = {
             nodes: [
               { id: 'fe-meta-next', label: 'Next.js (React)', badge: 'recommended', summary: 'React Server Components, App Router, incremental static regeneration, and server actions.' },
               { id: 'fe-meta-nuxt', label: 'Nuxt.js (Vue)', badge: 'alternative', summary: 'Vue meta-framework providing zero-config SSR, auto-imports, and Nitro engine.' },
-              { id: 'fe-meta-astro', label: 'Astro', badge: 'alternative', summary: 'Islands architecture shipping zero JavaScript by default for content sites.' },
-              { id: 'fe-meta-sveltekit', label: 'SvelteKit', badge: 'alternative', summary: 'Full-stack framework for Svelte with filesystem routing and server endpoints.' }
+              { id: 'fe-meta-astro', label: 'Astro', badge: 'alternative', summary: 'Islands architecture shipping zero JavaScript by default for content sites.' }
             ]
           },
           {
@@ -292,8 +262,7 @@ export const ROLE_DIAGRAMS: Record<string, RoleDiagramData> = {
             title: 'Web APIs to Master',
             nodes: [
               { id: 'fe-api-fetch', label: 'Fetch & AbortController', badge: 'recommended', summary: 'Standard promises for HTTP networking with cancellable network requests.' },
-              { id: 'fe-api-observer', label: 'Intersection Observer', badge: 'recommended', summary: 'Performant asynchronous viewport intersection detection for lazy loading.' },
-              { id: 'fe-api-storage', label: 'IndexedDB & Storage', badge: 'recommended', summary: 'Client-side relational/key-value storage for offline-first web apps.' }
+              { id: 'fe-api-observer', label: 'Intersection Observer', badge: 'recommended', summary: 'Performant asynchronous viewport intersection detection for lazy loading.' }
             ]
           }
         ]
@@ -301,17 +270,14 @@ export const ROLE_DIAGRAMS: Record<string, RoleDiagramData> = {
       {
         id: 'fe-deployment',
         title: 'Deployment',
-        subtitle: 'Ship your frontend to global edge networks',
         branches: [
           {
             side: 'left',
-            title: 'Edge & Static Cloud Hosting',
+            title: 'Cloud Edge Hosting',
             nodes: [
               { id: 'fe-dep-vercel', label: 'Vercel', badge: 'recommended', summary: 'Zero-config Next.js cloud deployment with automatic preview URLs and edge middleware.' },
               { id: 'fe-dep-cf', label: 'Cloudflare Pages / Workers', badge: 'recommended', summary: 'Sub-millisecond global edge delivery with KV stores and zero cold starts.' },
-              { id: 'fe-dep-gh', label: 'GitHub Pages', badge: 'alternative', summary: 'Free, automated static hosting directly from your repository branch.' },
-              { id: 'fe-dep-netlify', label: 'Netlify', badge: 'alternative', summary: 'Serverless web hosting with branch previews and form handling.' },
-              { id: 'fe-dep-railway', label: 'Railway / Render', badge: 'alternative', summary: 'Containerized deployment for fullstack Node.js and full-service apps.' }
+              { id: 'fe-dep-gh', label: 'GitHub Pages', badge: 'alternative', summary: 'Free, automated static hosting directly from your repository branch.' }
             ]
           }
         ]
@@ -319,13 +285,14 @@ export const ROLE_DIAGRAMS: Record<string, RoleDiagramData> = {
     ]
   },
 
+  // 2. BACKEND DEVELOPER
   backend: {
     slug: 'backend',
     title: 'Backend Developer',
     subtitle: 'Step by step guide to becoming an enterprise backend developer in 2026',
     rootLabel: 'Back-end',
     learnerCount: '162,940+',
-    overviewDescription: 'A Backend Developer is responsible for designing, building, and maintaining the server-side architecture, APIs, database systems, caching layers, and cloud infrastructure.',
+    overviewDescription: 'A Backend Developer designs and maintains server architectures, API endpoints, relational & document databases, distributed caching, and microservices.',
     beginnerNote: 'Start by choosing one core language (Node.js, Go, or Python) and mastering relational database design.',
     relatedRoadmaps: [
       { title: 'Node.js Roadmap', slug: 'nodejs' },
@@ -442,13 +409,95 @@ export const ROLE_DIAGRAMS: Record<string, RoleDiagramData> = {
     ]
   },
 
+  // 3. FULL STACK DEVELOPER
+  'full-stack': {
+    slug: 'full-stack',
+    title: 'Full Stack Developer',
+    subtitle: 'Master both client and server development, database modeling, and deployment in 2026',
+    rootLabel: 'Full-stack',
+    learnerCount: '178,500+',
+    overviewDescription: 'A Full Stack Developer creates end-to-end applications, designing reactive frontends, robust REST/gRPC backend APIs, scalable databases, and automated cloud deployments.',
+    beginnerNote: 'Start with frontend foundations (HTML/CSS/JS/React) and progress into backend node services and PostgreSQL databases.',
+    relatedRoadmaps: [
+      { title: 'Frontend Roadmap', slug: 'frontend' },
+      { title: 'Backend Roadmap', slug: 'backend' },
+      { title: 'PostgreSQL Roadmap', slug: 'postgresql' },
+      { title: 'DevOps Roadmap', slug: 'devops' }
+    ],
+    milestones: [
+      {
+        id: 'fs-frontend-core',
+        title: 'Frontend Mastery',
+        centerNodes: ['HTML & Modern CSS', 'TypeScript', 'React 19'],
+        sideNote: {
+          side: 'left',
+          text: 'Master client-side component architecture before bridging to fullstack server actions.',
+          actionLabel: 'Full Stack Projects',
+          actionType: 'project'
+        },
+        branches: [
+          {
+            side: 'right',
+            nodes: [
+              { id: 'fs-fe-1', label: 'React Hooks & State', badge: 'recommended', summary: 'Predictable state management, custom hooks, and memoization.' },
+              { id: 'fs-fe-2', label: 'Tailwind CSS & Shadcn', badge: 'recommended', summary: 'Modern design system primitives and responsive layouts.' }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'fs-meta-frameworks',
+        title: 'Fullstack Meta-Frameworks',
+        centerNodes: ['Next.js App Router', 'Server Actions', 'SSR & ISR'],
+        branches: [
+          {
+            side: 'left',
+            nodes: [
+              { id: 'fs-next-rsc', label: 'React Server Components', badge: 'recommended', summary: 'Zero bundle size server execution with streamed client hydration.' },
+              { id: 'fs-next-act', label: 'Server Actions & Mutations', badge: 'recommended', summary: 'Direct backend mutations without boilerplate REST endpoint creation.' }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'fs-database-layer',
+        title: 'Databases & ORMs',
+        centerNodes: ['PostgreSQL', 'Prisma / Drizzle ORM', 'Redis'],
+        branches: [
+          {
+            side: 'right',
+            nodes: [
+              { id: 'fs-db-pg', label: 'PostgreSQL Relational Schema', badge: 'recommended', summary: 'ACID transactions, foreign keys, and performant indexes.' },
+              { id: 'fs-db-orm', label: 'Drizzle / Prisma ORM', badge: 'recommended', summary: 'Type-safe SQL query authoring with automated schema migrations.' }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'fs-cloud-deploy',
+        title: 'Auth & Cloud Production',
+        centerNodes: ['NextAuth / OAuth 2.0', 'Docker Containerization', 'Vercel / Cloudflare'],
+        branches: [
+          {
+            side: 'left',
+            nodes: [
+              { id: 'fs-dep-dock', label: 'Docker Compose Local Stacks', badge: 'recommended', summary: 'Spins up DB, Redis, and API containers with one command.' },
+              { id: 'fs-dep-ci', label: 'GitHub Actions CI/CD', badge: 'recommended', summary: 'Automated linting, testing, and continuous deployment.' }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+
+  // 4. AI ENGINEER
   'ai-engineer': {
     slug: 'ai-engineer',
     title: 'AI Engineer',
     subtitle: 'Step by step guide to building production GenAI applications & Agentic Systems in 2026',
     rootLabel: 'AI Engineer',
     learnerCount: '94,120+',
-    overviewDescription: 'An AI Engineer bridges the gap between foundation machine learning models (LLMs, Diffusion, Multimodal) and enterprise software systems, building RAG architectures, agentic loops, and scalable inference APIs.',
+    overviewDescription: 'An AI Engineer bridges foundation ML models (LLMs, multimodal) with enterprise software, developing RAG systems, autonomous agentic loops, and scalable inference architectures.',
     beginnerNote: 'Start by understanding token mechanics, prompt structure, and vector embeddings before orchestrating multi-agent systems.',
     relatedRoadmaps: [
       { title: 'Python Roadmap', slug: 'python' },
@@ -525,6 +574,7 @@ export const ROLE_DIAGRAMS: Record<string, RoleDiagramData> = {
     ]
   },
 
+  // 5. DEVOPS ENGINEER
   devops: {
     slug: 'devops',
     title: 'DevOps Engineer',
@@ -605,6 +655,264 @@ export const ROLE_DIAGRAMS: Record<string, RoleDiagramData> = {
             nodes: [
               { id: 'do-ci-act', label: 'GitHub Actions / GitLab CI', badge: 'recommended', summary: 'Automated pull-request matrix tests, image publishing, and ephemeral previews.' },
               { id: 'do-ci-oidc', label: 'OIDC Cloud Authentication', badge: 'recommended', summary: 'Keyless AWS/GCP authentication via short-lived JWT tokens without static secrets.' }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+
+  // 6. ANDROID DEVELOPER
+  android: {
+    slug: 'android',
+    title: 'Android Developer',
+    subtitle: 'Step by step guide to native Android app development with Kotlin & Jetpack Compose in 2026',
+    rootLabel: 'Android',
+    learnerCount: '87,300+',
+    overviewDescription: 'An Android Developer builds high-performance, native mobile applications for billions of Android devices using Kotlin, modern declarative Jetpack Compose, and clean architecture.',
+    beginnerNote: 'Master Kotlin syntax, coroutines, and Android lifecycles before building complex apps.',
+    relatedRoadmaps: [
+      { title: 'Kotlin Roadmap', slug: 'languages' },
+      { title: 'Java Roadmap', slug: 'languages' },
+      { title: 'Mobile Development', slug: 'mobile' }
+    ],
+    milestones: [
+      {
+        id: 'android-kotlin',
+        title: 'Kotlin Fundamentals',
+        centerNodes: ['Kotlin Language', 'Coroutines & Flow', 'OOP & Functional Idioms'],
+        branches: [
+          {
+            side: 'right',
+            nodes: [
+              { id: 'and-kt-1', label: 'Null Safety & Extensions', badge: 'recommended', summary: 'Safe calls, elvis operator, extension functions, and sealed classes.' },
+              { id: 'and-kt-2', label: 'Coroutines & Asynchronous Dispatch', badge: 'recommended', summary: 'Structured concurrency, dispatchers (IO, Main), and reactive StateFlow.' }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'android-compose',
+        title: 'Jetpack Compose UI',
+        centerNodes: ['Declarative UI', 'Material 3', 'State Hoisting'],
+        branches: [
+          {
+            side: 'left',
+            nodes: [
+              { id: 'and-cmp-1', label: 'Composable Functions', badge: 'recommended', summary: 'Building reactive UI trees that re-render upon state changes.' },
+              { id: 'and-cmp-2', label: 'Navigation Compose', badge: 'recommended', summary: 'Type-safe deep links, backstack management, and transitions.' }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'android-arch',
+        title: 'Architecture & Persistence',
+        centerNodes: ['MVVM / MVI', 'Room Database', 'Hilt / Koin DI'],
+        branches: [
+          {
+            side: 'right',
+            nodes: [
+              { id: 'and-arc-1', label: 'Room SQLite Database', badge: 'recommended', summary: 'Local offline-first caching with compile-time SQL verification.' },
+              { id: 'and-arc-2', label: 'Retrofit & OkHttp', badge: 'recommended', summary: 'Consuming REST APIs, network interceptors, and Moshi/Kotlinx Serialization.' }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+
+  // 7. DATA ANALYST
+  'data-analyst': {
+    slug: 'data-analyst',
+    title: 'Data Analyst',
+    subtitle: 'Step by step guide to business intelligence, SQL querying, and data storytelling in 2026',
+    rootLabel: 'Data Analyst',
+    learnerCount: '115,200+',
+    overviewDescription: 'A Data Analyst transforms messy business data into actionable dashboards, KPIs, and predictive metrics using SQL, Python, Excel, and BI tools like Power BI and Tableau.',
+    beginnerNote: 'Master SQL joins, aggregations, and window functions before jumping into machine learning.',
+    relatedRoadmaps: [
+      { title: 'SQL Roadmap', slug: 'sql' },
+      { title: 'Python for Data Analysis', slug: 'python-for-data-analysis' },
+      { title: 'PostgreSQL Roadmap', slug: 'postgresql' }
+    ],
+    milestones: [
+      {
+        id: 'da-sql-core',
+        title: 'Advanced SQL Querying',
+        centerNodes: ['SELECT & Aggregate', 'Window Functions', 'CTEs & Subqueries'],
+        branches: [
+          {
+            side: 'right',
+            nodes: [
+              { id: 'da-sql-1', label: 'Window Functions (RANK, DENSE_RANK, LEAD)', badge: 'recommended', summary: 'Running calculations across data partitions without collapsing rows.' },
+              { id: 'da-sql-2', label: 'Complex JOINs & Self-Joins', badge: 'recommended', summary: 'Inner, Left, Cross joins, and handling null co-occurrence.' }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'da-python-pandas',
+        title: 'Python for Data Wrangling',
+        centerNodes: ['Pandas & NumPy', 'Data Cleaning', 'Exploratory Data Analysis'],
+        branches: [
+          {
+            side: 'left',
+            nodes: [
+              { id: 'da-py-1', label: 'Pandas DataFrames', badge: 'recommended', summary: 'Vectorized data manipulations, grouping, pivoting, and merging.' },
+              { id: 'da-py-2', label: 'Handling Missing Values', badge: 'recommended', summary: 'Imputation strategies, outlier detection, and data type coercion.' }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'da-bi-dashboards',
+        title: 'BI Dashboards & Storytelling',
+        centerNodes: ['Power BI / Tableau', 'DAX Calculations', 'Executive Presentation'],
+        branches: [
+          {
+            side: 'right',
+            nodes: [
+              { id: 'da-bi-1', label: 'Interactive Dashboards', badge: 'recommended', summary: 'Cross-filtering, KPI scorecards, drill-down hierarchy, and scheduled refreshes.' },
+              { id: 'da-bi-2', label: 'A/B Testing & Hypothesis Testing', badge: 'recommended', summary: 'P-values, confidence intervals, sample sizing, and statistical significance.' }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+
+  // 8. DATA ENGINEER
+  'data-engineer': {
+    slug: 'data-engineer',
+    title: 'Data Engineer',
+    subtitle: 'Step by step guide to distributed streaming, ETL pipelines, and cloud data warehouses in 2026',
+    rootLabel: 'Data Engineer',
+    learnerCount: '89,400+',
+    overviewDescription: 'A Data Engineer builds resilient, high-volume batch and real-time streaming data pipelines using tools like Apache Spark, Kafka, Airflow, and Snowflake.',
+    beginnerNote: 'Start with SQL and Python, then learn distributed compute models like Spark.',
+    relatedRoadmaps: [
+      { title: 'Python Roadmap', slug: 'python' },
+      { title: 'SQL Roadmap', slug: 'sql' },
+      { title: 'DevOps Roadmap', slug: 'devops' }
+    ],
+    milestones: [
+      {
+        id: 'de-distributed-compute',
+        title: 'Distributed Compute',
+        centerNodes: ['Apache Spark / PySpark', 'Data Partitioning', 'Lakehouse (Delta / Iceberg)'],
+        branches: [
+          {
+            side: 'right',
+            nodes: [
+              { id: 'de-spk-1', label: 'Spark Core & RDDs', badge: 'recommended', summary: 'Lazy evaluation, DAG execution plans, and shuffle partitions.' },
+              { id: 'de-spk-2', label: 'Delta Lake & Apache Iceberg', badge: 'recommended', summary: 'ACID transactions, time travel, and schema enforcement on object storage.' }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'de-streaming-orchestration',
+        title: 'Streaming & Workflow Orchestration',
+        centerNodes: ['Apache Kafka', 'Apache Airflow', 'dbt (Data Build Tool)'],
+        branches: [
+          {
+            side: 'left',
+            nodes: [
+              { id: 'de-kfk-1', label: 'Kafka Event Streaming', badge: 'recommended', summary: 'Topic partitions, consumer offsets, and exactly-once semantics.' },
+              { id: 'de-air-1', label: 'Airflow DAG Orchestration', badge: 'recommended', summary: 'Task dependencies, backfilling, retries, and SLA alerts.' }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+
+  // 9. SOFTWARE ARCHITECT
+  'software-architect': {
+    slug: 'software-architect',
+    title: 'Software Architect',
+    subtitle: 'Step by step guide to distributed systems design, domain-driven design, and cloud scalability in 2026',
+    rootLabel: 'Architect',
+    learnerCount: '98,200+',
+    overviewDescription: 'A Software Architect defines high-level system structures, makes critical technology and infrastructure trade-offs, and ensures non-functional requirements (scalability, availability, security) are met.',
+    beginnerNote: 'Deepen your knowledge of trade-offs (CAP theorem, PACELC, consistency models) rather than searching for perfect solutions.',
+    relatedRoadmaps: [
+      { title: 'System Design', slug: 'system-design' },
+      { title: 'Backend Roadmap', slug: 'backend' },
+      { title: 'DevOps Roadmap', slug: 'devops' }
+    ],
+    milestones: [
+      {
+        id: 'sa-distributed-principles',
+        title: 'Distributed Architecture',
+        centerNodes: ['CAP & PACELC Theorems', 'Event-Driven Systems', 'CQRS & Event Sourcing'],
+        branches: [
+          {
+            side: 'right',
+            nodes: [
+              { id: 'sa-cap-1', label: 'Consistency vs Availability Trade-offs', badge: 'recommended', summary: 'Linearizable strong consistency vs eventual consistency in partitioned networks.' },
+              { id: 'sa-cqrs-1', label: 'CQRS & Event Sourcing', badge: 'recommended', summary: 'Segregating command writes from analytical reads with immutable append-only logs.' }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'sa-domain-design',
+        title: 'Domain-Driven Design (DDD)',
+        centerNodes: ['Bounded Contexts', 'Ubiquitous Language', 'Aggregates & Entities'],
+        branches: [
+          {
+            side: 'left',
+            nodes: [
+              { id: 'sa-ddd-1', label: 'Strategic vs Tactical DDD', badge: 'recommended', summary: 'Decomposing complex enterprise domains into clear bounded context boundaries.' },
+              { id: 'sa-res-1', label: 'Resilience Engineering (Circuit Breaker)', badge: 'recommended', summary: 'Graceful degradation, exponential backoff with jitter, and bulkhead isolation.' }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+
+  // 10. CYBER SECURITY
+  'cyber-security': {
+    slug: 'cyber-security',
+    title: 'Cyber Security Engineer',
+    subtitle: 'Step by step guide to offensive security, defensive engineering, cryptography, and cloud hardening in 2026',
+    rootLabel: 'Security',
+    learnerCount: '78,400+',
+    overviewDescription: 'A Cyber Security Engineer protects computer systems, networks, and cloud workloads from unauthorized access, cyber attacks, data theft, and exploits.',
+    beginnerNote: 'Master TCP/IP networking, Linux administration, and cryptography fundamentals.',
+    relatedRoadmaps: [
+      { title: 'Linux Roadmap', slug: 'linux' },
+      { title: 'DevSecOps Roadmap', slug: 'devsecops' },
+      { title: 'Computer Science', slug: 'computer-science' }
+    ],
+    milestones: [
+      {
+        id: 'sec-net-foundations',
+        title: 'Networking & Threat Landscape',
+        centerNodes: ['TCP/IP & OSI Model', 'Wireshark Packet Analysis', 'Firewalls & VPNs'],
+        branches: [
+          {
+            side: 'right',
+            nodes: [
+              { id: 'sec-net-1', label: 'Packet Inspection & Sniffing', badge: 'recommended', summary: 'Capturing and analyzing raw network packets for anomaly detection.' },
+              { id: 'sec-net-2', label: 'Port Scanning (Nmap)', badge: 'recommended', summary: 'Network host discovery, open port enumeration, and service version detection.' }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'sec-app-sec',
+        title: 'Application Security (AppSec)',
+        centerNodes: ['OWASP Top 10', 'Penetration Testing (Burp Suite)', 'SAST & DAST Scanning'],
+        branches: [
+          {
+            side: 'left',
+            nodes: [
+              { id: 'sec-app-1', label: 'XSS, SQLi, and CSRF Exploit Defense', badge: 'recommended', summary: 'Sanitizing input parameters and enforcing parameterized queries.' },
+              { id: 'sec-app-2', label: 'Zero Trust Architecture', badge: 'recommended', summary: 'Never trust, always verify: least-privilege microsegmentation and identity verification.' }
             ]
           }
         ]

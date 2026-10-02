@@ -4,20 +4,20 @@ export const faqData = [
     "category": "Features & Functionality",
     "questions": [
       {
-        "question": "What does TeachFlow actually offer?",
-        "answer": "TeachFlow is a free platform that gives you everything you need to crack tech interviews — curated DSA sheets, system design resources, core CS subject videos, company-wise interview questions, role-wise sheets, SQL sheets, HR sheets, and our own 20 Essential DSA Sheet. All in one place."
+        "question": "What does HackPath actually offer?",
+        "answer": "HackPath is a free platform that gives you everything you need to crack tech interviews — curated DSA sheets, system design resources, core CS subject videos, company-wise interview questions, role-wise sheets, SQL sheets, HR sheets, and our own 20 Essential DSA Sheet. All in one place."
       },
       {
-        "question": "Are the resources on TeachFlow created by TeachFlow?",
+        "question": "Are the resources on HackPath created by HackPath?",
         "answer": "Some yes, some no. Our 20 Essential DSA Sheet, SQL sheet, HR sheet, company-wise sheets, role-wise sheets, and most asked interview question sheets are created by us. DSA playlists, system design videos, core CS subject videos, and notes are free open-source content curated from top creators — we don't own them."
       },
       {
-        "question": "Is TeachFlow completely free?",
-        "answer": "Yes, 100% free. We don't have any subscription model, no hidden charges, no premium plans. Everything on TeachFlow is free to access. If anyone asks you to pay for TeachFlow content, please report it immediately to TeachFlowplatform@gmail.com."
+        "question": "Is HackPath completely free?",
+        "answer": "Yes, 100% free. We don't have any subscription model, no hidden charges, no premium plans. Everything on HackPath is free to access. If anyone asks you to pay for HackPath content, please report it immediately to hackpathplatform@gmail.com."
       },
       {
-        "question": "Will TeachFlow add more features in the future?",
-        "answer": "Yes! We are constantly working on improving TeachFlow. Career counseling and more curated content are planned for the future. TeachFlow is also going open-source soon so the community can contribute and grow the platform together."
+        "question": "Will HackPath add more features in the future?",
+        "answer": "Yes! We are constantly working on improving HackPath. Career counseling and more curated content are planned for the future. HackPath is also going open-source soon so the community can contribute and grow the platform together."
       }
     ]
   },
@@ -25,24 +25,24 @@ export const faqData = [
     "category": "Content & Resources",
     "questions": [
       {
-        "question": "What DSA resources does TeachFlow provide?",
-        "answer": "TeachFlow provides curated DSA sheets from top tech creators, our own 20 Essential DSA Sheet, company-wise DSA sheets, role-wise sheets, most asked interview question sheets, and free open-source DSA playlists — all in one place so you don't have to search anywhere else."
+        "question": "What DSA resources does HackPath provide?",
+        "answer": "HackPath provides curated DSA sheets from top tech creators, our own 20 Essential DSA Sheet, company-wise DSA sheets, role-wise sheets, most asked interview question sheets, and free open-source DSA playlists — all in one place so you don't have to search anywhere else."
       },
       {
-        "question": "Does TeachFlow have system design content?",
-        "answer": "Yes. We have curated free open-source system design videos from the best creators available. The content is not owned by TeachFlow but carefully selected so you get the best resources without wasting time searching."
+        "question": "Does HackPath have system design content?",
+        "answer": "Yes. We have curated free open-source system design videos from the best creators available. The content is not owned by HackPath but carefully selected so you get the best resources without wasting time searching."
       },
       {
-        "question": "What are the notes on TeachFlow?",
-        "answer": "The notes available on TeachFlow are open-source notes curated from the community. They are not created by TeachFlow but we have organized them so you can access everything easily in one place."
+        "question": "What are the notes on HackPath?",
+        "answer": "The notes available on HackPath are open-source notes curated from the community. They are not created by HackPath but we have organized them so you can access everything easily in one place."
       },
       {
-        "question": "Are prerequisites required to use TeachFlow?",
-        "answer": "No prerequisites at all. Whether you are a beginner just starting DSA or a final year student preparing for placements, TeachFlow has resources for every level."
+        "question": "Are prerequisites required to use HackPath?",
+        "answer": "No prerequisites at all. Whether you are a beginner just starting DSA or a final year student preparing for placements, HackPath has resources for every level."
       },
       {
-        "question": "Is the content on TeachFlow updated regularly?",
-        "answer": "Yes. We regularly update our sheets and curated resources. Once TeachFlow goes open-source, the community will also be able to contribute and keep the content fresh and up to date."
+        "question": "Is the content on HackPath updated regularly?",
+        "answer": "Yes. We regularly update our sheets and curated resources. Once HackPath goes open-source, the community will also be able to contribute and keep the content fresh and up to date."
       }
     ]
   },
@@ -50,24 +50,24 @@ export const faqData = [
     "category": "Account Management",
     "questions": [
       {
-        "question": "Do I need to create an account to use TeachFlow?",
-        "answer": "You can browse TeachFlow without an account. However creating an account lets you track your progress through our dashboard so you can see what you have completed and what is remaining."
+        "question": "Do I need to create an account to use HackPath?",
+        "answer": "You can browse HackPath without an account. However creating an account lets you track your progress through our dashboard so you can see what you have completed and what is remaining."
       },
       {
         "question": "How does progress tracking work?",
         "answer": "Your progress is stored in your browser, not on our servers. This means we don't store any of your personal data. Your progress stays local to your device for complete privacy."
       },
       {
-        "question": "Is my personal data safe on TeachFlow?",
+        "question": "Is my personal data safe on HackPath?",
         "answer": "Yes. We do not store any user data on our servers. Your progress is tracked locally in your browser. We take your privacy seriously and will never sell or share your information."
       },
       {
-        "question": "Can I use TeachFlow on multiple devices?",
+        "question": "Can I use HackPath on multiple devices?",
         "answer": "Since progress is stored in your browser locally, switching devices will not sync your progress automatically. We recommend using one primary device for the best experience until we build cloud sync in the future."
       },
       {
         "question": "Is account sharing allowed?",
-        "answer": "Since TeachFlow is completely free, there is no restriction on account sharing. However for the best personal progress tracking experience, we recommend each user creates their own account."
+        "answer": "Since HackPath is completely free, there is no restriction on account sharing. However for the best personal progress tracking experience, we recommend each user creates their own account."
       }
     ]
   },
@@ -75,8 +75,8 @@ export const faqData = [
     "category": "Certification",
     "questions": [
       {
-        "question": "Does TeachFlow provide certificates?",
-        "answer": "No. Since all content on TeachFlow is free and open-source, we do not provide certificates at this time. Our goal is to help you crack interviews, and your offer letter is the only certificate that matters."
+        "question": "Does HackPath provide certificates?",
+        "answer": "No. Since all content on HackPath is free and open-source, we do not provide certificates at this time. Our goal is to help you crack interviews, and your offer letter is the only certificate that matters."
       }
     ]
   },
@@ -84,12 +84,12 @@ export const faqData = [
     "category": "Career Guidance",
     "questions": [
       {
-        "question": "Does TeachFlow offer career counseling?",
+        "question": "Does HackPath offer career counseling?",
         "answer": "Not yet, but it is coming soon. Career counseling is one of our planned future features. Stay tuned for updates."
       },
       {
-        "question": "Does TeachFlow help with job placements or internships?",
-        "answer": "We don't offer direct placements or internships from our side. However TeachFlow gives you all the resources — DSA, system design, company-wise sheets, HR prep — to prepare yourself and crack interviews on your own."
+        "question": "Does HackPath help with job placements or internships?",
+        "answer": "We don't offer direct placements or internships from our side. However HackPath gives you all the resources — DSA, system design, company-wise sheets, HR prep — to prepare yourself and crack interviews on your own."
       }
     ]
   },
@@ -97,12 +97,12 @@ export const faqData = [
     "category": "Open Source & Community",
     "questions": [
       {
-        "question": "Is TeachFlow going open-source?",
-        "answer": "Yes! TeachFlow will be open-source very soon. This means anyone from the community can contribute — whether it's adding new resources, fixing issues, or building new features. We believe in building together."
+        "question": "Is HackPath going open-source?",
+        "answer": "Yes! HackPath will be open-source very soon. This means anyone from the community can contribute — whether it's adding new resources, fixing issues, or building new features. We believe in building together."
       },
       {
-        "question": "How can I contribute to TeachFlow?",
-        "answer": "Once TeachFlow goes open-source, you will be able to contribute directly on GitHub. Stay tuned for the announcement. If you want to reach out before that, mail us at TeachFlowplatform@gmail.com."
+        "question": "How can I contribute to HackPath?",
+        "answer": "Once HackPath goes open-source, you will be able to contribute directly on GitHub. Stay tuned for the announcement. If you want to reach out before that, mail us at hackpathplatform@gmail.com."
       }
     ]
   },
@@ -110,12 +110,12 @@ export const faqData = [
     "category": "Payment & Security",
     "questions": [
       {
-        "question": "Does TeachFlow charge any money?",
-        "answer": "Absolutely not. TeachFlow is completely free. We do not have any subscription, premium plan, or one-time payment. Everything is free forever."
+        "question": "Does HackPath charge any money?",
+        "answer": "Absolutely not. HackPath is completely free. We do not have any subscription, premium plan, or one-time payment. Everything is free forever."
       },
       {
-        "question": "Someone asked me to pay for TeachFlow. What should I do?",
-        "answer": "Please do not pay anyone claiming to represent TeachFlow. TeachFlow is 100% free. If someone asks you for payment, report it immediately to TeachFlowplatform@gmail.com and we will take action."
+        "question": "Someone asked me to pay for HackPath. What should I do?",
+        "answer": "Please do not pay anyone claiming to represent HackPath. HackPath is 100% free. If someone asks you for payment, report it immediately to hackpathplatform@gmail.com and we will take action."
       }
     ]
   }
@@ -126,28 +126,28 @@ export const testimonialsData = [
     "role": "SDE Intern",
     "company": "Amazon",
     "avatar": "https://api.dicebear.com/8.x/avataaars/svg?seed=rahul&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf",
-    "text": "TeachFlow's DSA sheet was a game-changer for me. Every topic was laid out perfectly — arrays, trees, graphs, DP — all in one place. The 'Questions Asked at Amazon' section literally had 3 problems that showed up verbatim in my Amazon SDE Intern interview. The 20 Essential Coding Patterns guide helped me recognize problem types on the fly. I went from solving 0 Leetcode mediums to cracking my Amazon offer in 45 days. Can't thank TeachFlow enough."
+    "text": "HackPath's DSA sheet was a game-changer for me. Every topic was laid out perfectly — arrays, trees, graphs, DP — all in one place. The 'Questions Asked at Amazon' section literally had 3 problems that showed up verbatim in my Amazon SDE Intern interview. The 20 Essential Coding Patterns guide helped me recognize problem types on the fly. I went from solving 0 Leetcode mediums to cracking my Amazon offer in 45 days. Can't thank HackPath enough."
   },
   {
     "name": "Priya Sharma",
     "role": "SDE 1",
     "company": "Google",
     "avatar": "https://api.dicebear.com/8.x/avataaars/svg?seed=priya&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf",
-    "text": "The role-wise full-stack question sheets on TeachFlow are incredibly well-curated. For my Google SDE 1 prep I used the system design notes and the full-stack roadmap — everything was concise and up to date. I paired it with the 'Questions Asked at Google' filter and it was like having an insider cheat code. The notes section alone saved me weeks of scattered prep. Cleared both coding rounds and the design interview. Truly grateful."
+    "text": "The role-wise full-stack question sheets on HackPath are incredibly well-curated. For my Google SDE 1 prep I used the system design notes and the full-stack roadmap — everything was concise and up to date. I paired it with the 'Questions Asked at Google' filter and it was like having an insider cheat code. The notes section alone saved me weeks of scattered prep. Cleared both coding rounds and the design interview. Truly grateful."
   },
   {
     "name": "Marcus Johns",
     "role": "Software Engineer",
     "company": "Microsoft",
     "avatar": "https://api.dicebear.com/8.x/avataaars/svg?seed=marcus&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf",
-    "text": "I was overwhelmed trying to find solid interview prep material across hundreds of GitHub repos. TeachFlow synthesized everything cleanly. The company-wise problem breakdown and SQL practice questions gave me exactly the edge I needed for the Microsoft technical rounds. Got an offer in 3 weeks!"
+    "text": "I was overwhelmed trying to find solid interview prep material across hundreds of GitHub repos. HackPath synthesized everything cleanly. The company-wise problem breakdown and SQL practice questions gave me exactly the edge I needed for the Microsoft technical rounds. Got an offer in 3 weeks!"
   },
   {
     "name": "Ananya Iyer",
     "role": "Frontend Engineer",
     "company": "Atlassian",
     "avatar": "https://api.dicebear.com/8.x/avataaars/svg?seed=ananya&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf",
-    "text": "The frontend role-wise sheet and 20 Essential DSA patterns are unmatched. Having direct LeetCode and GeeksforGeeks links with problem frequency tags meant zero wasted time. TeachFlow is easily the most comprehensive interview platform for engineers."
+    "text": "The frontend role-wise sheet and 20 Essential DSA patterns are unmatched. Having direct LeetCode and GeeksforGeeks links with problem frequency tags meant zero wasted time. HackPath is easily the most comprehensive interview platform for engineers."
   },
   {
     "name": "Karan Patel",
@@ -161,7 +161,7 @@ export const testimonialsData = [
     "role": "Software Engineer",
     "company": "Flipkart",
     "avatar": "https://api.dicebear.com/8.x/avataaars/svg?seed=sneha&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf",
-    "text": "TeachFlow was my single source of truth during campus placements. From HR round preparation to core DBMS notes and Striver's sheets, I tracked my daily solved questions right on the dashboard. Placed at Flipkart on day 1!"
+    "text": "HackPath was my single source of truth during campus placements. From HR round preparation to core DBMS notes and Striver's sheets, I tracked my daily solved questions right on the dashboard. Placed at Flipkart on day 1!"
   }
 ];
 export const playlistsData = {

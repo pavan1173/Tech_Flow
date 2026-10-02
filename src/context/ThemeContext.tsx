@@ -14,9 +14,9 @@ const ThemeContext = createContext<ThemeContextType>({
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [theme, setTheme] = useState<Theme>(() => {
-    const saved = localStorage.getItem('TeachFlow_theme');
+    const saved = localStorage.getItem('HackPath_theme') || localStorage.getItem('TeachFlow_theme');
     if (saved === 'light' || saved === 'dark') return saved;
-    return 'dark'; // TeachFlow default dark theme
+    return 'dark'; // HackPath default dark theme
   });
 
   useEffect(() => {
@@ -26,7 +26,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     } else {
       root.classList.remove('dark');
     }
-    localStorage.setItem('TeachFlow_theme', theme);
+    localStorage.setItem('HackPath_theme', theme);
   }, [theme]);
 
   const toggleTheme = () => {

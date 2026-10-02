@@ -177,7 +177,7 @@ export const PatternsPage: React.FC<PatternsPageProps> = ({ navigate }) => {
 
         {/* Creator Attribution */}
         <div className="flex items-center gap-2 text-xs text-zinc-400 font-medium">
-          <span>By TeachFlow platform</span>
+          <span>By HackPath platform</span>
           <span>•</span>
           <span>{totalCount} Problems</span>
         </div>

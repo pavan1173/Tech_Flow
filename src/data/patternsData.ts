@@ -2,7 +2,7 @@
 export const patternsData = {
   "title": "20 Essential DSA Patterns",
   "description": "Master Data Structures & Algorithms (DSA) with the ultimate interview preparation sheet. Designed by experienced Software Engineers from top MAANG companies, this roadmap covers 20 essential coding patterns to improve problem-solving, strengthen coding skills, and help you crack software engineering interviews.",
-  "creatorName": "TeachFlow platform",
+  "creatorName": "HackPath platform",
   "totalProblems": 180,
   "sections": [
     {

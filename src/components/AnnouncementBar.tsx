@@ -28,7 +28,7 @@ export const AnnouncementBar: React.FC = () => {
       >
         <div className="flex items-center gap-1.5 font-bold tracking-tight">
           <span>💎</span>
-          <span>TeachFlow Gold Mine — Launching Soon.</span>
+          <span>HackPath Gold Mine — Launching Soon.</span>
           <button
             onClick={() => setShowWaitlist(true)}
             className="underline font-bold hover:opacity-80 transition-opacity cursor-pointer ml-1"
@@ -61,9 +61,9 @@ export const AnnouncementBar: React.FC = () => {
             {joined ? (
               <div className="py-8 text-center flex flex-col items-center">
                 <CheckCircle className="w-14 h-14 text-emerald-500 mb-4 animate-bounce" />
-                <h3 className="text-xl font-bold mb-2">You are on the TeachFlow Waitlist!</h3>
+                <h3 className="text-xl font-bold mb-2">You are on the HackPath Waitlist!</h3>
                 <p className="text-sm text-zinc-500 dark:text-zinc-400">
-                  We'll notify you the moment TeachFlow Gold Mine unlocks. Get ready for 500+ premium company OA questions & mock simulations.
+                  We'll notify you the moment HackPath Gold Mine unlocks. Get ready for 500+ premium company OA questions & mock simulations.
                 </p>
               </div>
             ) : (
@@ -73,7 +73,7 @@ export const AnnouncementBar: React.FC = () => {
                   Exclusive Early Access
                 </div>
                 <h3 className="text-2xl font-bold font-lexend tracking-tight mb-2">
-                  Join TeachFlow Gold Mine
+                  Join HackPath Gold Mine
                 </h3>
                 <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-6 leading-relaxed">
                   Get priority beta access to real company OA archives, daily mock round simulations, verified compensation guides, and 1-on-1 interview feedback.
