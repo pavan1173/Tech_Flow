@@ -45,8 +45,12 @@ export const PackageWisePage: React.FC<PackageWisePageProps> = ({ navigate }) =>
     action();
   };
 
-  const handleUnlockWithGoogle = () => {
-    loginWithGoogle('mpavankumar110405@gmail.com', 'Pavan Kumar');
+  const handleUnlockWithGoogle = async () => {
+    try {
+      await loginWithGoogle();
+    } catch {
+      openAuthModal();
+    }
   };
 
   // Close dropdowns on outside click
@@ -132,7 +136,7 @@ export const PackageWisePage: React.FC<PackageWisePageProps> = ({ navigate }) =>
     <div className="min-h-screen bg-[#07090e] text-zinc-100 p-4 sm:p-6 lg:p-8 font-lexend space-y-6 max-w-7xl mx-auto">
       {/* Header Section matching screenshot */}
       <div className="space-y-3">
-        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-white">
           Package Wise DSA Sheet
         </h1>
 
@@ -159,7 +163,7 @@ export const PackageWisePage: React.FC<PackageWisePageProps> = ({ navigate }) =>
       {/* Progress Widget & Filter Bar */}
       <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 pt-1">
         {/* Left: Overall Progress Widget */}
-        <div className="inline-flex items-center gap-3.5 px-4 py-2.5 rounded-xl bg-[#0e121a] border border-[#1e2433] shadow-xs">
+        <div className="inline-flex items-center gap-3.5 px-4 py-2.5 rounded-xl bg-white dark:bg-[#0e121a] border border-zinc-200 dark:border-[#1e2433] shadow-xs">
           <div className="relative w-10 h-10 flex items-center justify-center shrink-0">
             <svg className="w-10 h-10 transform -rotate-90" viewBox="0 0 36 36">
               <path
@@ -195,7 +199,7 @@ export const PackageWisePage: React.FC<PackageWisePageProps> = ({ navigate }) =>
         </div>
 
         {/* Right: Controls (All, Difficulty, Package, Bookmarked) */}
-        <div className="flex items-center gap-2 flex-wrap bg-[#0c1017] p-1.5 rounded-2xl border border-[#1b2230]">
+        <div className="flex items-center gap-2 flex-wrap bg-white dark:bg-[#0c1017] p-1.5 rounded-2xl border border-zinc-200 dark:border-[#1b2230]">
           {/* All Button */}
           <button
             onClick={() => {
@@ -231,7 +235,7 @@ export const PackageWisePage: React.FC<PackageWisePageProps> = ({ navigate }) =>
             </button>
 
             {isDiffOpen && (
-              <div className="absolute right-0 mt-2 w-36 rounded-xl bg-[#0e121a] border border-[#1e2433] shadow-xl py-1.5 z-30 divide-y divide-zinc-800/40">
+              <div className="absolute right-0 mt-2 w-36 rounded-xl bg-white dark:bg-[#0e121a] border border-zinc-200 dark:border-[#1e2433] shadow-xl py-1.5 z-30 divide-y divide-zinc-800/40">
                 {difficultyOptions.map((diff) => (
                   <button
                     key={diff}
@@ -275,7 +279,7 @@ export const PackageWisePage: React.FC<PackageWisePageProps> = ({ navigate }) =>
             </button>
 
             {isPkgOpen && (
-              <div className="absolute right-0 mt-2 w-44 rounded-xl bg-[#0e121a] border border-[#1e2433] shadow-xl py-1.5 z-30 divide-y divide-zinc-800/40">
+              <div className="absolute right-0 mt-2 w-44 rounded-xl bg-white dark:bg-[#0e121a] border border-zinc-200 dark:border-[#1e2433] shadow-xl py-1.5 z-30 divide-y divide-zinc-800/40">
                 {packageOptions.map((pkg) => (
                   <button
                     key={pkg.value}
@@ -319,11 +323,11 @@ export const PackageWisePage: React.FC<PackageWisePageProps> = ({ navigate }) =>
       </div>
 
       {/* Main Table Container matching screenshot */}
-      <div className="relative rounded-2xl border border-[#1b2230] bg-[#0c1017] overflow-hidden shadow-xs">
+      <div className="relative rounded-2xl border border-zinc-200 dark:border-[#1b2230] bg-white dark:bg-[#0c1017] overflow-hidden shadow-xs">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-[#1b2230] bg-[#0a0e16] text-[11px] font-bold text-zinc-400 uppercase tracking-wider">
+              <tr className="border-b border-zinc-200 dark:border-[#1b2230] bg-zinc-50 dark:bg-[#0a0e16] text-[11px] font-bold text-zinc-400 uppercase tracking-wider">
                 <th className="py-3.5 pl-5 pr-3 w-14">STATUS</th>
                 <th className="py-3.5 px-4 min-w-[200px]">PROBLEM</th>
                 <th className="py-3.5 px-4 text-center w-28">TOPIC</th>
@@ -333,12 +337,12 @@ export const PackageWisePage: React.FC<PackageWisePageProps> = ({ navigate }) =>
                 <th className="py-3.5 pr-5 pl-3 text-center w-16">SAVE</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#171f2d] text-xs">
+            <tbody className="divide-y divide-zinc-200 dark:divide-[#171f2d] text-xs">
               {filteredQuestions.map((q: any, idx: number) => {
                 const probId = `pkg-q-${q.id}-${q.title}`;
                 const solved = isSolved(probId);
                 const bookmarked = isBookmarked(probId);
-                const isItemLocked = !isAuthenticated && idx >= 3;
+                const isItemLocked = !isAuthenticated;
 
                 const diff = q.difficulty || 'Easy';
                 const diffBadgeStyle =
@@ -502,13 +506,13 @@ export const PackageWisePage: React.FC<PackageWisePageProps> = ({ navigate }) =>
 
         {/* Exact Google Sign-in Unlock Overlay matching screenshot */}
         {!isAuthenticated && (
-          <div className="absolute inset-x-0 bottom-0 top-[170px] bg-gradient-to-t from-[#07090e] via-[#07090e]/95 to-transparent backdrop-blur-xs flex items-center justify-center p-6 z-20">
+          <div className="absolute inset-x-0 bottom-0 top-[170px] bg-gradient-to-t from-white via-white/95 to-transparent dark:from-[#07090e] dark:via-[#07090e]/95 backdrop-blur-xs flex items-center justify-center p-6 z-20">
             <div className="max-w-lg w-full text-center space-y-5 py-4">
               <div className="space-y-1.5">
-                <h3 className="font-extrabold text-base sm:text-lg text-white tracking-tight leading-snug">
+                <h3 className="font-extrabold text-base sm:text-lg text-zinc-900 dark:text-white tracking-tight leading-snug">
                   Sign up to access this sheet
                 </h3>
-                <p className="text-xs sm:text-sm text-zinc-300 font-normal max-w-md mx-auto">
+                <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300 font-normal max-w-md mx-auto">
                   Sign in with Google to unlock all 200 package-wise DSA interview questions and track your progress.
                 </p>
               </div>
@@ -517,7 +521,7 @@ export const PackageWisePage: React.FC<PackageWisePageProps> = ({ navigate }) =>
               <div className="flex items-center justify-center">
                 <button
                   onClick={handleUnlockWithGoogle}
-                  className="inline-flex items-center gap-2.5 px-6 py-2.5 rounded-full bg-white hover:bg-zinc-100 text-zinc-900 font-semibold text-xs sm:text-sm shadow-xl hover:shadow-2xl transition-all duration-200 cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
+                  className="inline-flex items-center gap-2.5 px-6 py-2.5 rounded-full bg-zinc-900 hover:bg-black dark:bg-white dark:hover:bg-zinc-100 text-white dark:text-zinc-900 font-semibold text-xs sm:text-sm shadow-xl hover:shadow-2xl transition-all duration-200 cursor-pointer hover:scale-[1.02] active:scale-[0.98] border border-zinc-700/60 dark:border-white"
                 >
                   {/* Google Multicolor Logo */}
                   <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
@@ -548,7 +552,7 @@ export const PackageWisePage: React.FC<PackageWisePageProps> = ({ navigate }) =>
 
       {/* Unlocked banner if logged in */}
       {isAuthenticated && (
-        <div className="flex items-center justify-between text-xs text-zinc-400 p-3 rounded-xl bg-[#0c1017] border border-[#1b2230]">
+        <div className="flex items-center justify-between text-xs text-zinc-400 p-3 rounded-xl bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-[#1b2230]">
           <div className="flex items-center gap-2">
             <CheckCircle2 className="w-4 h-4 text-emerald-400" />
             <span>

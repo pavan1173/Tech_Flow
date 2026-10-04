@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { patternsData } from '../data/patternsData';
 import { useProgress } from '../context/ProgressContext';
 import { useAuth } from '../context/AuthContext';
+import { AuthGate } from '../components/AuthGate';
 import {
   Search,
   ChevronDown,
@@ -54,8 +55,8 @@ export const PatternsPage: React.FC<PatternsPageProps> = ({ navigate }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('All');
   const [onlyBookmarks, setOnlyBookmarks] = useState<boolean>(false);
-  const [expandedTopics, setExpandedTopics] = useState<Record<string, boolean>>({ '0': true });
-  const [expandedSubTopics, setExpandedSubTopics] = useState<Record<string, boolean>>({ '0-0': true });
+  const [expandedTopics, setExpandedTopics] = useState<Record<string, boolean>>({});
+  const [expandedSubTopics, setExpandedSubTopics] = useState<Record<string, boolean>>({});
   const [showFullDesc, setShowFullDesc] = useState<boolean>(false);
   const [activeNoteProblem, setActiveNoteProblem] = useState<{ id: string; title: string } | null>(null);
   const [noteContent, setNoteContent] = useState<string>('');
@@ -155,10 +156,10 @@ export const PatternsPage: React.FC<PatternsPageProps> = ({ navigate }) => {
   };
 
   return (
-    <div className="min-h-screen bg-[#090b10] text-zinc-100 p-4 sm:p-6 lg:p-8 font-lexend space-y-6 max-w-6xl mx-auto">
+    <div className="min-h-screen bg-[#fcfcfb] dark:bg-[#07090e] text-zinc-900 dark:text-zinc-100 transition-colors duration-200 p-4 sm:p-6 lg:p-8 font-lexend space-y-6 max-w-6xl mx-auto">
       {/* Header Section matching reference image */}
       <div className="space-y-3.5">
-        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-white">
           20 Essential DSA Patterns
         </h1>
 
@@ -183,7 +184,7 @@ export const PatternsPage: React.FC<PatternsPageProps> = ({ navigate }) => {
         </div>
 
         {/* Overall Progress Widget - Exact replica of screenshot */}
-        <div className="inline-flex items-center gap-3.5 px-4 py-2.5 rounded-xl bg-[#0e121a] border border-[#1e2433] shadow-xs">
+        <div className="inline-flex items-center gap-3.5 px-4 py-2.5 rounded-xl bg-white dark:bg-[#0e121a] border border-zinc-200 dark:border-[#1e2433] shadow-xs">
           {/* Radial progress circle */}
           <div className="relative w-10 h-10 flex items-center justify-center shrink-0">
             <svg className="w-10 h-10 transform -rotate-90" viewBox="0 0 36 36">
@@ -229,13 +230,13 @@ export const PatternsPage: React.FC<PatternsPageProps> = ({ navigate }) => {
             placeholder="Search patterns, problems, or tags..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 rounded-xl bg-[#0e121a] border border-[#1e2433] text-xs sm:text-sm text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-full pl-9 pr-4 py-2 rounded-xl bg-white dark:bg-[#0e121a] border border-zinc-200 dark:border-[#1e2433] text-xs sm:text-sm text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
         </div>
 
         <div className="flex items-center gap-2 flex-wrap">
           {/* Difficulty pills */}
-          <div className="flex items-center gap-1 bg-[#0e121a] p-1 rounded-xl border border-[#1e2433]">
+          <div className="flex items-center gap-1 bg-white dark:bg-[#0e121a] p-1 rounded-xl border border-zinc-200 dark:border-[#1e2433]">
             {['All', 'Easy', 'Medium', 'Hard'].map((diff) => (
               <button
                 key={diff}
@@ -257,7 +258,7 @@ export const PatternsPage: React.FC<PatternsPageProps> = ({ navigate }) => {
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-colors cursor-pointer ${
               onlyBookmarks
                 ? 'bg-amber-500/10 border-amber-500/40 text-amber-400'
-                : 'bg-[#0e121a] border-[#1e2433] text-zinc-400 hover:text-white'
+                : 'bg-white dark:bg-[#0e121a] border-zinc-200 dark:border-[#1e2433] text-zinc-400 hover:text-white'
             }`}
           >
             <Star className={`w-3.5 h-3.5 ${onlyBookmarks ? 'fill-amber-400 text-amber-400' : 'text-zinc-400'}`} />
@@ -284,8 +285,33 @@ export const PatternsPage: React.FC<PatternsPageProps> = ({ navigate }) => {
       </div>
 
       {/* Two-Tier Nested Accordion List matching screenshot */}
-      <div className="space-y-2.5 pt-1">
-        {groupedData.map((topicGroup, tIdx) => {
+      {!isAuthenticated ? (
+        <AuthGate totalCount={totalCount} featureName="DSA patterns and problems" title="Sign in to access 20 DSA Patterns">
+          <div className="space-y-2.5 pt-1">
+            {groupedData.slice(0, 6).map((topicGroup, tIdx) => {
+              const allTopicProbs = topicGroup.subTopics.flatMap(st => st.problems);
+              return (
+                <div
+                  key={`locked-pat-${tIdx}`}
+                  className="rounded-xl border border-zinc-200 dark:border-[#1b2230] bg-white dark:bg-[#0c1017] p-4 flex items-center justify-between shadow-xs"
+                >
+                  <span className="font-bold text-sm text-zinc-900 dark:text-zinc-100">
+                    {topicGroup.topicName}
+                  </span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs text-zinc-500 font-mono">
+                      {allTopicProbs.length} problems
+                    </span>
+                    <ChevronDown className="w-4 h-4 text-zinc-400" />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </AuthGate>
+      ) : (
+        <div className="space-y-2.5 pt-1">
+          {groupedData.map((topicGroup, tIdx) => {
           const filteredSubTopics = topicGroup.subTopics.map((stGroup) => {
             const filteredProbs = stGroup.problems.filter((prob) => {
               const probTitle = prob.problem_name || prob.title || prob.question_name || '';
@@ -329,17 +355,17 @@ export const PatternsPage: React.FC<PatternsPageProps> = ({ navigate }) => {
           }).length;
           const topicPercent = allTopicProbs.length > 0 ? Math.round((topicSolvedCount / allTopicProbs.length) * 100) : 0;
 
-          const isTopicOpen = expandedTopics[tIdx] ?? (tIdx === 0);
+          const isTopicOpen = expandedTopics[tIdx] ?? false;
 
           return (
             <div
               key={topicGroup.topicName || tIdx}
-              className="rounded-xl border border-[#1b2230] bg-[#0c1017] overflow-hidden shadow-xs transition-all duration-200"
+              className="rounded-xl border border-zinc-200 dark:border-[#1b2230] bg-white dark:bg-[#0c1017] overflow-hidden shadow-xs transition-all duration-200"
             >
               {/* Level 1: Pattern Header */}
               <button
                 onClick={() => toggleTopicAccordion(tIdx)}
-                className="w-full px-4 sm:px-5 py-3.5 flex items-center justify-between bg-[#0e131d] hover:bg-[#121824] transition-colors text-left select-none cursor-pointer"
+                className="w-full px-4 sm:px-5 py-3.5 flex items-center justify-between bg-zinc-50 dark:bg-[#0e131d] hover:bg-[#121824] transition-colors text-left select-none cursor-pointer"
               >
                 <div className="flex items-center gap-2.5 min-w-0 flex-1">
                   <span className="font-bold text-sm sm:text-[14px] text-zinc-100 truncate">
@@ -370,7 +396,7 @@ export const PatternsPage: React.FC<PatternsPageProps> = ({ navigate }) => {
 
               {/* Level 1 Content */}
               {isTopicOpen && (
-                <div className="p-2 sm:p-3 space-y-2 bg-[#090d14] border-t border-[#18202d]">
+                <div className="p-2 sm:p-3 space-y-2 bg-zinc-100 dark:bg-[#090d14] border-t border-zinc-200 dark:border-[#18202d]">
                   {filteredSubTopics.length === 0 ? (
                     <div className="p-4 text-center text-xs text-zinc-500">
                       No matching problems in this pattern.
@@ -378,7 +404,7 @@ export const PatternsPage: React.FC<PatternsPageProps> = ({ navigate }) => {
                   ) : (
                     filteredSubTopics.map((subGroup, stIdx) => {
                       const subKey = `${tIdx}-${stIdx}`;
-                      const isSubOpen = expandedSubTopics[subKey] ?? (tIdx === 0 && stIdx === 0);
+                      const isSubOpen = expandedSubTopics[subKey] ?? false;
 
                       const subSolvedCount = subGroup.problems.filter(p => {
                         const pTitle = p.problem_name || p.title || p.question_name || '';
@@ -393,7 +419,7 @@ export const PatternsPage: React.FC<PatternsPageProps> = ({ navigate }) => {
                       return (
                         <div
                           key={subGroup.subTopicName || stIdx}
-                          className="rounded-lg border border-[#19212e] bg-[#0d1119] overflow-hidden"
+                          className="rounded-lg border border-zinc-200 dark:border-[#19212e] bg-white dark:bg-[#0d1119] overflow-hidden"
                         >
                           {/* Level 2: SubTopic Header (e.g. General or specific category) */}
                           <button
@@ -418,7 +444,7 @@ export const PatternsPage: React.FC<PatternsPageProps> = ({ navigate }) => {
 
                           {/* Level 3: Problem Items */}
                           {isSubOpen && (
-                            <div className="divide-y divide-[#171f2d] bg-[#0a0e16]">
+                            <div className="divide-y divide-zinc-200 dark:divide-[#171f2d] bg-zinc-50 dark:bg-[#0a0e16]">
                               {subGroup.problems.map((prob, pIdx) => {
                                 const probTitle = prob.problem_name || prob.title || prob.question_name || 'Untitled Problem';
                                 const probId = `pattern-${probTitle}`;
@@ -550,12 +576,13 @@ export const PatternsPage: React.FC<PatternsPageProps> = ({ navigate }) => {
             </div>
           );
         })}
-      </div>
+        </div>
+      )}
 
       {/* Notes Modal */}
       {activeNoteProblem && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-[#0e121a] border border-[#1e2433] rounded-2xl max-w-lg w-full p-5 space-y-4 shadow-2xl">
+          <div className="bg-white dark:bg-[#0e121a] border border-zinc-200 dark:border-[#1e2433] rounded-2xl max-w-lg w-full p-5 space-y-4 shadow-2xl">
             <div className="flex items-center justify-between">
               <h3 className="font-bold text-sm text-white flex items-center gap-2">
                 <FileText className="w-4 h-4 text-blue-400" />
@@ -578,7 +605,7 @@ export const PatternsPage: React.FC<PatternsPageProps> = ({ navigate }) => {
               value={noteContent}
               onChange={(e) => setNoteContent(e.target.value)}
               placeholder="Write your pattern template, recurrence relation, time/space complexities..."
-              className="w-full p-3 rounded-xl bg-[#090d14] border border-[#1e2433] text-xs sm:text-sm text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-blue-500 resize-none font-mono"
+              className="w-full p-3 rounded-xl bg-zinc-100 dark:bg-[#090d14] border border-zinc-200 dark:border-[#1e2433] text-xs sm:text-sm text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-blue-500 resize-none font-mono"
             />
 
             <div className="flex items-center justify-end gap-2 pt-1">

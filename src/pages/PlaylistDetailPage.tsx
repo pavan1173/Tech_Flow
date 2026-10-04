@@ -37,7 +37,12 @@ import {
   FastForward,
   Settings2,
   ShieldCheck,
-  Volume2
+  Volume2,
+  Sliders,
+  GripHorizontal,
+  MoveVertical,
+  Ratio,
+  Monitor
 } from 'lucide-react';
 
 interface PlaylistDetailPageProps {
@@ -61,8 +66,8 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
     if (hyntsPlaylist) return null;
     return (
       (coreSubjectsData as any)[subjectType]?.find((p: any) => p.slug === slug) ||
-      systemDesignPlaylistsList.find((p) => p.slug === slug) ||
-      dsaPlaylistsList.find((p) => p.slug === slug) ||
+      systemDesignPlaylistsList.find((p: any) => p.slug === slug) ||
+      dsaPlaylistsList.find((p: any) => p.slug === slug) ||
       coreSubjectsData.dbms.find((p) => p.slug === slug) ||
       coreSubjectsData.os.find((p) => p.slug === slug) ||
       coreSubjectsData.oops.find((p) => p.slug === slug) ||
@@ -155,15 +160,113 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
   const [showMiniPlayer, setShowMiniPlayer] = useState(false);
   const [dismissMiniPlayer, setDismissMiniPlayer] = useState(false);
 
+  // Dynamic Video Resizing Engine
+  type VideoSizeMode = 'compact' | 'standard' | 'wide' | 'theater' | 'custom';
+  type AspectRatioPreset = '16:9' | '4:3' | '16:10' | '21:9' | 'custom';
+
+  const [videoSizeMode, setVideoSizeMode] = useState<VideoSizeMode>(() => {
+    try {
+      return (localStorage.getItem('techflow_video_size_mode') as VideoSizeMode) || 'standard';
+    } catch {
+      return 'standard';
+    }
+  });
+
+  const [customVideoHeight, setCustomVideoHeight] = useState<number>(() => {
+    try {
+      const saved = localStorage.getItem('techflow_video_custom_height');
+      return saved ? parseInt(saved, 10) : 480;
+    } catch {
+      return 480;
+    }
+  });
+
+  const [aspectRatio, setAspectRatio] = useState<AspectRatioPreset>(() => {
+    try {
+      return (localStorage.getItem('techflow_video_aspect_ratio') as AspectRatioPreset) || '16:9';
+    } catch {
+      return '16:9';
+    }
+  });
+
+  const [showSizeControls, setShowSizeControls] = useState(false);
+  const [isDraggingResize, setIsDraggingResize] = useState(false);
+  const dragStartYRef = useRef<number>(0);
+  const dragStartHeightRef = useRef<number>(480);
+
+  const applyPresetSize = (mode: VideoSizeMode) => {
+    setVideoSizeMode(mode);
+    try {
+      localStorage.setItem('techflow_video_size_mode', mode);
+    } catch {}
+
+    if (mode === 'compact') {
+      setCustomVideoHeight(340);
+      setAspectRatio('16:9');
+    } else if (mode === 'standard') {
+      setCustomVideoHeight(480);
+      setAspectRatio('16:9');
+    } else if (mode === 'wide') {
+      setCustomVideoHeight(580);
+      setAspectRatio('16:9');
+    } else if (mode === 'theater') {
+      setCustomVideoHeight(640);
+      setAspectRatio('21:9');
+    }
+  };
+
+  const handleStartResizeDrag = (clientY: number) => {
+    setIsDraggingResize(true);
+    dragStartYRef.current = clientY;
+    dragStartHeightRef.current = customVideoHeight;
+
+    const onMouseMove = (e: MouseEvent) => {
+      const deltaY = e.clientY - dragStartYRef.current;
+      const newHeight = Math.min(Math.max(dragStartHeightRef.current + deltaY, 260), 850);
+      setCustomVideoHeight(newHeight);
+      setVideoSizeMode('custom');
+      try {
+        localStorage.setItem('techflow_video_custom_height', String(newHeight));
+        localStorage.setItem('techflow_video_size_mode', 'custom');
+      } catch {}
+    };
+
+    const onTouchMove = (e: TouchEvent) => {
+      if (e.touches.length > 0) {
+        const deltaY = e.touches[0].clientY - dragStartYRef.current;
+        const newHeight = Math.min(Math.max(dragStartHeightRef.current + deltaY, 260), 850);
+        setCustomVideoHeight(newHeight);
+        setVideoSizeMode('custom');
+        try {
+          localStorage.setItem('techflow_video_custom_height', String(newHeight));
+          localStorage.setItem('techflow_video_size_mode', 'custom');
+        } catch {}
+      }
+    };
+
+    const onEnd = () => {
+      setIsDraggingResize(false);
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mouseup', onEnd);
+      window.removeEventListener('touchmove', onTouchMove);
+      window.removeEventListener('touchend', onEnd);
+    };
+
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('mouseup', onEnd);
+    window.addEventListener('touchmove', onTouchMove, { passive: true });
+    window.addEventListener('touchend', onEnd);
+  };
+
   // References
   const playerRef = useRef<HTMLDivElement>(null);
   const miniPlayerDismissRef = useRef(false);
 
-  // Initialize expanded sections on load
+  // Initialize expanded sections on load - closed by default
   useEffect(() => {
     const initial: Record<string, boolean> = {};
-    playlist.sections.forEach((sec, idx) => {
-      initial[sec.title] = idx < 4; // Expand first 4 sections by default
+    playlist.sections.forEach((sec) => {
+      initial[sec.title] = false; // All sections closed by default
     });
     setExpandedSections(initial);
   }, [playlist.slug]);
@@ -450,7 +553,7 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
       </nav>
 
       {/* 2. Hero Header Card matching hynts.in */}
-      <header className="rounded-2xl bg-[#0c1017] border border-[#1b2230] p-4 sm:p-6 lg:p-7 space-y-5 shadow-xl relative overflow-hidden">
+      <header className="rounded-2xl bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-[#1b2230] p-4 sm:p-6 lg:p-7 space-y-5 shadow-xl relative overflow-hidden">
         {/* Accent glow */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
 
@@ -563,7 +666,7 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
         </div>
 
         {/* Course Progress Section matching hynts.in */}
-        <div className="pt-4 border-t border-[#18202d] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="pt-4 border-t border-zinc-200 dark:border-[#18202d] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3.5 flex-1 max-w-xl">
             <div className="flex-1 h-2.5 rounded-full bg-[#161c28] overflow-hidden">
               <div
@@ -604,12 +707,12 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
       <section
         ref={playerRef}
         aria-label="Video Player Section"
-        className={`rounded-2xl bg-[#0c1017] border border-[#1b2230] overflow-hidden transition-all shadow-2xl ${
+        className={`rounded-2xl bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-[#1b2230] overflow-hidden transition-all shadow-2xl ${
           theaterMode ? 'w-full ring-2 ring-blue-500/30' : ''
         }`}
       >
         {/* Player Header bar */}
-        <div className="p-3 sm:p-4 bg-[#0e131d] border-b border-[#1b2230] flex flex-wrap items-center justify-between gap-3">
+        <div className="p-3 sm:p-4 bg-zinc-50 dark:bg-[#0e131d] border-b border-zinc-200 dark:border-[#1b2230] flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2.5 min-w-0">
             <div className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse shrink-0" />
             <span className="text-xs font-bold uppercase tracking-wider text-blue-400 font-mono shrink-0">
@@ -623,6 +726,152 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
 
           {/* Quick controls: Autoplay Next, Embed Server Switcher, Theater Mode, Complete Check */}
           <div className="flex items-center gap-2 shrink-0 flex-wrap">
+            {/* Dynamic Video Resizer Toggle & Popover */}
+            <div className="relative">
+              <button
+                onClick={() => setShowSizeControls(!showSizeControls)}
+                className={`p-1.5 px-2.5 rounded-lg text-[11px] font-semibold flex items-center gap-1.5 border transition-all cursor-pointer ${
+                  showSizeControls || videoSizeMode !== 'standard'
+                    ? 'bg-blue-600/20 text-blue-300 border-blue-500/40'
+                    : 'bg-[#141b28] hover:bg-[#1a2334] text-zinc-300 hover:text-white border-[#1f293d]'
+                }`}
+                title="Dynamic Video Resizing options"
+              >
+                <Sliders className="w-3.5 h-3.5 text-blue-400" />
+                <span className="capitalize">{videoSizeMode} ({customVideoHeight}px)</span>
+              </button>
+
+              {/* Dynamic Size Control Popover */}
+              {showSizeControls && (
+                <div className="absolute right-0 top-full mt-2 w-72 p-4 bg-[#0c1017] border border-[#1f293d] rounded-2xl shadow-2xl z-50 space-y-3.5 animate-in fade-in zoom-in-95">
+                  <div className="flex items-center justify-between border-b border-[#1b2230] pb-2">
+                    <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                      <Sliders className="w-3.5 h-3.5 text-blue-400" />
+                      Dynamic Video Resize
+                    </span>
+                    <button
+                      onClick={() => setShowSizeControls(false)}
+                      className="text-zinc-400 hover:text-white text-xs"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+
+                  {/* Size Presets */}
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">
+                      Presets
+                    </label>
+                    <div className="grid grid-cols-2 gap-1.5">
+                      <button
+                        onClick={() => applyPresetSize('compact')}
+                        className={`px-2.5 py-1.5 rounded-xl text-xs font-semibold text-left transition-colors ${
+                          videoSizeMode === 'compact'
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-[#141b28] text-zinc-300 hover:bg-[#1e2738]'
+                        }`}
+                      >
+                        Compact (340px)
+                      </button>
+                      <button
+                        onClick={() => applyPresetSize('standard')}
+                        className={`px-2.5 py-1.5 rounded-xl text-xs font-semibold text-left transition-colors ${
+                          videoSizeMode === 'standard'
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-[#141b28] text-zinc-300 hover:bg-[#1e2738]'
+                        }`}
+                      >
+                        Standard (480px)
+                      </button>
+                      <button
+                        onClick={() => applyPresetSize('wide')}
+                        className={`px-2.5 py-1.5 rounded-xl text-xs font-semibold text-left transition-colors ${
+                          videoSizeMode === 'wide'
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-[#141b28] text-zinc-300 hover:bg-[#1e2738]'
+                        }`}
+                      >
+                        Wide (580px)
+                      </button>
+                      <button
+                        onClick={() => applyPresetSize('theater')}
+                        className={`px-2.5 py-1.5 rounded-xl text-xs font-semibold text-left transition-colors ${
+                          videoSizeMode === 'theater'
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-[#141b28] text-zinc-300 hover:bg-[#1e2738]'
+                        }`}
+                      >
+                        Cinema 21:9
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Height Slider */}
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between text-[11px]">
+                      <span className="text-zinc-400">Custom Height</span>
+                      <span className="font-mono text-blue-400 font-bold">{customVideoHeight}px</span>
+                    </div>
+                    <input
+                      type="range"
+                      min={260}
+                      max={850}
+                      step={10}
+                      value={customVideoHeight}
+                      onChange={(e) => {
+                        const h = parseInt(e.target.value, 10);
+                        setCustomVideoHeight(h);
+                        setVideoSizeMode('custom');
+                        try {
+                          localStorage.setItem('techflow_video_custom_height', String(h));
+                          localStorage.setItem('techflow_video_size_mode', 'custom');
+                        } catch {}
+                      }}
+                      className="w-full accent-blue-500 cursor-pointer"
+                    />
+                  </div>
+
+                  {/* Aspect Ratio Switcher */}
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">
+                      Aspect Ratio
+                    </label>
+                    <div className="grid grid-cols-4 gap-1">
+                      {(['16:9', '4:3', '16:10', '21:9'] as AspectRatioPreset[]).map((ar) => (
+                        <button
+                          key={ar}
+                          onClick={() => {
+                            setAspectRatio(ar);
+                            try {
+                              localStorage.setItem('techflow_video_aspect_ratio', ar);
+                            } catch {}
+                          }}
+                          className={`py-1 rounded-lg text-[10px] font-bold font-mono transition-colors ${
+                            aspectRatio === ar
+                              ? 'bg-blue-600 text-white'
+                              : 'bg-[#141b28] text-zinc-400 hover:text-white'
+                          }`}
+                        >
+                          {ar}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="pt-2 border-t border-[#1b2230] flex items-center justify-between">
+                    <button
+                      onClick={() => applyPresetSize('standard')}
+                      className="text-[11px] text-zinc-400 hover:text-white flex items-center gap-1 cursor-pointer"
+                    >
+                      <RotateCcw className="w-3 h-3" />
+                      <span>Reset Default</span>
+                    </button>
+                    <span className="text-[10px] text-zinc-500">Drag bar below to adjust</span>
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* Embed Switcher (YouTube vs No-Cookie) */}
             <button
               onClick={() => setEmbedHost(embedHost === 'youtube' ? 'nocookie' : 'youtube')}
@@ -697,19 +946,39 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
               } bg-black transition-all`}
             >
               <div
-                className={`w-full bg-black relative flex items-center justify-center ${
-                  theaterMode ? 'aspect-[21/9] min-h-[380px] lg:min-h-[540px]' : 'aspect-video'
+                style={{
+                  height: theaterMode ? undefined : `${customVideoHeight}px`,
+                  maxHeight: '88vh',
+                }}
+                className={`w-full bg-black relative flex items-center justify-center transition-all ${
+                  videoSizeMode === 'compact' ? 'max-w-4xl mx-auto' : ''
+                } ${
+                  theaterMode
+                    ? 'aspect-[21/9] min-h-[380px] lg:min-h-[540px]'
+                    : aspectRatio === '4:3'
+                    ? 'aspect-[4/3]'
+                    : aspectRatio === '16:10'
+                    ? 'aspect-[16/10]'
+                    : aspectRatio === '21:9'
+                    ? 'aspect-[21/9]'
+                    : ''
                 }`}
               >
                 {currentLecture.youtubeId ? (
-                  <iframe
-                    key={`${currentLecture.youtubeId}-${videoTimestamp || '0'}-${embedHost}`}
-                    className="w-full h-full border-0"
-                    src={embedSrc}
-                    title={currentLecture.title}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                  />
+                  <>
+                    <iframe
+                      key={`${currentLecture.youtubeId}-${videoTimestamp || '0'}-${embedHost}`}
+                      className="w-full h-full border-0"
+                      src={embedSrc}
+                      title={currentLecture.title}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                    />
+                    {/* Transparent overlay during drag to prevent mouse capture by iframe */}
+                    {isDraggingResize && (
+                      <div className="absolute inset-0 bg-transparent z-30 cursor-row-resize" />
+                    )}
+                  </>
                 ) : (
                   <div className="text-center p-8 text-zinc-400 space-y-3">
                     <Youtube className="w-12 h-12 text-red-500 mx-auto" />
@@ -727,8 +996,77 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
                 )}
               </div>
 
+              {/* Dynamic Drag-to-Resize Handle Bar */}
+              <div
+                onMouseDown={(e) => handleStartResizeDrag(e.clientY)}
+                onTouchStart={(e) => handleStartResizeDrag(e.touches[0].clientY)}
+                className={`w-full py-1.5 px-4 bg-zinc-100 dark:bg-[#090d14] border-t border-b border-zinc-200 dark:border-[#18202d] flex items-center justify-between gap-3 cursor-row-resize select-none transition-colors group ${
+                  isDraggingResize
+                    ? 'bg-blue-600/15 border-blue-500/50 dark:bg-blue-900/30'
+                    : 'hover:bg-zinc-200 dark:hover:bg-[#121824]'
+                }`}
+                title="Click and drag up/down to continuously resize the video player"
+              >
+                <div className="flex items-center gap-2 text-[11px] text-zinc-500 font-mono">
+                  <GripHorizontal
+                    className={`w-4 h-4 transition-colors ${
+                      isDraggingResize ? 'text-blue-400' : 'text-zinc-400 group-hover:text-blue-400'
+                    }`}
+                  />
+                  <span className="font-semibold text-zinc-700 dark:text-zinc-300">
+                    {customVideoHeight}px
+                  </span>
+                  <span className="text-zinc-400">•</span>
+                  <span className="text-zinc-400 uppercase font-mono">{aspectRatio}</span>
+                  <span className="hidden sm:inline text-zinc-500">(Drag to resize)</span>
+                </div>
+
+                <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
+                  <button
+                    onClick={() => applyPresetSize('compact')}
+                    className={`px-2 py-0.5 rounded-md text-[10px] font-semibold transition-colors cursor-pointer ${
+                      videoSizeMode === 'compact'
+                        ? 'bg-blue-600 text-white shadow-2xs'
+                        : 'bg-zinc-200 dark:bg-[#141b28] text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
+                    }`}
+                  >
+                    Compact
+                  </button>
+                  <button
+                    onClick={() => applyPresetSize('standard')}
+                    className={`px-2 py-0.5 rounded-md text-[10px] font-semibold transition-colors cursor-pointer ${
+                      videoSizeMode === 'standard'
+                        ? 'bg-blue-600 text-white shadow-2xs'
+                        : 'bg-zinc-200 dark:bg-[#141b28] text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
+                    }`}
+                  >
+                    Standard
+                  </button>
+                  <button
+                    onClick={() => applyPresetSize('wide')}
+                    className={`px-2 py-0.5 rounded-md text-[10px] font-semibold transition-colors cursor-pointer ${
+                      videoSizeMode === 'wide'
+                        ? 'bg-blue-600 text-white shadow-2xs'
+                        : 'bg-zinc-200 dark:bg-[#141b28] text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
+                    }`}
+                  >
+                    Wide
+                  </button>
+                  <button
+                    onClick={() => applyPresetSize('theater')}
+                    className={`px-2 py-0.5 rounded-md text-[10px] font-semibold transition-colors cursor-pointer ${
+                      videoSizeMode === 'theater'
+                        ? 'bg-blue-600 text-white shadow-2xs'
+                        : 'bg-zinc-200 dark:bg-[#141b28] text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
+                    }`}
+                  >
+                    Cinema 21:9
+                  </button>
+                </div>
+              </div>
+
               {/* Study milestones / quick timestamp jumps */}
-              <div className="px-4 py-2 bg-[#090d14] border-t border-[#18202d] flex items-center gap-2 overflow-x-auto scrollbar-none text-xs">
+              <div className="px-4 py-2 bg-zinc-100 dark:bg-[#090d14] border-t border-zinc-200 dark:border-[#18202d] flex items-center gap-2 overflow-x-auto scrollbar-none text-xs">
                 <span className="text-[11px] text-zinc-500 font-semibold uppercase tracking-wider shrink-0 flex items-center gap-1">
                   <Clock className="w-3 h-3 text-blue-400" />
                   Jump to:
@@ -746,7 +1084,7 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
               </div>
 
               {/* Video metadata and interactive actions */}
-              <div className="p-4 sm:p-5 bg-[#0c1017] border-t border-[#1b2230] space-y-4">
+              <div className="p-4 sm:p-5 bg-white dark:bg-[#0c1017] border-t border-zinc-200 dark:border-[#1b2230] space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div className="space-y-1">
                     <span className="text-[11px] font-bold uppercase tracking-wider text-blue-400 font-mono">
@@ -782,7 +1120,7 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
                 </div>
 
                 {/* Sub row with practice link, youtube link, notes toggle */}
-                <div className="flex flex-wrap items-center justify-between gap-2.5 pt-3 border-t border-[#18202d] text-xs">
+                <div className="flex flex-wrap items-center justify-between gap-2.5 pt-3 border-t border-zinc-200 dark:border-[#18202d] text-xs">
                   <div className="flex items-center gap-2 flex-wrap">
                     {/* Practice Problem Link */}
                     {currentLecture.problemUrl && (
@@ -840,8 +1178,8 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
 
             {/* Side Notes Drawer when activeTab === 'notes' */}
             {activeTab === 'notes' && (
-              <div className="lg:col-span-4 bg-[#0a0e16] border-t lg:border-t-0 lg:border-l border-[#1b2230] p-4 flex flex-col h-full min-h-[360px]">
-                <div className="flex items-center justify-between pb-3 border-b border-[#1b2230] mb-3">
+              <div className="lg:col-span-4 bg-zinc-50 dark:bg-[#0a0e16] border-t lg:border-t-0 lg:border-l border-zinc-200 dark:border-[#1b2230] p-4 flex flex-col h-full min-h-[360px]">
+                <div className="flex items-center justify-between pb-3 border-b border-zinc-200 dark:border-[#1b2230] mb-3">
                   <div className="flex items-center gap-2">
                     <StickyNote className="w-4 h-4 text-blue-400" />
                     <span className="text-xs font-bold text-white">Lecture Notes</span>
@@ -913,7 +1251,7 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
       </section>
 
       {/* 4. Controls & Filters Bar */}
-      <div className="p-3 sm:p-4 rounded-2xl bg-[#0c1017] border border-[#1b2230] flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3.5">
+      <div className="p-3 sm:p-4 rounded-2xl bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-[#1b2230] flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3.5">
         {/* Search input */}
         <div className="relative flex-1">
           <Search className="w-4 h-4 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -994,7 +1332,7 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
         /* ACCORDION TOPIC VIEW (hynts.in structure) */
         <div className="space-y-4">
           {filteredSections.length === 0 ? (
-            <div className="p-12 text-center text-zinc-500 bg-[#0c1017] rounded-2xl border border-[#1b2230]">
+            <div className="p-12 text-center text-zinc-500 bg-white dark:bg-[#0c1017] rounded-2xl border border-zinc-200 dark:border-[#1b2230]">
               <Search className="w-8 h-8 text-zinc-600 mx-auto mb-2" />
               <p className="text-sm font-semibold">No lectures matched "{searchQuery}"</p>
               <p className="text-xs text-zinc-500 mt-1">
@@ -1003,7 +1341,7 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
             </div>
           ) : (
             filteredSections.map((section, sIdx) => {
-              const isExpanded = expandedSections[section.title] ?? true;
+              const isExpanded = expandedSections[section.title] ?? false;
               const sectionDoneCount = section.videos.filter((v) => isLectureCompleted(v.id)).length;
               const sectionTotal = section.videos.length;
               const sectionPercent =
@@ -1012,7 +1350,7 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
               return (
                 <div
                   key={section.title || sIdx}
-                  className="rounded-2xl bg-[#0c1017] border border-[#1b2230] overflow-hidden transition-all shadow-md"
+                  className="rounded-2xl bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-[#1b2230] overflow-hidden transition-all shadow-md"
                 >
                   {/* Section Accordion Trigger */}
                   <button
@@ -1059,7 +1397,7 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
 
                   {/* Section Video Items */}
                   {isExpanded && (
-                    <div className="border-t border-[#18202d] divide-y divide-[#151c2a]">
+                    <div className="border-t border-zinc-200 dark:border-[#18202d] divide-y divide-[#151c2a]">
                       {section.videos.map((video) => {
                         const isDone = isLectureCompleted(video.id);
                         const isCurrent = lectures[activeLectureIndex]?.id === video.id;
@@ -1174,7 +1512,7 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
         /* STUDIO SPLIT VIEW (Two-column layout for continuous study) */
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-4">
-            <div className="p-4 rounded-2xl bg-[#0c1017] border border-[#1b2230] space-y-3">
+            <div className="p-4 rounded-2xl bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-[#1b2230] space-y-3">
               <h3 className="font-bold text-sm text-white flex items-center gap-2">
                 <BookOpen className="w-4 h-4 text-blue-400" />
                 <span>Lecture Details</span>
@@ -1184,7 +1522,7 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
                 Part of the <span className="text-blue-400 font-semibold">{currentLecture?.sectionTitle}</span> module.
               </p>
               {currentLecture?.problemUrl && (
-                <div className="pt-2 border-t border-[#18202d] flex items-center gap-2">
+                <div className="pt-2 border-t border-zinc-200 dark:border-[#18202d] flex items-center gap-2">
                   <span className="text-xs text-zinc-400">Associated Practice Problem:</span>
                   <a
                     href={currentLecture.problemUrl}
@@ -1202,8 +1540,8 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
           </div>
 
           {/* Right curriculum column */}
-          <div className="rounded-2xl bg-[#0c1017] border border-[#1b2230] overflow-hidden flex flex-col h-[600px]">
-            <div className="p-3.5 border-b border-[#1b2230] bg-[#0e131d] flex items-center justify-between">
+          <div className="rounded-2xl bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-[#1b2230] overflow-hidden flex flex-col h-[600px]">
+            <div className="p-3.5 border-b border-zinc-200 dark:border-[#1b2230] bg-zinc-50 dark:bg-[#0e131d] flex items-center justify-between">
               <span className="text-xs font-bold text-white">Course Curriculum</span>
               <span className="text-[11px] font-mono text-zinc-400">
                 {completedCount}/{lectures.length} Done
@@ -1263,7 +1601,7 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
       {showMiniPlayer && !dismissMiniPlayer && currentLecture && (
         <aside
           aria-label="Floating video player"
-          className="fixed bottom-5 right-5 z-50 w-72 sm:w-80 rounded-2xl bg-[#0c1017]/95 backdrop-blur-xl border border-blue-500/40 shadow-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-5"
+          className="fixed bottom-5 right-5 z-50 w-72 sm:w-80 rounded-2xl bg-white dark:bg-[#0c1017]/95 backdrop-blur-xl border border-blue-500/40 shadow-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-5"
         >
           <div className="relative aspect-video bg-black">
             {currentLecture.youtubeId && (
@@ -1309,7 +1647,7 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
               </span>
             </div>
             <p className="text-xs font-semibold text-white truncate">{currentLecture.title}</p>
-            <div className="flex items-center justify-between pt-1 border-t border-[#1b2230]">
+            <div className="flex items-center justify-between pt-1 border-t border-zinc-200 dark:border-[#1b2230]">
               <div className="flex items-center gap-1">
                 <button
                   onClick={handlePrev}
@@ -1344,7 +1682,7 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
       {/* 7. Reset Progress Confirmation Modal */}
       {showResetModal && (
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="w-full max-w-md bg-[#0c1017] border border-[#1f293d] rounded-2xl p-6 space-y-4 shadow-2xl">
+          <div className="w-full max-w-md bg-white dark:bg-[#0c1017] border border-[#1f293d] rounded-2xl p-6 space-y-4 shadow-2xl">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center">
                 <AlertCircle className="w-5 h-5" />

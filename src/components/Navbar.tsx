@@ -1,9 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useTheme } from '../context/ThemeContext';
 import { useProgress } from '../context/ProgressContext';
 import { useAuth } from '../context/AuthContext';
 import { TeachFlowLogo } from './TeachFlowLogo';
-import { Sun, Moon, Menu, X, ArrowUpRight, MessageSquare, CheckCircle2, Sparkles, BookOpen } from 'lucide-react';
+import {
+  Sun,
+  Moon,
+  Menu,
+  X,
+  ArrowUpRight,
+  MessageSquare,
+  CheckCircle2,
+  Sparkles,
+  BookOpen,
+  User,
+  LogOut,
+  Settings
+} from 'lucide-react';
 
 interface NavbarProps {
   currentPath: string;
@@ -13,9 +26,22 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate }) => {
   const { theme, toggleTheme } = useTheme();
   const { totalSolved } = useProgress();
-  const { isAuthenticated, openAuthModal } = useAuth();
+  const { user, isAuthenticated, openAuthModal, openProfileModal, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showCommunityModal, setShowCommunityModal] = useState(false);
+  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+  const profileRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown on click outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
+        setProfileDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const navLinks = [
     { label: 'Home', href: '/' },
@@ -38,13 +64,13 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate }) => {
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-zinc-200 dark:border-zinc-800/80 bg-white/90 dark:bg-black/90 backdrop-blur-md transition-colors duration-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        {/* Brand Logo */}
+    <header className="sticky top-0 z-40 w-full border-b border-zinc-200/80 dark:border-zinc-800/80 bg-white/80 dark:bg-black/80 backdrop-blur-md transition-colors duration-200">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+        {/* Logo & Brand */}
         <a
           href="/"
           onClick={(e) => handleLinkClick(e, '/')}
-          className="flex items-center group cursor-pointer select-none"
+          className="flex items-center group cursor-pointer shrink-0"
         >
           <TeachFlowLogo size={36} showText={true} />
         </a>
@@ -89,8 +115,98 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate }) => {
             {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-300" /> : <Moon className="w-4 h-4 text-indigo-600" />}
           </button>
 
-          {/* Google Sign In (when not logged in) */}
-          {!isAuthenticated && (
+          {/* Authenticated User Profile Menu OR Sign In button */}
+          {isAuthenticated && user ? (
+            <div className="relative" ref={profileRef}>
+              <button
+                onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
+                className="flex items-center gap-2 p-1 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer group"
+                aria-label="User Profile"
+              >
+                <div className="relative w-8 h-8 rounded-full bg-gradient-to-tr from-amber-400 to-yellow-300 p-0.5 overflow-hidden ring-2 ring-[#6C47FF]/40 group-hover:ring-[#6C47FF] transition-all shrink-0 flex items-center justify-center">
+                  {user.avatar ? (
+                    <img
+                      src={user.avatar}
+                      alt={user.name}
+                      onError={(e) => {
+                        (e.target as HTMLElement).style.display = 'none';
+                      }}
+                      className="w-full h-full rounded-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-xs font-bold text-zinc-900 leading-none">
+                      {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+                    </span>
+                  )}
+                  <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-zinc-950" />
+                </div>
+                <span className="hidden lg:inline text-xs font-bold text-zinc-800 dark:text-zinc-200 group-hover:text-[#6C47FF] transition-colors truncate max-w-[100px]">
+                  {user.name.split(' ')[0]}
+                </span>
+              </button>
+
+              {/* Profile Dropdown */}
+              {profileDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-zinc-800 shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 duration-150 text-xs font-sans">
+                  <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 mb-2">
+                    <p className="font-bold text-zinc-900 dark:text-white truncate">{user.name}</p>
+                    <p className="text-[10px] text-zinc-500 font-mono truncate">{user.email}</p>
+                    <span className="inline-block mt-1 text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold font-mono">
+                      Active Member
+                    </span>
+                  </div>
+
+                  <div className="space-y-0.5">
+                    <button
+                      onClick={() => {
+                        setProfileDropdownOpen(false);
+                        navigate('/profile');
+                      }}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors text-left cursor-pointer"
+                    >
+                      <User className="w-4 h-4 text-blue-500" />
+                      <span>View Profile &amp; Stats</span>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setProfileDropdownOpen(false);
+                        openProfileModal();
+                      }}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors text-left cursor-pointer"
+                    >
+                      <Settings className="w-4 h-4 text-amber-500" />
+                      <span>Quick Edit Profile</span>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setProfileDropdownOpen(false);
+                        navigate('/preparation');
+                      }}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors text-left cursor-pointer"
+                    >
+                      <BookOpen className="w-4 h-4 text-[#6C47FF]" />
+                      <span>Preparation Hub</span>
+                    </button>
+                  </div>
+
+                  <div className="mt-2 pt-2 border-t border-zinc-200 dark:border-zinc-800">
+                    <button
+                      onClick={() => {
+                        setProfileDropdownOpen(false);
+                        logout();
+                      }}
+                      className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-red-500 hover:bg-red-500/10 transition-colors text-left cursor-pointer"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      <span>Sign Out</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
             <button
               onClick={openAuthModal}
               className="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-800 dark:text-zinc-200 text-xs font-semibold transition-all cursor-pointer"
@@ -98,7 +214,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate }) => {
               <svg className="w-3.5 h-3.5" viewBox="0 0 24 24">
                 <path
                   fill="#4285F4"
-                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                  d="M22.56 12.25c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"
                 />
                 <path
                   fill="#34A853"
@@ -106,7 +222,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate }) => {
                 />
                 <path
                   fill="#FBBC05"
-                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
+                  d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 10.03 0 12s.45 3.82 1.25 5.42l4.03-3.15z"
                 />
                 <path
                   fill="#EA4335"
@@ -141,6 +257,27 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate }) => {
       {/* Mobile Menu Drawer */}
       {mobileMenuOpen && (
         <div className="md:hidden border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-4 pt-3 pb-6 space-y-3 animate-in slide-in-from-top-2 duration-200">
+          {isAuthenticated && user && (
+            <div
+              onClick={() => {
+                setMobileMenuOpen(false);
+                navigate('/profile');
+              }}
+              className="p-3 rounded-2xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-between cursor-pointer"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-[#fde047] p-0.5 overflow-hidden shrink-0">
+                  <img src="/pavan_img_.png" alt={user.name} className="w-full h-full rounded-full object-cover" />
+                </div>
+                <div>
+                  <p className="font-bold text-sm text-zinc-900 dark:text-white">{user.name}</p>
+                  <p className="text-xs text-zinc-500 font-mono truncate max-w-[170px]">{user.email}</p>
+                </div>
+              </div>
+              <span className="text-xs text-blue-500 font-semibold">View</span>
+            </div>
+          )}
+
           <nav className="flex flex-col space-y-2">
             {navLinks.map((link) => {
               const isActive = currentPath === link.href || (link.href !== '/' && currentPath.startsWith(link.href));

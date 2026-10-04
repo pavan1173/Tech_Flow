@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
+import { AuthGate } from '../components/AuthGate';
 import {
   ArrowLeft,
   CheckCircle2,
@@ -36,6 +38,7 @@ interface RoadmapDetailPageProps {
 }
 
 export const RoadmapDetailPage: React.FC<RoadmapDetailPageProps> = ({ slug, navigate }) => {
+  const { isAuthenticated } = useAuth();
   // Find detailed roadmap or generate structured dynamic fallback
   const roadmapData: RoadmapDetail = React.useMemo(() => {
     if (ROADMAP_DETAILS[slug]) {
@@ -367,10 +370,25 @@ export const RoadmapDetailPage: React.FC<RoadmapDetailPageProps> = ({ slug, navi
           </div>
         </div>
 
-        {/* ============================================================== */}
-        {/* VIEW MODE 1: VISUAL FLOWCHART PATH (ROADMAP.SH STYLE) */}
-        {/* ============================================================== */}
-        {viewMode === 'tree' && (
+        {!isAuthenticated ? (
+          <AuthGate
+            totalCount={`${totalTopicsCount} nodes`}
+            featureName={`${roadmapData.title}`}
+            title={`Sign in to access ${roadmapData.title}`}
+          >
+            <div className="space-y-6 pt-4">
+              <div className="p-6 rounded-2xl bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-zinc-800">
+                <h3 className="font-bold text-base text-zinc-900 dark:text-white mb-2">{roadmapData.title}</h3>
+                <p className="text-xs text-zinc-600 dark:text-zinc-400">{roadmapData.subtitle}</p>
+              </div>
+            </div>
+          </AuthGate>
+        ) : (
+          <>
+            {/* ============================================================== */}
+            {/* VIEW MODE 1: VISUAL FLOWCHART PATH (ROADMAP.SH STYLE) */}
+            {/* ============================================================== */}
+            {viewMode === 'tree' && (
           <div className="space-y-12">
             {/* The Full Roadmap.sh Interactive Visual Canvas Diagram */}
             <RoadmapVisualCanvas
@@ -625,6 +643,8 @@ export const RoadmapDetailPage: React.FC<RoadmapDetailPageProps> = ({ slug, navi
             </div>
           </div>
         )}
+        </>
+      )}
 
       </div>
 

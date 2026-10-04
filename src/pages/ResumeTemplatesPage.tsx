@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { resumeTemplatesList, ResumeTemplate } from '../data/resumeTemplatesData';
+import { useAuth } from '../context/AuthContext';
+import { AuthGate } from '../components/AuthGate';
 import {
   ChevronRight,
   Eye,
@@ -17,6 +19,7 @@ interface ResumeTemplatesPageProps {
 }
 
 export const ResumeTemplatesPage: React.FC<ResumeTemplatesPageProps> = ({ navigate }) => {
+  const { isAuthenticated } = useAuth();
   const [previewTemplate, setPreviewTemplate] = useState<ResumeTemplate | null>(null);
   const [copiedLink, setCopiedLink] = useState(false);
 
@@ -69,7 +72,7 @@ export const ResumeTemplatesPage: React.FC<ResumeTemplatesPageProps> = ({ naviga
 
       {/* 2. Header Section matching hynts.in */}
       <div className="space-y-2">
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-white">
           Resume Templates
         </h1>
         <p className="text-xs sm:text-sm text-zinc-400 font-normal max-w-4xl leading-relaxed">
@@ -78,66 +81,96 @@ export const ResumeTemplatesPage: React.FC<ResumeTemplatesPageProps> = ({ naviga
       </div>
 
       {/* 3. Resume Templates Grid (matching hynts.in screenshot) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
-        {resumeTemplatesList.map((tpl) => (
-          <div
-            key={tpl.id}
-            className="group relative flex flex-col bg-[#0c1017] dark:bg-zinc-950 border border-zinc-800 rounded-xl overflow-hidden hover:shadow-xl hover:border-zinc-700 transition-all duration-300"
-          >
-            {/* Template Preview Image with hover effect */}
-            <div className="relative w-full h-64 overflow-hidden bg-zinc-900 select-none">
-              <img
-                src={tpl.image}
-                alt={tpl.name}
-                loading="lazy"
-                className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
-                onError={(e) => {
-                  if (e.currentTarget.src !== tpl.cdnImage) {
-                    e.currentTarget.src = tpl.cdnImage;
-                  }
-                }}
-              />
-
-              {/* Hover Overlay with Eye Button (matching hynts.in) */}
-              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                <button
-                  onClick={() => setPreviewTemplate(tpl)}
-                  className="bg-white/20 backdrop-blur-md text-white p-3 rounded-full hover:bg-white/40 transition-colors cursor-pointer shadow-lg"
-                  aria-label={`Preview ${tpl.name}`}
-                >
-                  <Eye className="w-6 h-6" />
-                </button>
+      {!isAuthenticated ? (
+        <AuthGate
+          totalCount="all"
+          featureName="ATS-friendly resume templates"
+          title="Sign in to access Resume Templates"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
+            {resumeTemplatesList.slice(0, 3).map((tpl) => (
+              <div
+                key={tpl.id}
+                className="group relative flex flex-col bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden shadow-xs"
+              >
+                <div className="relative w-full h-64 overflow-hidden bg-zinc-100 dark:bg-zinc-900 select-none">
+                  <img
+                    src={tpl.image}
+                    alt={tpl.name}
+                    className="w-full h-full object-cover object-top"
+                  />
+                </div>
+                <div className="p-4 flex flex-col gap-2">
+                  <h3 className="font-lexend font-semibold text-base text-zinc-900 dark:text-zinc-100 line-clamp-1">
+                    {tpl.name}
+                  </h3>
+                </div>
               </div>
-            </div>
-
-            {/* Template Card Content */}
-            <div className="p-4 flex flex-col gap-4">
-              <h3 className="font-lexend font-semibold text-base text-zinc-100 line-clamp-1">
-                {tpl.name}
-              </h3>
-
-              {/* Action Buttons: Preview & Download (matching hynts.in) */}
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  onClick={() => setPreviewTemplate(tpl)}
-                  className="flex items-center justify-center gap-2 px-3 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded-lg text-sm font-semibold transition-colors cursor-pointer"
-                >
-                  <Eye className="w-4 h-4" />
-                  <span>Preview</span>
-                </button>
-
-                <button
-                  onClick={() => handleDownload(tpl)}
-                  className="flex items-center justify-center gap-2 px-3 py-2 bg-white hover:bg-zinc-100 text-zinc-900 rounded-lg text-sm font-semibold transition-colors shadow-md shadow-white/5 cursor-pointer"
-                >
-                  <Download className="w-4 h-4" />
-                  <span>Download</span>
-                </button>
-              </div>
-            </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </AuthGate>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
+          {resumeTemplatesList.map((tpl) => (
+            <div
+              key={tpl.id}
+              className="group relative flex flex-col bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden hover:shadow-xl hover:border-zinc-400 dark:hover:border-zinc-700 transition-all duration-300"
+            >
+              {/* Template Preview Image with hover effect */}
+              <div className="relative w-full h-64 overflow-hidden bg-zinc-100 dark:bg-zinc-900 select-none">
+                <img
+                  src={tpl.image}
+                  alt={tpl.name}
+                  loading="lazy"
+                  className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                  onError={(e) => {
+                    if (e.currentTarget.src !== tpl.cdnImage) {
+                      e.currentTarget.src = tpl.cdnImage;
+                    }
+                  }}
+                />
+
+                {/* Hover Overlay with Eye Button (matching hynts.in) */}
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                  <button
+                    onClick={() => setPreviewTemplate(tpl)}
+                    className="bg-white/20 backdrop-blur-md text-white p-3 rounded-full hover:bg-white/40 transition-colors cursor-pointer shadow-lg"
+                    aria-label={`Preview ${tpl.name}`}
+                  >
+                    <Eye className="w-6 h-6" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Template Card Content */}
+              <div className="p-4 flex flex-col gap-4">
+                <h3 className="font-lexend font-semibold text-base text-zinc-900 dark:text-zinc-100 line-clamp-1">
+                  {tpl.name}
+                </h3>
+
+                {/* Action Buttons: Preview & Download (matching hynts.in) */}
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    onClick={() => setPreviewTemplate(tpl)}
+                    className="flex items-center justify-center gap-2 px-3 py-2 bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 rounded-lg text-sm font-semibold transition-colors cursor-pointer"
+                  >
+                    <Eye className="w-4 h-4" />
+                    <span>Preview</span>
+                  </button>
+
+                  <button
+                    onClick={() => handleDownload(tpl)}
+                    className="flex items-center justify-center gap-2 px-3 py-2 bg-zinc-900 hover:bg-black dark:bg-white dark:hover:bg-zinc-100 text-white dark:text-zinc-900 rounded-lg text-sm font-semibold transition-colors shadow-md cursor-pointer"
+                  >
+                    <Download className="w-4 h-4" />
+                    <span>Download</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* 4. Full Document Image Preview Modal (matching hynts.in) */}
       {previewTemplate && (
@@ -149,11 +182,11 @@ export const ResumeTemplatesPage: React.FC<ResumeTemplatesPageProps> = ({ naviga
           onClick={() => setPreviewTemplate(null)}
         >
           <div
-            className="relative w-full max-w-4xl max-h-[92vh] bg-[#0c1017] border border-zinc-800 rounded-2xl shadow-2xl flex flex-col overflow-hidden text-zinc-100"
+            className="relative w-full max-w-4xl max-h-[92vh] bg-white dark:bg-[#0c1017] border border-zinc-800 rounded-2xl shadow-2xl flex flex-col overflow-hidden text-zinc-100"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Top Bar */}
-            <div className="px-5 py-3.5 bg-[#090d14] border-b border-zinc-800/80 flex items-center justify-between gap-3">
+            <div className="px-5 py-3.5 bg-zinc-100 dark:bg-[#090d14] border-b border-zinc-800/80 flex items-center justify-between gap-3">
               <div className="flex items-center gap-3 min-w-0">
                 <div className="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center shrink-0">
                   <FileText className="w-4 h-4" />

@@ -26,7 +26,7 @@ interface HomePageProps {
 
 export const HomePage: React.FC<HomePageProps> = ({ navigate }) => {
   const [activeFaqCategory, setActiveFaqCategory] = useState(faqData[0]?.category || 'Features & Functionality');
-  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
 
   const handleNav = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
@@ -48,7 +48,7 @@ export const HomePage: React.FC<HomePageProps> = ({ navigate }) => {
       href: '/preparation/company-wise-dsa-sheet',
       icon: Building,
       tag: '45+ Companies',
-      color: 'from-purple-500/20 to-pink-500/10'
+      color: 'from-blue-500/20 to-indigo-500/10'
     },
     {
       title: 'Role-Wise Question Banks',
@@ -96,7 +96,7 @@ export const HomePage: React.FC<HomePageProps> = ({ navigate }) => {
       href: '/preparation/cold-email-templets',
       icon: Mail,
       tag: '11 Categories',
-      color: 'from-violet-500/20 to-purple-500/10'
+      color: 'from-blue-500/20 to-cyan-500/10'
     }
   ];
 
@@ -107,13 +107,13 @@ export const HomePage: React.FC<HomePageProps> = ({ navigate }) => {
       {/* ── HERO SECTION ── */}
       <section className="relative pt-20 pb-24 md:pt-28 md:pb-32 overflow-hidden border-b border-zinc-200 dark:border-zinc-800/80">
         {/* Ambient Gradient Background Glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-gradient-to-tr from-[#6C47FF]/20 via-indigo-500/15 to-transparent blur-[120px] rounded-full pointer-events-none -z-10" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-gradient-to-tr from-blue-600/20 via-indigo-500/15 to-transparent blur-[120px] rounded-full pointer-events-none -z-10" />
 
         <div className="max-w-5xl mx-auto px-4 sm:px-6 text-center">
           {/* Logo Showcase */}
           <div className="flex justify-center mb-6">
             <div className="relative group cursor-pointer" onClick={() => navigate('/preparation')}>
-              <div className="absolute -inset-2 rounded-3xl bg-gradient-to-r from-cyan-500/30 via-blue-500/30 to-purple-600/30 blur-xl opacity-60 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+              <div className="absolute -inset-2 rounded-3xl bg-gradient-to-r from-cyan-500/30 via-blue-500/30 to-indigo-600/30 blur-xl opacity-60 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
               <TeachFlowLogo size={76} glow={true} className="relative drop-shadow-2xl" />
             </div>
           </div>
@@ -121,12 +121,12 @@ export const HomePage: React.FC<HomePageProps> = ({ navigate }) => {
           {/* Social Proof Counter */}
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-zinc-100 dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-800 text-xs md:text-sm font-medium text-zinc-600 dark:text-zinc-300 mb-8 shadow-xs">
             <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span>Used by <strong className="text-zinc-900 dark:text-white font-semibold">1 million+</strong> users to prepare for interviews</span>
+            <span className="font-bold text-zinc-900 dark:text-white">The All in One platform to crack your Interviews</span>
           </div>
 
           {/* Main Hero Headline */}
           <h1 className="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-zinc-900 dark:text-white leading-[1.1] mb-6">
-            Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6C47FF] via-indigo-500 to-violet-400 underline decoration-indigo-400/40 decoration-wavy">UNFAIR</span> Advantage <br className="hidden sm:block" />
+            Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 underline decoration-indigo-400/40 decoration-wavy">UNFAIR</span> Advantage <br className="hidden sm:block" />
             For Tech Interviews
           </h1>
 
@@ -352,7 +352,7 @@ export const HomePage: React.FC<HomePageProps> = ({ navigate }) => {
 
       {/* ── FINAL CTA BANNER ── */}
       <section className="py-16 md:py-24 max-w-5xl mx-auto px-4 sm:px-6">
-        <div className="rounded-3xl bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-700 p-8 sm:p-14 text-center text-white relative overflow-hidden shadow-2xl">
+        <div className="rounded-3xl bg-gradient-to-r from-blue-700 via-indigo-700 to-slate-900 p-8 sm:p-14 text-center text-white relative overflow-hidden shadow-2xl border border-blue-500/20">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-white/10 to-transparent pointer-events-none" />
 
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-4 relative z-10">

@@ -1,5 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { coldEmailTemplatesCatalog, ColdEmailTemplate } from '../data/coldEmailTemplatesData';
+import { useAuth } from '../context/AuthContext';
+import { AuthGate } from '../components/AuthGate';
 import {
   ChevronRight,
   Search,
@@ -22,6 +24,7 @@ interface ColdEmailPageProps {
 }
 
 export const ColdEmailPage: React.FC<ColdEmailPageProps> = ({ templateSlug, navigate }) => {
+  const { isAuthenticated } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [copiedSubjectIdx, setCopiedSubjectIdx] = useState<number | null>(null);
   const [copiedEmail, setCopiedEmail] = useState(false);
@@ -90,7 +93,7 @@ export const ColdEmailPage: React.FC<ColdEmailPageProps> = ({ templateSlug, navi
         key={template.slug}
         href={detailUrl}
         onClick={(e) => handleNav(e, detailUrl)}
-        className="group relative rounded-2xl bg-[#0c1017] border border-[#1b2230] hover:border-orange-500/50 p-5 sm:p-6 flex flex-col justify-between transition-all duration-200 hover:shadow-xl hover:shadow-orange-500/5 hover:-translate-y-0.5 cursor-pointer select-none"
+        className="group relative rounded-2xl bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-[#1b2230] hover:border-orange-500/50 p-5 sm:p-6 flex flex-col justify-between transition-all duration-200 hover:shadow-xl hover:shadow-orange-500/5 hover:-translate-y-0.5 cursor-pointer select-none"
       >
         <div className="space-y-3.5">
           {/* Top Row: Orange Mail Icon and Title matching screenshot */}
@@ -156,7 +159,7 @@ export const ColdEmailPage: React.FC<ColdEmailPageProps> = ({ templateSlug, navi
               {selectedTemplate.category}
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-white">
             {selectedTemplate.title}
           </h1>
           <p className="text-xs sm:text-sm text-zinc-400 font-normal max-w-4xl leading-relaxed">
@@ -165,7 +168,7 @@ export const ColdEmailPage: React.FC<ColdEmailPageProps> = ({ templateSlug, navi
         </div>
 
         {/* Subject Lines Section */}
-        <div className="p-5 sm:p-6 rounded-2xl bg-[#0c1017] border border-[#1b2230] space-y-3">
+        <div className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-[#1b2230] space-y-3">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
               <Mail className="w-4 h-4 text-orange-400" />
@@ -219,8 +222,8 @@ export const ColdEmailPage: React.FC<ColdEmailPageProps> = ({ templateSlug, navi
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Form Customizer (5 cols) */}
           <div className="lg:col-span-5 space-y-4">
-            <div className="p-5 sm:p-6 rounded-2xl bg-[#0c1017] border border-[#1b2230] space-y-4 shadow-sm">
-              <div className="flex items-center gap-2 pb-3 border-b border-[#1b2230]">
+            <div className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-[#1b2230] space-y-4 shadow-sm">
+              <div className="flex items-center gap-2 pb-3 border-b border-zinc-200 dark:border-[#1b2230]">
                 <SlidersHorizontal className="w-4 h-4 text-orange-400" />
                 <h2 className="text-sm font-bold text-white uppercase tracking-wider">
                   Personalize Email
@@ -235,7 +238,7 @@ export const ColdEmailPage: React.FC<ColdEmailPageProps> = ({ templateSlug, navi
                     value={customForm.yourName || ''}
                     onChange={(e) => setCustomForm({ ...customForm, yourName: e.target.value })}
                     placeholder="e.g. Alex Morgan"
-                    className="w-full px-3 py-2 rounded-xl bg-[#07090e] border border-[#1b2230] text-white text-xs focus:outline-none focus:ring-1 focus:ring-orange-500"
+                    className="w-full px-3 py-2 rounded-xl bg-[#07090e] border border-zinc-200 dark:border-[#1b2230] text-white text-xs focus:outline-none focus:ring-1 focus:ring-orange-500"
                   />
                 </div>
 
@@ -246,7 +249,7 @@ export const ColdEmailPage: React.FC<ColdEmailPageProps> = ({ templateSlug, navi
                     value={customForm.recipientName || ''}
                     onChange={(e) => setCustomForm({ ...customForm, recipientName: e.target.value })}
                     placeholder="e.g. Sarah Jenkins or Engineering Lead"
-                    className="w-full px-3 py-2 rounded-xl bg-[#07090e] border border-[#1b2230] text-white text-xs focus:outline-none focus:ring-1 focus:ring-orange-500"
+                    className="w-full px-3 py-2 rounded-xl bg-[#07090e] border border-zinc-200 dark:border-[#1b2230] text-white text-xs focus:outline-none focus:ring-1 focus:ring-orange-500"
                   />
                 </div>
 
@@ -257,7 +260,7 @@ export const ColdEmailPage: React.FC<ColdEmailPageProps> = ({ templateSlug, navi
                     value={customForm.companyName || ''}
                     onChange={(e) => setCustomForm({ ...customForm, companyName: e.target.value })}
                     placeholder="e.g. Stripe, Meta, Razorpay"
-                    className="w-full px-3 py-2 rounded-xl bg-[#07090e] border border-[#1b2230] text-white text-xs focus:outline-none focus:ring-1 focus:ring-orange-500"
+                    className="w-full px-3 py-2 rounded-xl bg-[#07090e] border border-zinc-200 dark:border-[#1b2230] text-white text-xs focus:outline-none focus:ring-1 focus:ring-orange-500"
                   />
                 </div>
 
@@ -268,7 +271,7 @@ export const ColdEmailPage: React.FC<ColdEmailPageProps> = ({ templateSlug, navi
                     value={customForm.jobId || ''}
                     onChange={(e) => setCustomForm({ ...customForm, jobId: e.target.value })}
                     placeholder="e.g. REQ-98214"
-                    className="w-full px-3 py-2 rounded-xl bg-[#07090e] border border-[#1b2230] text-white text-xs focus:outline-none focus:ring-1 focus:ring-orange-500"
+                    className="w-full px-3 py-2 rounded-xl bg-[#07090e] border border-zinc-200 dark:border-[#1b2230] text-white text-xs focus:outline-none focus:ring-1 focus:ring-orange-500"
                   />
                 </div>
 
@@ -279,7 +282,7 @@ export const ColdEmailPage: React.FC<ColdEmailPageProps> = ({ templateSlug, navi
                     value={customForm.project1 || ''}
                     onChange={(e) => setCustomForm({ ...customForm, project1: e.target.value })}
                     placeholder="Project with metrics & demo link"
-                    className="w-full px-3 py-2 rounded-xl bg-[#07090e] border border-[#1b2230] text-white text-xs focus:outline-none focus:ring-1 focus:ring-orange-500"
+                    className="w-full px-3 py-2 rounded-xl bg-[#07090e] border border-zinc-200 dark:border-[#1b2230] text-white text-xs focus:outline-none focus:ring-1 focus:ring-orange-500"
                   />
                 </div>
 
@@ -291,14 +294,14 @@ export const ColdEmailPage: React.FC<ColdEmailPageProps> = ({ templateSlug, navi
                       value={customForm.portfolioUrl || ''}
                       onChange={(e) => setCustomForm({ ...customForm, portfolioUrl: e.target.value })}
                       placeholder="Portfolio URL"
-                      className="w-full px-3 py-2 rounded-xl bg-[#07090e] border border-[#1b2230] text-white text-xs focus:outline-none focus:ring-1 focus:ring-orange-500"
+                      className="w-full px-3 py-2 rounded-xl bg-[#07090e] border border-zinc-200 dark:border-[#1b2230] text-white text-xs focus:outline-none focus:ring-1 focus:ring-orange-500"
                     />
                     <input
                       type="text"
                       value={customForm.githubUrl || ''}
                       onChange={(e) => setCustomForm({ ...customForm, githubUrl: e.target.value })}
                       placeholder="GitHub URL"
-                      className="w-full px-3 py-2 rounded-xl bg-[#07090e] border border-[#1b2230] text-white text-xs focus:outline-none focus:ring-1 focus:ring-orange-500"
+                      className="w-full px-3 py-2 rounded-xl bg-[#07090e] border border-zinc-200 dark:border-[#1b2230] text-white text-xs focus:outline-none focus:ring-1 focus:ring-orange-500"
                     />
                   </div>
                 </div>
@@ -306,7 +309,7 @@ export const ColdEmailPage: React.FC<ColdEmailPageProps> = ({ templateSlug, navi
             </div>
 
             {/* Pro Tips Card */}
-            <div className="p-5 rounded-2xl bg-[#0c1017] border border-[#1b2230] space-y-3">
+            <div className="p-5 rounded-2xl bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-[#1b2230] space-y-3">
               <div className="flex items-center gap-2 text-emerald-400 font-bold text-xs uppercase tracking-wider">
                 <CheckCircle2 className="w-4 h-4" />
                 <span>Cold Outreach Best Practices</span>
@@ -321,8 +324,8 @@ export const ColdEmailPage: React.FC<ColdEmailPageProps> = ({ templateSlug, navi
 
           {/* Live Email Preview (7 cols) */}
           <div className="lg:col-span-7 space-y-4">
-            <div className="p-5 sm:p-6 rounded-2xl bg-[#0c1017] border border-[#1b2230] flex flex-col justify-between space-y-4 shadow-sm">
-              <div className="flex items-center justify-between pb-3 border-b border-[#1b2230]">
+            <div className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-[#1b2230] flex flex-col justify-between space-y-4 shadow-sm">
+              <div className="flex items-center justify-between pb-3 border-b border-zinc-200 dark:border-[#1b2230]">
                 <div className="flex items-center gap-2">
                   <FileText className="w-4 h-4 text-orange-400" />
                   <h2 className="text-sm font-bold text-white uppercase tracking-wider">
@@ -350,14 +353,14 @@ export const ColdEmailPage: React.FC<ColdEmailPageProps> = ({ templateSlug, navi
               </div>
 
               {/* Email Content Box */}
-              <div className="p-5 sm:p-6 rounded-xl bg-[#07090e] border border-[#1b2230] text-xs sm:text-sm text-zinc-200 leading-relaxed font-sans whitespace-pre-wrap shadow-inner selection:bg-orange-500/30">
+              <div className="p-5 sm:p-6 rounded-xl bg-[#07090e] border border-zinc-200 dark:border-[#1b2230] text-xs sm:text-sm text-zinc-200 leading-relaxed font-sans whitespace-pre-wrap shadow-inner selection:bg-orange-500/30">
                 {liveBody}
               </div>
             </div>
 
             {/* Strategic Follow-Up Sequence */}
-            <div className="p-5 sm:p-6 rounded-2xl bg-[#0c1017] border border-[#1b2230] space-y-4 shadow-sm">
-              <div className="flex items-center justify-between pb-3 border-b border-[#1b2230]">
+            <div className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-[#1b2230] space-y-4 shadow-sm">
+              <div className="flex items-center justify-between pb-3 border-b border-zinc-200 dark:border-[#1b2230]">
                 <div className="flex items-center gap-2">
                   <Clock className="w-4 h-4 text-orange-400" />
                   <h2 className="text-sm font-bold text-white uppercase tracking-wider">
@@ -384,7 +387,7 @@ export const ColdEmailPage: React.FC<ColdEmailPageProps> = ({ templateSlug, navi
                 </button>
               </div>
 
-              <div className="p-4 rounded-xl bg-[#07090e] border border-[#1b2230] text-xs sm:text-sm text-zinc-300 leading-relaxed font-sans whitespace-pre-wrap">
+              <div className="p-4 rounded-xl bg-[#07090e] border border-zinc-200 dark:border-[#1b2230] text-xs sm:text-sm text-zinc-300 leading-relaxed font-sans whitespace-pre-wrap">
                 {liveFollowUp}
               </div>
             </div>
@@ -414,7 +417,7 @@ export const ColdEmailPage: React.FC<ColdEmailPageProps> = ({ templateSlug, navi
 
       {/* Header Section matching screenshot */}
       <div className="space-y-2">
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-white">
           Cold Email Templates
         </h1>
         <p className="text-xs sm:text-sm text-zinc-400 font-normal">
@@ -430,43 +433,55 @@ export const ColdEmailPage: React.FC<ColdEmailPageProps> = ({ templateSlug, navi
           placeholder="Search templates (e.g., MERN Stack, Referral, Startup...)"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full pl-11 pr-4 py-2.5 sm:py-3 rounded-2xl bg-[#0c1017] border border-[#1b2230] text-xs sm:text-sm text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-orange-500 transition-all"
+          className="w-full pl-11 pr-4 py-2.5 sm:py-3 rounded-2xl bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-[#1b2230] text-xs sm:text-sm text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-orange-500 transition-all"
         />
       </div>
 
-      {/* Tech Stack Specific Section matching screenshot */}
-      {techStackTemplates.length > 0 && (
-        <div className="space-y-4 pt-2">
-          <h2 className="text-lg sm:text-xl font-bold text-white tracking-tight">
-            Tech Stack Specific
-          </h2>
+      {/* Template Sections */}
+      {!isAuthenticated ? (
+        <AuthGate
+          totalCount={filteredTemplates.length}
+          featureName="cold email templates"
+          title="Sign in to access Cold Email Templates"
+        >
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-            {techStackTemplates.map(renderCard)}
+            {filteredTemplates.slice(0, 8).map(renderCard)}
           </div>
-        </div>
-      )}
+        </AuthGate>
+      ) : (
+        <div className="space-y-8">
+          {techStackTemplates.length > 0 && (
+            <div className="space-y-4 pt-2">
+              <h2 className="text-lg sm:text-xl font-bold text-zinc-900 dark:text-white tracking-tight">
+                Tech Stack Specific
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+                {techStackTemplates.map(renderCard)}
+              </div>
+            </div>
+          )}
 
-      {/* Cloud & DevOps Section matching screenshot */}
-      {devopsTemplates.length > 0 && (
-        <div className="space-y-4 pt-4">
-          <h2 className="text-lg sm:text-xl font-bold text-white tracking-tight">
-            Cloud & DevOps
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-            {devopsTemplates.map(renderCard)}
-          </div>
-        </div>
-      )}
+          {devopsTemplates.length > 0 && (
+            <div className="space-y-4 pt-4">
+              <h2 className="text-lg sm:text-xl font-bold text-zinc-900 dark:text-white tracking-tight">
+                Cloud & DevOps
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+                {devopsTemplates.map(renderCard)}
+              </div>
+            </div>
+          )}
 
-      {/* Data & AI/ML Section matching screenshot */}
-      {dataAiTemplates.length > 0 && (
-        <div className="space-y-4 pt-4">
-          <h2 className="text-lg sm:text-xl font-bold text-white tracking-tight">
-            Data & AI/ML
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-            {dataAiTemplates.map(renderCard)}
-          </div>
+          {dataAiTemplates.length > 0 && (
+            <div className="space-y-4 pt-4">
+              <h2 className="text-lg sm:text-xl font-bold text-zinc-900 dark:text-white tracking-tight">
+                Data & AI/ML
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+                {dataAiTemplates.map(renderCard)}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

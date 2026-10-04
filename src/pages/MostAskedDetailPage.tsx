@@ -1,6 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import { mostAskedQuestionsTopics, TechnologyTopic, InterviewQuestion } from '../data/mostAskedQuestionsData';
 import { useProgress } from '../context/ProgressContext';
+import { useAuth } from '../context/AuthContext';
+import { AuthGate } from '../components/AuthGate';
 import {
   ChevronRight,
   ChevronDown,
@@ -21,6 +23,7 @@ interface MostAskedDetailPageProps {
 
 export const MostAskedDetailPage: React.FC<MostAskedDetailPageProps> = ({ slug, navigate }) => {
   const { isSolved, toggleSolved } = useProgress();
+  const { isAuthenticated } = useAuth();
 
   // Find topic by slug
   const topic: TechnologyTopic =
@@ -30,9 +33,7 @@ export const MostAskedDetailPage: React.FC<MostAskedDetailPageProps> = ({ slug, 
   // Local state
   const [activeFilter, setActiveFilter] = useState<'All' | 'Easy' | 'Medium' | 'Hard' | 'Bookmarked'>('All');
   const [searchQuery, setSearchQuery] = useState('');
-  const [expandedQuestions, setExpandedQuestions] = useState<Record<number, boolean>>({
-    1: true, // Default open the first question as shown in design
-  });
+  const [expandedQuestions, setExpandedQuestions] = useState<Record<number, boolean>>({});
 
   // Bookmarked / Revision questions storage in localStorage
   const [bookmarkedIds, setBookmarkedIds] = useState<number[]>(() => {
@@ -138,7 +139,7 @@ export const MostAskedDetailPage: React.FC<MostAskedDetailPageProps> = ({ slug, 
 
       {/* Header Title Section */}
       <header className="space-y-2">
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-white">
           {topic.fullTitle}
         </h1>
         <p className="text-xs sm:text-sm text-zinc-400 font-normal max-w-5xl leading-relaxed">
@@ -149,7 +150,7 @@ export const MostAskedDetailPage: React.FC<MostAskedDetailPageProps> = ({ slug, 
       {/* Progress Metric & Filter Tabs Bar */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pt-2">
         {/* Left: Overall Progress Widget (Data Visibility principle) */}
-        <div className="flex items-center gap-4 bg-[#0c1017] border border-[#1b2230] px-4 py-2.5 rounded-2xl w-fit shadow-xs">
+        <div className="flex items-center gap-4 bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-[#1b2230] px-4 py-2.5 rounded-2xl w-fit shadow-xs">
           <div className="relative w-11 h-11 flex items-center justify-center">
             {/* SVG Circle Progress */}
             <svg className="w-11 h-11 -rotate-90" viewBox="0 0 36 36" aria-hidden="true">
@@ -190,7 +191,7 @@ export const MostAskedDetailPage: React.FC<MostAskedDetailPageProps> = ({ slug, 
         <div
           role="tablist"
           aria-label="Filter by difficulty"
-          className="flex items-center gap-1.5 bg-[#0c1017] border border-[#1b2230] p-1.5 rounded-2xl overflow-x-auto"
+          className="flex items-center gap-1.5 bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-[#1b2230] p-1.5 rounded-2xl overflow-x-auto"
         >
           {/* All */}
           <button
@@ -288,14 +289,14 @@ export const MostAskedDetailPage: React.FC<MostAskedDetailPageProps> = ({ slug, 
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           aria-label={`Search questions in ${topic.title}`}
-          className="w-full pl-9 pr-4 py-2 rounded-xl bg-[#0c1017] border border-[#1b2230] text-xs text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-150"
+          className="w-full pl-9 pr-4 py-2 rounded-xl bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-[#1b2230] text-xs text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-150"
         />
       </div>
 
       {/* Question Table */}
-      <section aria-label="Questions list" className="rounded-2xl border border-[#1b2230] bg-[#0c1017] overflow-hidden">
+      <section aria-label="Questions list" className="rounded-2xl border border-zinc-200 dark:border-[#1b2230] bg-white dark:bg-[#0c1017] overflow-hidden">
         {/* Table Header Row */}
-        <div className="grid grid-cols-12 gap-2 px-4 sm:px-6 py-3 border-b border-[#1b2230] text-[11px] font-bold uppercase tracking-wider text-zinc-400 bg-[#090d14]">
+        <div className="grid grid-cols-12 gap-2 px-4 sm:px-6 py-3 border-b border-zinc-200 dark:border-[#1b2230] text-[11px] font-bold uppercase tracking-wider text-zinc-400 bg-zinc-100 dark:bg-[#090d14]">
           <div className="col-span-1 text-left">STATUS</div>
           <div className="col-span-7 sm:col-span-8">PROBLEM</div>
           <div className="col-span-2 sm:col-span-2 text-center">REVISION</div>
@@ -303,11 +304,40 @@ export const MostAskedDetailPage: React.FC<MostAskedDetailPageProps> = ({ slug, 
         </div>
 
         {/* Questions List */}
-        <div className="divide-y divide-[#161c28]">
+        <div className="divide-y divide-zinc-200 dark:divide-[#161c28]">
           {filteredQuestions.length === 0 ? (
             <div className="p-12 text-center text-xs text-zinc-500">
               No questions found matching your filter or search.
             </div>
+          ) : !isAuthenticated ? (
+            <AuthGate
+              totalCount={topic.totalQuestions || filteredQuestions.length}
+              featureName={`${topic.title} questions`}
+              title={`Sign in to access ${topic.title} questions`}
+            >
+              <div className="divide-y divide-zinc-200 dark:divide-[#161c28]">
+                {filteredQuestions.slice(0, 7).map((q) => (
+                  <div key={`locked-topic-${q.id}`} className="grid grid-cols-12 gap-2 px-4 sm:px-6 py-4 items-center">
+                    <div className="col-span-1 flex items-center">
+                      <div className="w-5 h-5 rounded-md border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900" />
+                    </div>
+                    <div className="col-span-7 sm:col-span-8 flex items-center gap-2">
+                      <span className="font-bold text-xs sm:text-sm text-zinc-800 dark:text-zinc-200">
+                        {q.id}. {q.question}
+                      </span>
+                    </div>
+                    <div className="col-span-2 sm:col-span-2 flex items-center justify-center">
+                      <Star className="w-4 h-4 text-zinc-400" />
+                    </div>
+                    <div className="col-span-2 sm:col-span-1 flex items-center justify-end">
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">
+                        {q.level}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </AuthGate>
           ) : (
             filteredQuestions.map((q) => {
               const isDone = isSolved(`most_asked_${topic.slug}_${q.id}`);
@@ -315,7 +345,7 @@ export const MostAskedDetailPage: React.FC<MostAskedDetailPageProps> = ({ slug, 
               const isOpen = !!expandedQuestions[q.id];
 
               return (
-                <article key={q.id} className="transition-colors duration-150 hover:bg-zinc-900/30">
+                <article key={q.id} className="transition-colors duration-150 hover:bg-zinc-50/80 dark:hover:bg-zinc-900/30">
                   {/* Row */}
                   <div
                     tabIndex={0}
@@ -329,7 +359,7 @@ export const MostAskedDetailPage: React.FC<MostAskedDetailPageProps> = ({ slug, 
                         toggleExpand(q.id);
                       }
                     }}
-                    className="grid grid-cols-12 gap-2 px-4 sm:px-6 py-4 items-center cursor-pointer select-none focus-visible:outline-none focus-visible:bg-zinc-900/60 focus-visible:ring-1 focus-visible:ring-blue-500"
+                    className="grid grid-cols-12 gap-2 px-4 sm:px-6 py-4 items-center cursor-pointer select-none focus-visible:outline-none focus-visible:bg-zinc-100 dark:focus-visible:bg-zinc-900/60 focus-visible:ring-1 focus-visible:ring-blue-500"
                   >
                     {/* Status Checkbox */}
                     <div className="col-span-1 flex items-center">
@@ -342,17 +372,10 @@ export const MostAskedDetailPage: React.FC<MostAskedDetailPageProps> = ({ slug, 
                           e.stopPropagation();
                           toggleSolved(`most_asked_${topic.slug}_${q.id}`);
                         }}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                            e.stopPropagation();
-                            e.preventDefault();
-                            toggleSolved(`most_asked_${topic.slug}_${q.id}`);
-                          }
-                        }}
                         className={`w-5 h-5 rounded-md border flex items-center justify-center transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
                           isDone
                             ? 'bg-blue-600 border-blue-500 text-white'
-                            : 'border-zinc-700 hover:border-zinc-500 bg-zinc-900/60'
+                            : 'border-zinc-300 dark:border-zinc-700 hover:border-zinc-500 bg-white dark:bg-zinc-900/60'
                         }`}
                       >
                         {isDone && <Check className="w-3.5 h-3.5 stroke-[3]" />}
@@ -361,7 +384,7 @@ export const MostAskedDetailPage: React.FC<MostAskedDetailPageProps> = ({ slug, 
 
                     {/* Question Title & Number */}
                     <div className="col-span-7 sm:col-span-8 flex items-center gap-2">
-                      <span className="font-bold text-xs sm:text-sm text-zinc-200 hover:text-white transition-colors duration-150">
+                      <span className="font-bold text-xs sm:text-sm text-zinc-800 dark:text-zinc-200 hover:text-blue-600 dark:hover:text-white transition-colors duration-150">
                         {q.id}. {q.question}
                       </span>
                     </div>
@@ -372,17 +395,10 @@ export const MostAskedDetailPage: React.FC<MostAskedDetailPageProps> = ({ slug, 
                         type="button"
                         aria-label={isBookmarked ? `Remove question ${q.id} from revision` : `Bookmark question ${q.id} for revision`}
                         onClick={(e) => toggleBookmark(q.id, e)}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                            e.stopPropagation();
-                            e.preventDefault();
-                            toggleBookmark(q.id, e);
-                          }
-                        }}
                         className={`p-1 rounded-md transition-colors duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-500 ${
                           isBookmarked
                             ? 'text-yellow-400 hover:text-yellow-300'
-                            : 'text-zinc-600 hover:text-zinc-400'
+                            : 'text-zinc-400 dark:text-zinc-600 hover:text-zinc-600 dark:hover:text-zinc-400'
                         }`}
                         title={isBookmarked ? 'Remove from revision' : 'Bookmark for revision'}
                       >
@@ -397,34 +413,34 @@ export const MostAskedDetailPage: React.FC<MostAskedDetailPageProps> = ({ slug, 
                       <span
                         className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
                           q.level === 'Easy'
-                            ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'
+                            ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30'
                             : q.level === 'Medium'
-                            ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30'
-                            : 'bg-rose-500/10 text-rose-400 border border-rose-500/30'
+                            ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30'
+                            : 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/30'
                         }`}
                       >
                         {q.level}
                       </span>
                       {isOpen ? (
-                        <ChevronUp className="w-4 h-4 text-zinc-500" aria-hidden="true" />
+                        <ChevronUp className="w-4 h-4 text-zinc-400 dark:text-zinc-500" aria-hidden="true" />
                       ) : (
-                        <ChevronDown className="w-4 h-4 text-zinc-500" aria-hidden="true" />
+                        <ChevronDown className="w-4 h-4 text-zinc-400 dark:text-zinc-500" aria-hidden="true" />
                       )}
                     </div>
                   </div>
 
-                  {/* Expanded Accordion Answer (Progressive Disclosure principle) */}
+                  {/* Expanded Accordion Answer */}
                   {isOpen && (
                     <div
                       id={`answer-${q.id}`}
                       role="region"
                       aria-label={`Answer for question ${q.id}`}
-                      className="px-4 sm:px-6 pb-5 pt-1 space-y-2 bg-[#090d14]/60 border-t border-[#131924]"
+                      className="px-4 sm:px-6 pb-5 pt-1 space-y-2 bg-zinc-50 dark:bg-[#090d14]/60 border-t border-zinc-200 dark:border-[#131924]"
                     >
-                      <div className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">
+                      <div className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
                         ANSWER
                       </div>
-                      <div className="p-4 rounded-xl bg-[#07090e] border border-[#1b2230] text-xs sm:text-sm text-zinc-300 leading-relaxed font-normal whitespace-pre-line shadow-inner">
+                      <div className="p-4 rounded-xl bg-white dark:bg-[#07090e] border border-zinc-200 dark:border-[#1b2230] text-xs sm:text-sm text-zinc-800 dark:text-zinc-300 leading-relaxed font-normal whitespace-pre-line shadow-inner">
                         {q.answer}
                       </div>
                     </div>

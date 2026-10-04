@@ -1,0 +1,68 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile information, login session tracking, competitive coding handles, and career goals",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth UID" },
+        "name": { "type": "string", "description": "Full name" },
+        "email": { "type": "string", "format": "email", "description": "Email address" },
+        "avatar": { "type": "string", "description": "Profile picture URL" },
+        "handle": { "type": "string", "description": "Unique username handle" },
+        "role": { "type": "string", "description": "Current developer role or aspiration" },
+        "bio": { "type": "string", "description": "Short bio" },
+        "targetCompany": { "type": "string", "description": "Dream companies targeted" },
+        "targetPackage": { "type": "string", "description": "Target compensation / package" },
+        "college": { "type": "string", "description": "College / University" },
+        "graduationYear": { "type": "string", "description": "Year of graduation" },
+        "phone": { "type": "string", "description": "Contact phone number" },
+        "githubUrl": { "type": "string", "description": "GitHub profile URL or username" },
+        "linkedinUrl": { "type": "string", "description": "LinkedIn profile URL" },
+        "leetcodeUrl": { "type": "string", "description": "LeetCode profile username or URL" },
+        "codechefUrl": { "type": "string", "description": "CodeChef profile username or URL" },
+        "portfolioUrl": { "type": "string", "description": "Portfolio website URL" },
+        "instagramUrl": { "type": "string", "description": "Instagram profile URL" },
+        "totalSolved": { "type": "number", "description": "Total number of HackPath questions solved" },
+        "totalBookmarks": { "type": "number", "description": "Total bookmarked problems" },
+        "codingProfiles": { "type": "object", "description": "Cached coding platform stats for LeetCode, CodeChef, and GitHub" },
+        "authProvider": { "type": "string", "description": "Authentication provider (e.g. google.com, password)" },
+        "loginCount": { "type": "number", "description": "Total times user has logged in" },
+        "lastLoginAt": { "type": "string", "format": "date-time", "description": "Last login timestamp" },
+        "loginHistory": { "type": "array", "description": "History of login timestamps and sessions" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Account creation timestamp" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Last profile update timestamp" }
+      },
+      "required": ["uid", "email"]
+    },
+    "UserProgress": {
+      "title": "UserProgress",
+      "description": "User problem-solving progress, bookmarks, notes, and tracked metrics",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth UID" },
+        "totalSolved": { "type": "number", "description": "Total number of solved questions" },
+        "solvedMap": { "type": "object", "description": "Map of solved problem IDs" },
+        "bookmarksMap": { "type": "object", "description": "Map of bookmarked problem IDs" },
+        "notesMap": { "type": "object", "description": "Map of problem notes" },
+        "customDataMap": { "type": "object", "description": "Map of all auxiliary bookmarks, roadmaps, and settings" },
+        "codingProfiles": { "type": "object", "description": "Synchronized problems solved count from LeetCode, CodeChef, and GitHub" },
+        "streakDays": { "type": "number", "description": "Current consecutive streak days" },
+        "activityDates": { "type": "array", "description": "List of active dates" },
+        "lastSyncedAt": { "type": "string", "format": "date-time", "description": "Last synchronization timestamp" },
+        "lastActiveAt": { "type": "string", "format": "date-time", "description": "Last active timestamp" }
+      },
+      "required": ["uid"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "Individual user profiles stored by user UID"
+    },
+    "/progress/{userId}": {
+      "schema": { "$ref": "#/entities/UserProgress" },
+      "description": "User study progress, bookmarks, notes, and tracked metrics stored by user UID"
+    }
+  }
+}

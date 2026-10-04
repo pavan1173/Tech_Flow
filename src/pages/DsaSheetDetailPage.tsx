@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { dsaSheetsDetail } from '../data/dsaSheetsDetail';
 import { useProgress } from '../context/ProgressContext';
 import { useAuth } from '../context/AuthContext';
+import { AuthGate } from '../components/AuthGate';
 import {
   Search,
   ChevronDown,
@@ -66,8 +67,8 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('All');
   const [onlyBookmarks, setOnlyBookmarks] = useState<boolean>(false);
-  const [expandedTopics, setExpandedTopics] = useState<Record<string, boolean>>({ '0': true });
-  const [expandedSubTopics, setExpandedSubTopics] = useState<Record<string, boolean>>({ '0-0': true });
+  const [expandedTopics, setExpandedTopics] = useState<Record<string, boolean>>({});
+  const [expandedSubTopics, setExpandedSubTopics] = useState<Record<string, boolean>>({});
   const [showFullDesc, setShowFullDesc] = useState<boolean>(false);
   const [activeNoteProblem, setActiveNoteProblem] = useState<{ id: string; title: string } | null>(null);
   const [noteContent, setNoteContent] = useState<string>('');
@@ -212,7 +213,7 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
 
       {/* Header Section matching reference image */}
       <div className="space-y-3">
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-white">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-zinc-900 dark:text-white">
           {sheetData.title}
         </h1>
 
@@ -242,7 +243,7 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
         </div>
 
         {/* Overall Progress Widget */}
-        <div className="inline-flex items-center gap-3.5 px-4 py-2.5 rounded-xl bg-[#0c1017] border border-[#1b2230] shadow-xs">
+        <div className="inline-flex items-center gap-3.5 px-4 py-2.5 rounded-xl bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-[#1b2230] shadow-xs">
           {/* Radial progress circle */}
           <div className="relative w-10 h-10 flex items-center justify-center shrink-0">
             <svg className="w-10 h-10 transform -rotate-90" viewBox="0 0 36 36">
@@ -288,13 +289,13 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
             placeholder="Search problems, topics, or tags..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 rounded-xl bg-[#0c1017] border border-[#1b2230] text-xs sm:text-sm text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-full pl-9 pr-4 py-2 rounded-xl bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-[#1b2230] text-xs sm:text-sm text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
         </div>
 
         <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap overflow-x-auto no-scrollbar py-1">
           {/* Difficulty pills */}
-          <div className="flex items-center gap-1 bg-[#0c1017] p-1 rounded-xl border border-[#1b2230] shrink-0">
+          <div className="flex items-center gap-1 bg-white dark:bg-[#0c1017] p-1 rounded-xl border border-zinc-200 dark:border-[#1b2230] shrink-0">
             {['All', 'Easy', 'Medium', 'Hard'].map((diff) => (
               <button
                 key={diff}
@@ -316,7 +317,7 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-colors cursor-pointer shrink-0 ${
               onlyBookmarks
                 ? 'bg-amber-500/10 border-amber-500/40 text-amber-400'
-                : 'bg-[#0c1017] border-[#1b2230] text-zinc-400 hover:text-white'
+                : 'bg-white dark:bg-[#0c1017] border-zinc-200 dark:border-[#1b2230] text-zinc-400 hover:text-white'
             }`}
           >
             <Bookmark className={`w-3.5 h-3.5 ${onlyBookmarks ? 'fill-amber-400 text-amber-400' : 'text-zinc-400'}`} />
@@ -343,8 +344,37 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
       </div>
 
       {/* Accordion List Matching Exact Screenshot {1871A41C-AFA6-437D-9300-26A1A9E96577}.png */}
-      <div className="space-y-2 pt-1">
-        {groupedData.map((topicGroup, tIdx) => {
+      {!isAuthenticated ? (
+        <AuthGate
+          totalCount={sheetData?.totalProblems || 'all'}
+          featureName={`${sheetData?.title || 'DSA Sheet'} problems`}
+          title={`Sign in to access ${sheetData?.title || 'DSA Sheet'}`}
+        >
+          <div className="space-y-2 pt-1">
+            {groupedData.slice(0, 6).map((topicGroup, tIdx) => {
+              const allTopicProbs = topicGroup.subTopics.flatMap(st => st.problems);
+              return (
+                <div
+                  key={`locked-dsa-${tIdx}`}
+                  className="rounded-xl border border-zinc-200 dark:border-[#181d28] bg-white dark:bg-[#0c1017] p-4 flex items-center justify-between"
+                >
+                  <span className="font-bold text-sm text-zinc-900 dark:text-zinc-100">
+                    {cleanTopicName(topicGroup.topicName)}
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-zinc-500 font-mono">
+                      {allTopicProbs.length} problems
+                    </span>
+                    <ChevronDown className="w-4 h-4 text-zinc-400" />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </AuthGate>
+      ) : (
+        <div className="space-y-2 pt-1">
+          {groupedData.map((topicGroup, tIdx) => {
           const isSingleTopic =
             topicGroup.subTopics.length === 1 &&
             (topicGroup.subTopics[0].subTopicName === topicGroup.topicName ||
@@ -395,18 +425,18 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
           }).length;
           const topicPercent = allTopicProbs.length > 0 ? Math.round((topicSolvedCount / allTopicProbs.length) * 100) : 0;
 
-          const isTopicOpen = expandedTopics[tIdx] ?? (tIdx === 0);
+          const isTopicOpen = expandedTopics[tIdx] ?? false;
           const displayName = cleanTopicName(topicGroup.topicName);
 
           return (
             <div
               key={topicGroup.topicName || tIdx}
-              className="rounded-xl border border-[#181d28] bg-[#0c1017] overflow-hidden shadow-xs transition-all duration-200"
+              className="rounded-xl border border-[#181d28] bg-white dark:bg-[#0c1017] overflow-hidden shadow-xs transition-all duration-200"
             >
               {/* Step / Topic Header matching screenshot */}
               <button
                 onClick={() => toggleTopicAccordion(tIdx)}
-                className="w-full px-4 sm:px-5 py-3.5 flex items-center justify-between bg-[#0e131d] hover:bg-[#121824] transition-colors text-left select-none cursor-pointer"
+                className="w-full px-4 sm:px-5 py-3.5 flex items-center justify-between bg-zinc-50 dark:bg-[#0e131d] hover:bg-[#121824] transition-colors text-left select-none cursor-pointer"
               >
                 <div className="flex items-center gap-2.5 min-w-0 flex-1">
                   <ChevronDown
@@ -436,7 +466,7 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
 
               {/* Topic Content */}
               {isTopicOpen && (
-                <div className="border-t border-[#18202d] bg-[#090d14]">
+                <div className="border-t border-zinc-200 dark:border-[#18202d] bg-zinc-100 dark:bg-[#090d14]">
                   {/* If single subtopic, render problems directly matching screenshot */}
                   {isSingleTopic ? (
                     <div className="divide-y divide-[#151c2a]">
@@ -639,7 +669,7 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
                     <div className="p-2 sm:p-3 space-y-2">
                       {filteredSubTopics.map((subGroup, stIdx) => {
                         const subKey = `${tIdx}-${stIdx}`;
-                        const isSubOpen = expandedSubTopics[subKey] ?? (tIdx === 0 && stIdx === 0);
+                        const isSubOpen = expandedSubTopics[subKey] ?? false;
 
                         const subSolvedCount = subGroup.problems.filter(p => {
                           const pTitle = p.problem_name || p.title || p.question_name || '';
@@ -651,7 +681,7 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
                         return (
                           <div
                             key={subGroup.subTopicName || stIdx}
-                            className="rounded-lg border border-[#19212e] bg-[#0d1119] overflow-hidden"
+                            className="rounded-lg border border-zinc-200 dark:border-[#19212e] bg-white dark:bg-[#0d1119] overflow-hidden"
                           >
                             <button
                               onClick={() => toggleSubTopicAccordion(subKey)}
@@ -674,7 +704,7 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
                             </button>
 
                             {isSubOpen && (
-                              <div className="divide-y divide-[#171f2d] bg-[#0a0e16]">
+                              <div className="divide-y divide-zinc-200 dark:divide-[#171f2d] bg-zinc-50 dark:bg-[#0a0e16]">
                                 {subGroup.problems.map((prob, pIdx) => {
                                   const probTitle = prob.problem_name || prob.title || prob.question_name || 'Untitled Problem';
                                   const probId = `${slug}-${probTitle}`;
@@ -775,12 +805,13 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
             </div>
           );
         })}
-      </div>
+        </div>
+      )}
 
       {/* Notes Modal */}
       {activeNoteProblem && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-[#0e121a] border border-[#1e2433] rounded-2xl max-w-lg w-full p-5 space-y-4 shadow-2xl">
+          <div className="bg-white dark:bg-[#0e121a] border border-zinc-200 dark:border-[#1e2433] rounded-2xl max-w-lg w-full p-5 space-y-4 shadow-2xl">
             <div className="flex items-center justify-between">
               <h3 className="font-bold text-sm text-white flex items-center gap-2">
                 <FileText className="w-4 h-4 text-blue-400" />
@@ -803,7 +834,7 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
               onChange={(e) => setNoteContent(e.target.value)}
               placeholder="Write your approach, edge cases, time/space complexity notes..."
               rows={6}
-              className="w-full p-3 rounded-xl bg-[#07090e] border border-[#1e2433] text-xs text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-blue-500 resize-none font-mono"
+              className="w-full p-3 rounded-xl bg-[#07090e] border border-zinc-200 dark:border-[#1e2433] text-xs text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-blue-500 resize-none font-mono"
             />
 
             <div className="flex justify-end gap-2 pt-2">

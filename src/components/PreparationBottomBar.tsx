@@ -78,7 +78,7 @@ export const PreparationBottomBar: React.FC<PreparationBottomBarProps> = ({
   return (
     <nav
       aria-label="Mobile Navigation"
-      className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#080b12]/95 backdrop-blur-xl border-t border-[#181f2c] px-2 py-1.5 flex items-center justify-around shadow-2xl transition-all"
+      className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#080b12]/95 backdrop-blur-xl border-t border-zinc-200 dark:border-[#181f2c] px-2 py-1.5 flex items-center justify-around shadow-2xl transition-colors duration-200"
       style={{ paddingBottom: 'max(0.375rem, env(safe-area-inset-bottom))' }}
     >
       {navItems.map((item) => {
@@ -89,14 +89,14 @@ export const PreparationBottomBar: React.FC<PreparationBottomBarProps> = ({
             onClick={item.onClick}
             className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-all cursor-pointer relative ${
               item.active
-                ? 'text-blue-400 font-bold'
-                : 'text-zinc-400 hover:text-zinc-200'
+                ? 'text-blue-600 dark:text-blue-400 font-bold'
+                : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'
             }`}
           >
             {item.active && (
               <span className="absolute -top-1 w-6 h-0.5 rounded-full bg-blue-500 shadow-sm shadow-blue-500/50" />
             )}
-            <Icon className={`w-5 h-5 ${item.active ? 'text-blue-400 scale-105 stroke-[2.2]' : 'text-zinc-400'}`} />
+            <Icon className={`w-5 h-5 ${item.active ? 'text-blue-600 dark:text-blue-400 scale-105 stroke-[2.2]' : 'text-zinc-500 dark:text-zinc-400'}`} />
             <span className="text-[10px] tracking-tight mt-0.5 font-medium">
               {item.label}
             </span>

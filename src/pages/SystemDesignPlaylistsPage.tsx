@@ -38,7 +38,7 @@ export const SystemDesignPlaylistsPage: React.FC<SystemDesignPlaylistsPageProps>
           <Award className="w-3.5 h-3.5" />
           <span>High Level & Low Level Design</span>
         </div>
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-white">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-zinc-900 dark:text-white">
           System Design Playlists
         </h1>
         <p className="text-xs sm:text-sm text-zinc-400 font-normal max-w-3xl">
@@ -56,9 +56,9 @@ export const SystemDesignPlaylistsPage: React.FC<SystemDesignPlaylistsPageProps>
               key={playlist.slug}
               href={detailUrl}
               onClick={(e) => handleNav(e, detailUrl)}
-              className="group flex flex-col bg-[#0c1017] border border-[#1b2230] hover:border-emerald-500/50 rounded-2xl overflow-hidden transition-all duration-300 shadow-md hover:shadow-2xl hover:-translate-y-1 cursor-pointer select-none"
+              className="group flex flex-col bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-[#1b2230] hover:border-emerald-500/50 rounded-2xl overflow-hidden transition-all duration-300 shadow-md hover:shadow-2xl hover:-translate-y-1 cursor-pointer select-none"
             >
-              <div className="relative aspect-video w-full overflow-hidden bg-zinc-900 border-b border-[#1b2230]">
+              <div className="relative aspect-video w-full overflow-hidden bg-zinc-900 border-b border-zinc-200 dark:border-[#1b2230]">
                 <PlaylistThumbnail
                   type={playlist.thumbnailType || 'system-design'}
                   subject="SYSTEM DESIGN"
@@ -94,7 +94,7 @@ export const SystemDesignPlaylistsPage: React.FC<SystemDesignPlaylistsPageProps>
                   </p>
                 </div>
 
-                <div className="pt-3 border-t border-[#18202d] flex items-center justify-between text-xs">
+                <div className="pt-3 border-t border-zinc-200 dark:border-[#18202d] flex items-center justify-between text-xs">
                   <span className="font-mono text-zinc-400 font-semibold">
                     {playlist.totalVideos} Lectures
                   </span>

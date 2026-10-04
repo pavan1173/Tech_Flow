@@ -80,12 +80,12 @@ export const PlaylistsPage: React.FC<PlaylistsPageProps> = ({
       </nav>
 
       {/* Header */}
-      <div className="space-y-3 pb-2 border-b border-[#18202d]">
+      <div className="space-y-3 pb-2 border-b border-zinc-200 dark:border-[#18202d]">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-semibold">
           <Youtube className="w-3.5 h-3.5 text-red-500" />
           <span>Complete Video Learning Hub</span>
         </div>
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-white">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-zinc-900 dark:text-white">
           All Courses & Video Playlists
         </h1>
         <p className="text-xs sm:text-sm text-zinc-400 max-w-3xl leading-relaxed">
@@ -107,7 +107,7 @@ export const PlaylistsPage: React.FC<PlaylistsPageProps> = ({
                 className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
                   isActive
                     ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20'
-                    : 'bg-[#0c1017] text-zinc-400 hover:text-white border border-[#1b2230]'
+                    : 'bg-white dark:bg-[#0c1017] text-zinc-400 hover:text-white border border-zinc-200 dark:border-[#1b2230]'
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" />
@@ -132,7 +132,7 @@ export const PlaylistsPage: React.FC<PlaylistsPageProps> = ({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search playlists, topics, channels..."
-            className="w-full pl-9 pr-3 py-2 rounded-xl bg-[#0c1017] border border-[#1b2230] text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500"
+            className="w-full pl-9 pr-3 py-2 rounded-xl bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-[#1b2230] text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500"
           />
         </div>
       </div>
@@ -145,12 +145,12 @@ export const PlaylistsPage: React.FC<PlaylistsPageProps> = ({
           return (
             <div
               key={playlist.slug}
-              className="group flex flex-col bg-[#0c1017] border border-[#1b2230] hover:border-blue-500/50 rounded-2xl overflow-hidden transition-all duration-300 shadow-md hover:shadow-2xl hover:-translate-y-1"
+              className="group flex flex-col bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-[#1b2230] hover:border-blue-500/50 rounded-2xl overflow-hidden transition-all duration-300 shadow-md hover:shadow-2xl hover:-translate-y-1"
             >
               {/* Thumbnail Container */}
               <div
                 onClick={() => navigate(detailUrl)}
-                className="relative aspect-video w-full overflow-hidden bg-zinc-900 border-b border-[#1b2230] cursor-pointer"
+                className="relative aspect-video w-full overflow-hidden bg-zinc-900 border-b border-zinc-200 dark:border-[#1b2230] cursor-pointer"
               >
                 <PlaylistThumbnail type={playlist.thumbnailType} subject={playlist.category.toUpperCase()} />
 
@@ -197,7 +197,7 @@ export const PlaylistsPage: React.FC<PlaylistsPageProps> = ({
                   </p>
                 </div>
 
-                <div className="pt-3 border-t border-[#18202d] flex items-center justify-between text-xs">
+                <div className="pt-3 border-t border-zinc-200 dark:border-[#18202d] flex items-center justify-between text-xs">
                   <span className="font-mono text-zinc-400 font-semibold">
                     {playlist.totalVideos} Lectures
                   </span>

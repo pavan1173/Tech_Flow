@@ -45,7 +45,11 @@ export const TeachFlowLogo: React.FC<TeachFlowLogoProps> = ({
       {/* Brand Text */}
       {showText && (
         <div className={`flex flex-col justify-center ${textClassName}`}>
-          <span className="font-lexend font-black text-xl tracking-tight text-zinc-900 dark:text-white flex items-center gap-1.5 leading-none">
+          <span
+            className={`font-lexend font-black text-xl tracking-tight flex items-center gap-1.5 leading-none transition-colors ${
+              textClassName.includes('text-') ? '' : 'text-zinc-900 dark:text-white'
+            }`}
+          >
             HackPath
             <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 inline-block shadow-[0_0_8px_#38bdf8]" />
           </span>

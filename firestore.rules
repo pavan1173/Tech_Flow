@@ -1,0 +1,35 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // Connection test document
+    match /test/connection {
+      allow read: if true;
+    }
+
+    // User profile documents & recorded stats
+    match /users/{userId} {
+      allow read: if true;
+      allow write: if isOwner(userId);
+
+      // Nested login history subcollection if used
+      match /login_history/{loginId} {
+        allow read, write: if isOwner(userId);
+      }
+    }
+
+    // User progress and problem-solving metrics (safe, private to user)
+    match /progress/{userId} {
+      allow read: if isOwner(userId);
+      allow write: if isOwner(userId);
+    }
+  }
+}

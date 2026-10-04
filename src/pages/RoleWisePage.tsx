@@ -2,6 +2,8 @@ import React, { useState, useMemo } from 'react';
 import { roleWiseData } from '../data/roleWiseData';
 import { RoleIcon } from '../components/RoleIcon';
 import { useProgress } from '../context/ProgressContext';
+import { useAuth } from '../context/AuthContext';
+import { GoogleLogoIcon } from '../components/AuthGate';
 import {
   Search,
   ChevronRight,
@@ -10,9 +12,9 @@ import {
   AlignLeft,
   Check,
   Star,
-  ArrowLeft,
   Compass,
-  ArrowRight
+  ArrowRight,
+  Sparkles
 } from 'lucide-react';
 
 interface RoleWisePageProps {
@@ -22,6 +24,7 @@ interface RoleWisePageProps {
 
 export const RoleWisePage: React.FC<RoleWisePageProps> = ({ roleSlug, navigate }) => {
   const { isSolved, toggleSolved } = useProgress();
+  const { isAuthenticated, loginWithGoogle, openAuthModal } = useAuth();
   const categories = roleWiseData?.categories || [];
 
   // Flatten all roles across categories
@@ -45,10 +48,8 @@ export const RoleWisePage: React.FC<RoleWisePageProps> = ({ roleSlug, navigate }
 
   // Detail view states
   const [detailSearchQuery, setDetailSearchQuery] = useState('');
-  const [activeFilter, setActiveFilter] = useState<'All' | 'Beginner' | 'Intermediate' | 'Advanced' | 'Bookmarked'>('All');
-  const [expandedQuestions, setExpandedQuestions] = useState<Record<number, boolean>>({
-    0: true, // Default first question open
-  });
+  const [activeFilter, setActiveFilter] = useState<'All' | 'Easy' | 'Medium' | 'Hard' | 'Bookmarked'>('All');
+  const [expandedQuestions, setExpandedQuestions] = useState<Record<number, boolean>>({});
 
   // Bookmarks for current role
   const [bookmarkedIndices, setBookmarkedIndices] = useState<number[]>(() => {
@@ -83,6 +84,14 @@ export const RoleWisePage: React.FC<RoleWisePageProps> = ({ roleSlug, navigate }
     navigate(href);
   };
 
+  const handleSignInWithGoogle = async () => {
+    try {
+      await loginWithGoogle();
+    } catch {
+      openAuthModal();
+    }
+  };
+
   // Filtered roles in hub
   const filteredRolesByCategory = useMemo(() => {
     const query = hubSearchQuery.toLowerCase().trim();
@@ -112,9 +121,9 @@ export const RoleWisePage: React.FC<RoleWisePageProps> = ({ roleSlug, navigate }
     return roleQuestions.filter((q: any, idx: number) => {
       const diff = (q.difficulty || 'Intermediate').toLowerCase();
 
-      if (activeFilter === 'Beginner' && !diff.includes('beginner') && !diff.includes('easy')) return false;
-      if (activeFilter === 'Intermediate' && !diff.includes('intermediate') && !diff.includes('medium')) return false;
-      if (activeFilter === 'Advanced' && !diff.includes('advanced') && !diff.includes('hard')) return false;
+      if (activeFilter === 'Easy' && !diff.includes('beginner') && !diff.includes('easy')) return false;
+      if (activeFilter === 'Medium' && !diff.includes('intermediate') && !diff.includes('medium')) return false;
+      if (activeFilter === 'Hard' && !diff.includes('advanced') && !diff.includes('hard')) return false;
       if (activeFilter === 'Bookmarked' && !bookmarkedIndices.includes(idx)) return false;
 
       if (detailSearchQuery.trim()) {
@@ -131,16 +140,16 @@ export const RoleWisePage: React.FC<RoleWisePageProps> = ({ roleSlug, navigate }
 
   // Difficulty counts for detail view
   const counts = useMemo(() => {
-    let beg = 0;
-    let mid = 0;
-    let adv = 0;
+    let easy = 0;
+    let medium = 0;
+    let hard = 0;
     roleQuestions.forEach((q: any) => {
       const diff = (q.difficulty || 'Intermediate').toLowerCase();
-      if (diff.includes('beginner') || diff.includes('easy')) beg++;
-      else if (diff.includes('advanced') || diff.includes('hard')) adv++;
-      else mid++;
+      if (diff.includes('beginner') || diff.includes('easy')) easy++;
+      else if (diff.includes('advanced') || diff.includes('hard')) hard++;
+      else medium++;
     });
-    return { beg, mid, adv, total: roleQuestions.length };
+    return { easy, medium, hard, total: roleQuestions.length };
   }, [roleQuestions]);
 
   // Progress metrics
@@ -154,186 +163,168 @@ export const RoleWisePage: React.FC<RoleWisePageProps> = ({ roleSlug, navigate }
   const progressPercent = Math.round((solvedCount / Math.max(counts.total, 1)) * 100);
 
   // =========================================================================
-  // VIEW 1: DETAIL VIEW FOR SELECTED ROLE
+  // VIEW 1: DETAIL VIEW FOR SELECTED ROLE (EXACT MATCH TO USER SCREENSHOT)
   // =========================================================================
   if (selectedRole) {
     const meta = selectedRole.data?.metadata || {};
+    const titleText = `${selectedRole.displayName} Interview Questions`;
+    const descriptionText = meta.description || `Comprehensive guide covering core fundamentals, advanced concepts, architecture, and real-world system design for ${selectedRole.displayName}.`;
 
     return (
-      <div className="min-h-screen bg-[#07090e] text-zinc-100 p-4 sm:p-6 lg:p-8 font-lexend space-y-6 max-w-7xl mx-auto">
+      <div className="min-h-screen bg-zinc-50/50 dark:bg-[#07090e] text-zinc-900 dark:text-zinc-100 p-4 sm:p-6 lg:p-8 font-lexend space-y-6 max-w-7xl mx-auto transition-colors">
         {/* Breadcrumbs */}
-        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-zinc-400">
+        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400">
           <a
             href="/preparation"
             onClick={(e) => handleNav(e, '/preparation')}
-            className="hover:text-white transition-colors"
+            className="hover:text-zinc-900 dark:hover:text-white transition-colors"
           >
             Preparation
           </a>
-          <ChevronRight className="w-3.5 h-3.5 text-zinc-600 shrink-0" />
+          <ChevronRight className="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-600 shrink-0" />
           <a
             href="/preparation/role-wise"
             onClick={(e) => handleNav(e, '/preparation/role-wise')}
-            className="hover:text-white transition-colors"
+            className="hover:text-zinc-900 dark:hover:text-white transition-colors"
           >
             Role-Wise Questions
           </a>
-          <ChevronRight className="w-3.5 h-3.5 text-zinc-600 shrink-0" />
-          <span className="text-white font-medium">{selectedRole.displayName}</span>
+          <ChevronRight className="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-600 shrink-0" />
+          <span className="text-zinc-900 dark:text-white font-medium">{selectedRole.displayName}</span>
         </nav>
 
-        {/* Header Title */}
-        <header className="space-y-2">
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white">
-            {meta.list_name || `Top ${counts.total}+ Most Asked ${selectedRole.displayName} Interview Questions`}
+        {/* Header Title & Subtitle Matching Screenshot */}
+        <header className="space-y-3">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-white">
+            {titleText}
           </h1>
-          <p className="text-xs sm:text-sm text-zinc-400 font-normal max-w-5xl leading-relaxed">
-            {meta.description || `Comprehensive interview questions and answers tailored specifically for ${selectedRole.displayName} technical interviews.`}
+          <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 font-normal max-w-5xl leading-relaxed">
+            {descriptionText}
           </p>
+
+          {/* Metadata Row matching screenshot */}
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-zinc-600 dark:text-zinc-400 pt-1">
+            <div className="flex items-center gap-1.5">
+              <span>Total Questions:</span>
+              <span className="font-bold text-zinc-900 dark:text-white font-mono">{counts.total}</span>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <span>Difficulty Levels:</span>
+              <div className="flex items-center gap-1.5">
+                <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400">
+                  Easy
+                </span>
+                <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-400">
+                  Medium
+                </span>
+                <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-400">
+                  Hard
+                </span>
+              </div>
+            </div>
+          </div>
         </header>
 
-        {/* Progress & Difficulty Filters */}
+        {/* Progress Card & Filter Bar Matching Screenshot */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pt-2">
-          {/* Progress Widget */}
-          <div className="flex items-center gap-4 bg-[#0c1017] border border-[#1b2230] px-4 py-2.5 rounded-2xl w-fit shadow-xs">
-            <div className="relative w-11 h-11 flex items-center justify-center">
-              <svg className="w-11 h-11 -rotate-90" viewBox="0 0 36 36">
-                <circle
-                  cx="18"
-                  cy="18"
-                  r="14"
-                  fill="none"
-                  className="stroke-[#1b2230]"
-                  strokeWidth="3.5"
-                />
-                <circle
-                  cx="18"
-                  cy="18"
-                  r="14"
-                  fill="none"
-                  className="stroke-[#f97316] transition-all duration-300"
-                  strokeWidth="3.5"
-                  strokeDasharray={88}
-                  strokeDashoffset={88 - (88 * progressPercent) / 100}
-                  strokeLinecap="round"
-                />
-              </svg>
-              <span className="absolute text-[10px] font-bold text-white font-mono">
+          {/* Progress Widget matching screenshot */}
+          <div className="flex items-center gap-3.5 bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-zinc-800 px-4 py-2.5 rounded-2xl w-fit shadow-xs">
+            <div className="w-10 h-10 rounded-full border-2 border-zinc-200 dark:border-zinc-700 flex items-center justify-center">
+              <span className="text-[11px] font-bold text-zinc-900 dark:text-white font-mono">
                 {progressPercent}%
               </span>
             </div>
 
-            <div>
-              <div className="text-xs font-bold text-white">Overall Progress</div>
-              <div className="text-[11px] text-zinc-400 font-mono">
+            <div className="flex flex-col">
+              <span className="text-xs font-bold text-zinc-900 dark:text-white">Overall Progress</span>
+              <span className="text-[11px] text-zinc-500 dark:text-zinc-400 font-mono">
                 {solvedCount}/{counts.total}
-              </div>
-            </div>
-          </div>
-
-          {/* Interactive Role Roadmap Discovery Banner */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl bg-gradient-to-r from-blue-900/30 to-indigo-900/20 border border-blue-500/30 text-blue-200">
-            <div className="flex items-center gap-2.5">
-              <Compass className="w-4 h-4 text-blue-400 shrink-0" />
-              <span className="text-xs sm:text-sm font-medium">
-                Want a complete, step-by-step learning path for <strong>{selectedRole.displayName}</strong>?
               </span>
             </div>
-            <button
-              onClick={() => {
-                const targetSlug = selectedRole.slug
-                  .replace('-developer', '')
-                  .replace('-engineer', '')
-                  .replace('-specialist', '');
-                navigate(`/preparation/roadmaps/${targetSlug}`);
-              }}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold transition-colors cursor-pointer self-start sm:self-auto shrink-0 shadow-2xs"
-            >
-              <span>Explore Interactive Roadmap</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
           </div>
 
-          {/* Difficulty Filter Tabs */}
-          <div className="flex items-center gap-1.5 bg-[#0c1017] border border-[#1b2230] p-1.5 rounded-2xl overflow-x-auto">
+          {/* Filter Pills Matching Screenshot */}
+          <div className="flex items-center gap-1.5 bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-zinc-800 p-1 rounded-2xl overflow-x-auto shadow-xs">
             {/* All */}
             <button
               onClick={() => setActiveFilter('All')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-150 cursor-pointer ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                 activeFilter === 'All'
-                  ? 'bg-zinc-800 text-white shadow-xs'
-                  : 'text-zinc-400 hover:text-white'
+                  ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-2xs font-bold'
+                  : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
               }`}
             >
               <span>All</span>
-              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-zinc-700/60 text-zinc-300">
+              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-zinc-200 dark:bg-zinc-700 text-zinc-800 dark:text-zinc-200">
                 {counts.total}
               </span>
             </button>
 
-            {/* Beginner */}
+            {/* Easy */}
             <button
-              onClick={() => setActiveFilter('Beginner')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-150 cursor-pointer ${
-                activeFilter === 'Beginner'
-                  ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                  : 'text-zinc-400 hover:text-emerald-400'
+              onClick={() => setActiveFilter('Easy')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                activeFilter === 'Easy'
+                  ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 font-bold'
+                  : 'text-zinc-600 dark:text-zinc-400 hover:text-emerald-600 dark:hover:text-emerald-400'
               }`}
             >
-              <span>Beginner</span>
-              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-zinc-800 text-emerald-400">
-                {counts.beg}
+              <span>Easy</span>
+              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300">
+                {counts.easy}
               </span>
             </button>
 
-            {/* Intermediate */}
+            {/* Medium */}
             <button
-              onClick={() => setActiveFilter('Intermediate')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-150 cursor-pointer ${
-                activeFilter === 'Intermediate'
-                  ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-                  : 'text-zinc-400 hover:text-amber-400'
+              onClick={() => setActiveFilter('Medium')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                activeFilter === 'Medium'
+                  ? 'bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 font-bold'
+                  : 'text-zinc-600 dark:text-zinc-400 hover:text-amber-600 dark:hover:text-amber-400'
               }`}
             >
-              <span>Intermediate</span>
-              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-zinc-800 text-amber-400">
-                {counts.mid}
+              <span>Medium</span>
+              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300">
+                {counts.medium}
               </span>
             </button>
 
-            {/* Advanced */}
+            {/* Hard */}
             <button
-              onClick={() => setActiveFilter('Advanced')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-150 cursor-pointer ${
-                activeFilter === 'Advanced'
-                  ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
-                  : 'text-zinc-400 hover:text-rose-400'
+              onClick={() => setActiveFilter('Hard')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                activeFilter === 'Hard'
+                  ? 'bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-400 font-bold'
+                  : 'text-zinc-600 dark:text-zinc-400 hover:text-rose-600 dark:hover:text-rose-400'
               }`}
             >
-              <span>Advanced</span>
-              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-zinc-800 text-rose-400">
-                {counts.adv}
+              <span>Hard</span>
+              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300">
+                {counts.hard}
               </span>
             </button>
 
             {/* Bookmarked */}
             <button
               onClick={() => setActiveFilter('Bookmarked')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-150 cursor-pointer ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                 activeFilter === 'Bookmarked'
-                  ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'
-                  : 'text-zinc-400 hover:text-yellow-400'
+                  ? 'bg-yellow-100 dark:bg-yellow-950/60 text-yellow-700 dark:text-yellow-400 font-bold'
+                  : 'text-zinc-600 dark:text-zinc-400 hover:text-yellow-600 dark:hover:text-yellow-400'
               }`}
             >
-              <span>Bookmarked</span>
-              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-zinc-800 text-yellow-400">
+              <Star className="w-3 h-3 text-amber-500 fill-amber-500" />
+              <span>Saved</span>
+              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300">
                 {bookmarkedIndices.length}
               </span>
             </button>
           </div>
         </div>
 
-        {/* Search Input */}
+        {/* Optional Search Bar */}
         <div className="relative max-w-md">
           <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
@@ -341,164 +332,294 @@ export const RoleWisePage: React.FC<RoleWisePageProps> = ({ roleSlug, navigate }
             placeholder={`Search ${selectedRole.displayName} questions...`}
             value={detailSearchQuery}
             onChange={(e) => setDetailSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 rounded-xl bg-[#0c1017] border border-[#1b2230] text-xs text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#f97316]"
+            className="w-full pl-9 pr-4 py-2 rounded-xl bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-zinc-800 text-xs text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-2xs"
           />
         </div>
 
-        {/* Question Table */}
-        <div className="rounded-2xl border border-[#1b2230] bg-[#0c1017] overflow-hidden">
-          {/* Header Row */}
-          <div className="grid grid-cols-12 gap-2 px-4 sm:px-6 py-3 border-b border-[#1b2230] text-[11px] font-bold uppercase tracking-wider text-zinc-400 bg-[#090d14]">
+        {/* Question Table Matching Exact User Screenshot */}
+        <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#0c1017] shadow-sm overflow-hidden transition-colors">
+          {/* Table Header Row */}
+          <div className="grid grid-cols-12 items-center px-4 sm:px-6 py-3 border-b border-zinc-200 dark:border-zinc-800 text-[11px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 bg-white dark:bg-[#0c1017]">
             <div className="col-span-1 text-left">STATUS</div>
-            <div className="col-span-7 sm:col-span-8">PROBLEM</div>
-            <div className="col-span-2 sm:col-span-2 text-center">REVISION</div>
-            <div className="col-span-2 sm:col-span-1 text-right">LEVEL</div>
+            <div className="col-span-10">PROBLEM</div>
+            <div className="col-span-1 text-right">REVISION</div>
           </div>
 
-          {/* Questions Rows */}
-          <div className="divide-y divide-[#161c28]">
+          {/* Table Body Content */}
+          <div className="divide-y divide-zinc-200 dark:divide-zinc-800/80">
             {filteredQuestions.length === 0 ? (
               <div className="p-12 text-center text-xs text-zinc-500">
                 No questions found matching your filter or search.
               </div>
-            ) : (
-              filteredQuestions.map((q: any, idx: number) => {
-                const qNum = q.index || idx + 1;
-                const probId = `role_${selectedRole.slug}_${qNum}`;
-                const isDone = isSolved(probId);
-                const isBookmarked = bookmarkedIndices.includes(idx);
-                const isOpen = !!expandedQuestions[idx];
-                const diff = q.difficulty || 'Intermediate';
+            ) : !isAuthenticated ? (
+              <>
+                {/* 1. First 3 Questions - Crystal Clear & Interactive as shown in screenshot */}
+                {filteredQuestions.slice(0, 3).map((q: any, idx: number) => {
+                  const qNum = q.index || idx + 1;
+                  const probId = `role_${selectedRole.slug}_${qNum}`;
+                  const isDone = isSolved(probId);
+                  const isBookmarked = bookmarkedIndices.includes(idx);
+                  const isOpen = !!expandedQuestions[idx];
 
-                return (
-                  <div key={`${selectedRole.slug}-${qNum}-${idx}`} className="transition-colors hover:bg-zinc-900/30">
-                    <div
-                      onClick={() => toggleExpand(idx)}
-                      className="grid grid-cols-12 gap-2 px-4 sm:px-6 py-4 items-center cursor-pointer select-none"
-                    >
-                      {/* Status Checkbox */}
-                      <div className="col-span-1 flex items-center">
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            toggleSolved(probId);
-                          }}
-                          className={`w-5 h-5 rounded-md border flex items-center justify-center transition-all cursor-pointer ${
-                            isDone
-                              ? 'bg-[#f97316] border-[#f97316] text-white'
-                              : 'border-zinc-700 hover:border-zinc-500 bg-zinc-900/60'
-                          }`}
-                        >
-                          {isDone && <Check className="w-3.5 h-3.5 stroke-[3]" />}
-                        </button>
+                  return (
+                    <div key={`preview-${idx}`} className="transition-colors hover:bg-zinc-50/80 dark:hover:bg-zinc-900/30">
+                      <div
+                        onClick={() => toggleExpand(idx)}
+                        className="grid grid-cols-12 items-center px-4 sm:px-6 py-3.5 sm:py-4 gap-2 cursor-pointer select-none"
+                      >
+                        {/* Status Checkbox */}
+                        <div className="col-span-1 flex items-center">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleSolved(probId);
+                            }}
+                            className={`w-5 h-5 rounded-md border flex items-center justify-center transition-all cursor-pointer ${
+                              isDone
+                                ? 'bg-blue-600 border-blue-600 text-white'
+                                : 'border-zinc-300 dark:border-zinc-700 hover:border-zinc-500 bg-white dark:bg-zinc-900/60'
+                            }`}
+                          >
+                            {isDone && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+                          </button>
+                        </div>
+
+                        {/* Question Title */}
+                        <div className="col-span-10 flex items-center gap-2">
+                          <span className="font-semibold text-xs sm:text-sm text-zinc-900 dark:text-zinc-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                            {qNum}. {q.title || q.question}
+                          </span>
+                        </div>
+
+                        {/* Revision Star */}
+                        <div className="col-span-1 flex items-center justify-end">
+                          <button
+                            type="button"
+                            onClick={(e) => toggleBookmark(idx, e)}
+                            className="p-1 rounded-md text-zinc-400 hover:text-amber-500 transition-colors cursor-pointer"
+                          >
+                            <Star className={`w-4 h-4 ${isBookmarked ? 'fill-amber-400 text-amber-400' : 'text-zinc-400'}`} />
+                          </button>
+                        </div>
                       </div>
 
-                      {/* Question Title */}
-                      <div className="col-span-7 sm:col-span-8 flex items-center gap-2">
-                        <span className="font-bold text-xs sm:text-sm text-zinc-200 hover:text-white transition-colors">
-                          {qNum}. {q.title || q.question}
-                        </span>
-                      </div>
-
-                      {/* Revision Star */}
-                      <div className="col-span-2 sm:col-span-2 flex items-center justify-center">
-                        <button
-                          type="button"
-                          onClick={(e) => toggleBookmark(idx, e)}
-                          className={`p-1 rounded-md transition-colors cursor-pointer ${
-                            isBookmarked
-                              ? 'text-yellow-400 hover:text-yellow-300'
-                              : 'text-zinc-600 hover:text-zinc-400'
-                          }`}
-                        >
-                          <Star className={`w-4 h-4 ${isBookmarked ? 'fill-yellow-400' : ''}`} />
-                        </button>
-                      </div>
-
-                      {/* Level Badge & Chevron */}
-                      <div className="col-span-2 sm:col-span-1 flex items-center justify-end gap-2">
-                        <span
-                          className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
-                            diff.toLowerCase().includes('beginner') || diff.toLowerCase().includes('easy')
-                              ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'
-                              : diff.toLowerCase().includes('advanced') || diff.toLowerCase().includes('hard')
-                              ? 'bg-rose-500/10 text-rose-400 border border-rose-500/30'
-                              : 'bg-amber-500/10 text-amber-400 border border-amber-500/30'
-                          }`}
-                        >
-                          {diff}
-                        </span>
-                        {isOpen ? (
-                          <ChevronUp className="w-4 h-4 text-zinc-500" />
-                        ) : (
-                          <ChevronDown className="w-4 h-4 text-zinc-500" />
-                        )}
-                      </div>
+                      {/* Expandable Answer */}
+                      {isOpen && (
+                        <div className="px-4 sm:px-6 pb-4 pt-1 bg-zinc-50/70 dark:bg-[#090d14]/60 border-t border-zinc-200 dark:border-zinc-800">
+                          <div className="p-4 rounded-xl bg-white dark:bg-[#07090e] border border-zinc-200 dark:border-zinc-800 text-xs sm:text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed font-normal whitespace-pre-line shadow-xs">
+                            {q.answer}
+                          </div>
+                        </div>
+                      )}
                     </div>
+                  );
+                })}
 
-                    {/* Answer Accordion */}
-                    {isOpen && (
-                      <div className="px-4 sm:px-6 pb-5 pt-1 space-y-2 bg-[#090d14]/60 border-t border-[#131924]">
-                        <div className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">
-                          ANSWER
+                {/* 2. Gated Preview Container with Blurred Rows and Centered Continue with Google Overlay */}
+                <div className="relative overflow-hidden min-h-[360px]">
+                  {/* Blurred Background Questions */}
+                  <div className="filter blur-[4.5px] opacity-35 select-none pointer-events-none divide-y divide-zinc-200 dark:divide-zinc-800">
+                    {filteredQuestions.slice(3, 11).map((q: any, idx: number) => {
+                      const qNum = q.index || idx + 4;
+                      return (
+                        <div key={`locked-row-${idx}`} className="grid grid-cols-12 items-center px-4 sm:px-6 py-3.5 sm:py-4 gap-2">
+                          <div className="col-span-1 flex items-center">
+                            <div className="w-5 h-5 rounded-md border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900/60" />
+                          </div>
+                          <div className="col-span-10 flex items-center gap-2">
+                            <span className="font-semibold text-xs sm:text-sm text-zinc-800 dark:text-zinc-200">
+                              {qNum}. {q.title || q.question}
+                            </span>
+                          </div>
+                          <div className="col-span-1 flex items-center justify-end">
+                            <Star className="w-4 h-4 text-zinc-400" />
+                          </div>
                         </div>
-                        <div className="p-4 rounded-xl bg-[#07090e] border border-[#1b2230] text-xs sm:text-sm text-zinc-300 leading-relaxed font-normal whitespace-pre-line shadow-inner">
-                          {q.answer}
+                      );
+                    })}
+                  </div>
+
+                  {/* Gradient Fog */}
+                  <div className="absolute inset-0 bg-gradient-to-b from-white/20 via-white/75 to-white/95 dark:from-[#0c1017]/20 dark:via-[#0c1017]/75 dark:to-[#0c1017]/95 pointer-events-none" />
+
+                  {/* Centered Sign in with Google Callout Box matching Screenshot */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center z-20 pointer-events-auto">
+                    <div className="flex flex-col items-center gap-4 max-w-lg">
+                      <p className="font-bold text-sm sm:text-base text-zinc-900 dark:text-white leading-snug">
+                        Sign in with Google to unlock all {counts.total} role-wise interview questions and track your progress.
+                      </p>
+
+                      <button
+                        type="button"
+                        onClick={handleSignInWithGoogle}
+                        className="inline-flex items-center justify-center gap-3 px-6 py-2.5 sm:py-3 rounded-full bg-black hover:bg-zinc-800 dark:bg-white dark:hover:bg-zinc-100 text-white dark:text-zinc-900 font-semibold text-xs sm:text-sm transition-all shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95 cursor-pointer border border-zinc-900 dark:border-white"
+                      >
+                        <GoogleLogoIcon className="w-4 h-4" />
+                        <span>Continue with Google</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                {/* Full Unlocked Questions Table */}
+                {filteredQuestions.map((q: any, idx: number) => {
+                  const qNum = q.index || idx + 1;
+                  const probId = `role_${selectedRole.slug}_${qNum}`;
+                  const isDone = isSolved(probId);
+                  const isBookmarked = bookmarkedIndices.includes(idx);
+                  const isOpen = !!expandedQuestions[idx];
+                  const diff = q.difficulty || 'Intermediate';
+
+                  return (
+                    <div key={`${selectedRole.slug}-${qNum}-${idx}`} className="transition-colors hover:bg-zinc-50/80 dark:hover:bg-zinc-900/30">
+                      <div
+                        onClick={() => toggleExpand(idx)}
+                        className="grid grid-cols-12 items-center px-4 sm:px-6 py-3.5 sm:py-4 gap-2 cursor-pointer select-none"
+                      >
+                        {/* Status Checkbox */}
+                        <div className="col-span-1 flex items-center">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleSolved(probId);
+                            }}
+                            className={`w-5 h-5 rounded-md border flex items-center justify-center transition-all cursor-pointer ${
+                              isDone
+                                ? 'bg-blue-600 border-blue-600 text-white'
+                                : 'border-zinc-300 dark:border-zinc-700 hover:border-zinc-500 bg-white dark:bg-zinc-900/60'
+                            }`}
+                          >
+                            {isDone && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+                          </button>
+                        </div>
+
+                        {/* Question Title */}
+                        <div className="col-span-10 flex items-center gap-2">
+                          <span className="font-semibold text-xs sm:text-sm text-zinc-900 dark:text-zinc-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                            {qNum}. {q.title || q.question}
+                          </span>
+                        </div>
+
+                        {/* Revision Star */}
+                        <div className="col-span-1 flex items-center justify-end">
+                          <button
+                            type="button"
+                            onClick={(e) => toggleBookmark(idx, e)}
+                            className="p-1 rounded-md text-zinc-400 hover:text-amber-500 transition-colors cursor-pointer"
+                          >
+                            <Star className={`w-4 h-4 ${isBookmarked ? 'fill-amber-400 text-amber-400' : 'text-zinc-400'}`} />
+                          </button>
                         </div>
                       </div>
-                    )}
-                  </div>
-                );
-              })
+
+                      {/* Expandable Answer */}
+                      {isOpen && (
+                        <div className="px-4 sm:px-6 pb-4 pt-1 bg-zinc-50/70 dark:bg-[#090d14]/60 border-t border-zinc-200 dark:border-zinc-800 space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+                              ANSWER & EXPLANATION
+                            </span>
+                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                              diff.toLowerCase().includes('beginner') || diff.toLowerCase().includes('easy')
+                                ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400'
+                                : diff.toLowerCase().includes('advanced') || diff.toLowerCase().includes('hard')
+                                ? 'bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-400'
+                                : 'bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-400'
+                            }`}>
+                              {diff}
+                            </span>
+                          </div>
+                          <div className="p-4 rounded-xl bg-white dark:bg-[#07090e] border border-zinc-200 dark:border-zinc-800 text-xs sm:text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed font-normal whitespace-pre-line shadow-xs">
+                            {q.answer}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </>
             )}
           </div>
+        </div>
+
+        {/* Interactive Role Roadmap Discovery Banner */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl bg-gradient-to-r from-blue-500/10 via-indigo-500/10 to-blue-500/10 border border-blue-200 dark:border-blue-900/50 shadow-xs">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-xl bg-blue-600 text-white shadow-xs">
+              <Compass className="w-5 h-5" />
+            </div>
+            <div>
+              <h4 className="font-bold text-xs sm:text-sm text-zinc-900 dark:text-white">
+                Want a complete, step-by-step learning path for {selectedRole.displayName}?
+              </h4>
+              <p className="text-xs text-zinc-600 dark:text-zinc-400">
+                Explore structured stages, curated topic playlists, and code milestones.
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => {
+              const targetSlug = selectedRole.slug
+                .replace('-developer', '')
+                .replace('-engineer', '')
+                .replace('-specialist', '');
+              navigate(`/preparation/roadmaps/${targetSlug}`);
+            }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold transition-colors cursor-pointer self-start sm:self-auto shrink-0 shadow-xs"
+          >
+            <span>Explore Roadmap</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
         </div>
       </div>
     );
   }
 
   // =========================================================================
-  // VIEW 2: MAIN HUB VIEW (MATCHING USER SCREENSHOT EXACTLY)
+  // VIEW 2: MAIN HUB VIEW
   // =========================================================================
   return (
-    <div className="min-h-screen bg-[#07090e] text-zinc-100 p-4 sm:p-6 lg:p-8 font-lexend space-y-8 max-w-7xl mx-auto">
-      {/* Breadcrumb matching screenshot */}
-      <div className="flex items-center gap-2 text-xs text-zinc-400">
+    <div className="min-h-screen bg-zinc-50/50 dark:bg-[#07090e] text-zinc-900 dark:text-zinc-100 p-4 sm:p-6 lg:p-8 font-lexend space-y-8 max-w-7xl mx-auto transition-colors">
+      {/* Breadcrumb */}
+      <div className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400">
         <a
           href="/preparation"
           onClick={(e) => handleNav(e, '/preparation')}
-          className="hover:text-white transition-colors"
+          className="hover:text-zinc-900 dark:hover:text-white transition-colors"
         >
           Preparation
         </a>
-        <ChevronRight className="w-3.5 h-3.5 text-zinc-600 shrink-0" />
-        <span className="text-white font-medium">Role-Wise Questions</span>
+        <ChevronRight className="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-600 shrink-0" />
+        <span className="text-zinc-900 dark:text-white font-medium">Role-Wise Questions</span>
       </div>
 
-      {/* Header matching screenshot */}
+      {/* Header */}
       <div className="space-y-2">
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-white">
           Role-Wise Interview Questions
         </h1>
-        <p className="text-xs sm:text-sm text-zinc-400 font-normal">
+        <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 font-normal">
           Comprehensive interview questions organized by tech roles - from Frontend to AI/ML, DevOps to Security
         </p>
       </div>
 
-      {/* Search Bar matching screenshot */}
+      {/* Search Bar */}
       <div className="relative max-w-lg">
         <Search className="w-4 h-4 text-zinc-400 absolute left-4 top-1/2 -translate-y-1/2" />
         <input
           type="text"
-          placeholder="Search roles (e.g., Frontend, Data Scientist, DevOps...)"
+          placeholder="Search roles (e.g., Frontend, Data Scientist, DevOps, Data Engineer...)"
           value={hubSearchQuery}
           onChange={(e) => setHubSearchQuery(e.target.value)}
-          className="w-full pl-11 pr-4 py-2.5 sm:py-3 rounded-2xl bg-[#0c1017] border border-[#1b2230] text-xs sm:text-sm text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-orange-500 transition-all"
+          className="w-full pl-11 pr-4 py-2.5 sm:py-3 rounded-2xl bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-zinc-800 text-xs sm:text-sm text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-2xs transition-all"
         />
       </div>
 
-      {/* Categorized Role Sections matching screenshot */}
+      {/* Categorized Role Sections */}
       {filteredRolesByCategory.length === 0 ? (
         <div className="p-12 text-center text-xs text-zinc-500">
           No roles found matching "{hubSearchQuery}".
@@ -506,7 +627,7 @@ export const RoleWisePage: React.FC<RoleWisePageProps> = ({ roleSlug, navigate }
       ) : (
         filteredRolesByCategory.map((category: any) => (
           <div key={category.title} className="space-y-4 pt-2">
-            <h2 className="text-lg sm:text-xl font-bold text-white tracking-tight">
+            <h2 className="text-lg sm:text-xl font-bold text-zinc-900 dark:text-white tracking-tight">
               {category.title}
             </h2>
 
@@ -521,26 +642,26 @@ export const RoleWisePage: React.FC<RoleWisePageProps> = ({ roleSlug, navigate }
                     key={role.slug}
                     href={detailUrl}
                     onClick={(e) => handleNav(e, detailUrl)}
-                    className="group relative rounded-2xl bg-[#0c1017] border border-[#1b2230] hover:border-orange-500/50 p-5 sm:p-6 flex flex-col justify-between transition-all duration-200 hover:shadow-xl hover:shadow-orange-500/5 hover:-translate-y-0.5 cursor-pointer select-none"
+                    className="group relative rounded-2xl bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-zinc-800 hover:border-blue-500/50 p-5 sm:p-6 flex flex-col justify-between transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 cursor-pointer select-none"
                   >
                     <div className="space-y-3.5">
-                      {/* Icon & Title Row matching screenshot */}
+                      {/* Icon & Title Row */}
                       <div className="flex items-center gap-3.5">
                         <RoleIcon type={role.slug} className="w-10 h-10 shrink-0" />
-                        <h3 className="text-base sm:text-lg font-extrabold text-white group-hover:text-orange-400 transition-colors">
+                        <h3 className="text-base sm:text-lg font-extrabold text-zinc-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                           {role.displayName}
                         </h3>
                       </div>
 
-                      {/* Description matching screenshot */}
-                      <p className="text-xs text-zinc-400 leading-relaxed line-clamp-2 font-normal">
+                      {/* Description */}
+                      <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed line-clamp-2 font-normal">
                         {desc}
                       </p>
                     </div>
 
-                    {/* Bottom Question Count matching screenshot */}
-                    <div className="pt-4 mt-4 border-t border-[#171e2c] flex items-center gap-2 text-xs font-medium text-zinc-500 group-hover:text-zinc-300 transition-colors">
-                      <AlignLeft className="w-3.5 h-3.5 text-zinc-500 group-hover:text-orange-400 transition-colors" />
+                    {/* Bottom Question Count */}
+                    <div className="pt-4 mt-4 border-t border-zinc-100 dark:border-zinc-800/80 flex items-center gap-2 text-xs font-medium text-zinc-500 group-hover:text-zinc-800 dark:group-hover:text-zinc-300 transition-colors">
+                      <AlignLeft className="w-3.5 h-3.5 text-zinc-400 group-hover:text-blue-500 transition-colors" />
                       <span>{totalQ} Questions</span>
                     </div>
                   </a>

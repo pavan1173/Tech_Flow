@@ -6,6 +6,7 @@ import { PreparationSidebar } from './components/PreparationSidebar';
 import { PreparationTopBar } from './components/PreparationTopBar';
 import { PreparationBottomBar } from './components/PreparationBottomBar';
 import { AuthModal } from './components/AuthModal';
+import { UserProfileModal } from './components/UserProfileModal';
 
 // Preparation Hub Pages
 import { PreparationDashboardPage } from './pages/PreparationDashboardPage';
@@ -33,6 +34,7 @@ import { NotesPage } from './pages/NotesPage';
 import { ResumeTemplatesPage } from './pages/ResumeTemplatesPage';
 import { RoadmapsPage } from './pages/RoadmapsPage';
 import { RoadmapDetailPage } from './pages/RoadmapDetailPage';
+import { ProfilePage } from './pages/ProfilePage';
 
 // Public & Information Pages
 import { HomePage } from './pages/HomePage';
@@ -217,6 +219,9 @@ export default function App() {
     if (currentPath === '/preparation/resume-templates') {
       return <ResumeTemplatesPage navigate={navigate} />;
     }
+    if (currentPath === '/preparation/profile') {
+      return <ProfilePage navigate={navigate} />;
+    }
 
     return <PreparationDashboardPage navigate={navigate} />;
   };
@@ -225,7 +230,7 @@ export default function App() {
     // Preparation Hub Experience
     if (isPrepRoute) {
       return (
-        <div className="flex-1 flex min-w-0 bg-[#0c0c0c]">
+        <div className="flex-1 flex min-w-0 bg-zinc-100 dark:bg-[#0c0c0c] transition-colors duration-200">
           <PreparationSidebar
             currentPath={currentPath}
             navigate={navigate}
@@ -233,7 +238,7 @@ export default function App() {
             mobileOpen={mobileSidebarOpen}
             setMobileOpen={setMobileSidebarOpen}
           />
-          <div className="flex-1 flex flex-col min-w-0 min-h-screen bg-[#0a0a0a]">
+          <div className="flex-1 flex flex-col min-w-0 min-h-screen bg-zinc-50 dark:bg-[#0a0a0a] transition-colors duration-200">
             <PreparationTopBar
               currentPath={currentPath}
               navigate={navigate}
@@ -245,7 +250,7 @@ export default function App() {
                 }
               }}
             />
-            <main className="flex-1 min-w-0 bg-[#0a0a0a] text-white pb-20 lg:pb-0">
+            <main className="flex-1 min-w-0 bg-[#fbfbfa] dark:bg-[#0a0a0a] text-zinc-900 dark:text-white pb-20 lg:pb-0 transition-colors duration-200">
               {renderPrepContent()}
             </main>
             <PreparationBottomBar
@@ -328,6 +333,18 @@ export default function App() {
       );
     }
 
+    if (currentPath === '/profile') {
+      return (
+        <>
+          <Navbar currentPath={currentPath} navigate={navigate} />
+          <main className="flex-1">
+            <ProfilePage navigate={navigate} />
+          </main>
+          <Footer navigate={navigate} />
+        </>
+      );
+    }
+
     // Default: Home Landing Page
     return (
       <>
@@ -341,9 +358,10 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#07090e] text-zinc-100 font-sans selection:bg-blue-500/30 selection:text-blue-200">
+    <div className="min-h-screen flex flex-col bg-white dark:bg-[#07090e] text-zinc-900 dark:text-zinc-100 font-sans selection:bg-blue-500/30 selection:text-blue-200 transition-colors duration-200">
       {renderContent()}
       <AuthModal />
+      <UserProfileModal navigate={navigate} />
     </div>
   );
 }

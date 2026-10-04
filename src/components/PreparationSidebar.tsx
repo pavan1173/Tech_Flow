@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { TeachFlowLogo } from './TeachFlowLogo';
+import { useAuth } from '../context/AuthContext';
 import {
   LayoutDashboard,
   FileCode,
@@ -22,7 +23,8 @@ import {
   ChevronDown,
   ChevronRight,
   Tv,
-  Compass
+  Compass,
+  User as UserIcon
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -40,6 +42,7 @@ export const PreparationSidebar: React.FC<SidebarProps> = ({
   mobileOpen = false,
   setMobileOpen,
 }) => {
+  const { user, isAuthenticated } = useAuth();
   // Local fallback if not passed
   const [internalMobileOpen, setInternalMobileOpen] = useState(false);
   const isDrawerOpen = setMobileOpen ? mobileOpen : internalMobileOpen;
@@ -48,30 +51,12 @@ export const PreparationSidebar: React.FC<SidebarProps> = ({
     else setInternalMobileOpen(false);
   };
 
-  // Accordion state for DSA Sheets
-  const [dsaSheetsExpanded, setDsaSheetsExpanded] = useState<boolean>(() => {
-    return currentPath.includes('/preparation/dsa-sheets');
-  });
-
-  // Accordion state for Core Subjects matching screenshot
-  const [coreSubjectsExpanded, setCoreSubjectsExpanded] = useState<boolean>(() => {
-    return (
-      currentPath.includes('/preparation/dbms-playlists') ||
-      currentPath.includes('/preparation/os-playlists') ||
-      currentPath.includes('/preparation/oops-playlists') ||
-      true // Default expanded as in screenshot
-    );
-  });
-
-  // Accordion state for DSA Playlists matching screenshot
-  const [dsaPlaylistsExpanded, setDsaPlaylistsExpanded] = useState<boolean>(() => {
-    return currentPath.includes('/preparation/dsa-playlists') || true;
-  });
-
-  // Accordion state for System Design Playlists matching screenshot
-  const [systemDesignExpanded, setSystemDesignExpanded] = useState<boolean>(() => {
-    return currentPath.includes('/preparation/system-design-playlists') || true;
-  });
+  // All accordion dropdown states - strictly closed by default
+  const [dsaSheetsExpanded, setDsaSheetsExpanded] = useState<boolean>(false);
+  const [coreSubjectsExpanded, setCoreSubjectsExpanded] = useState<boolean>(false);
+  const [dsaPlaylistsExpanded, setDsaPlaylistsExpanded] = useState<boolean>(false);
+  const [systemDesignExpanded, setSystemDesignExpanded] = useState<boolean>(false);
+  const [roleWiseExpanded, setRoleWiseExpanded] = useState<boolean>(false);
 
   const dsaSubSheets = [
     { label: 'Blind 75 DSA Sheet', href: '/preparation/dsa-sheets/blind-75-dsa-sheet' },
@@ -91,13 +76,13 @@ export const PreparationSidebar: React.FC<SidebarProps> = ({
   };
 
   const navContent = (
-    <div className="flex flex-col gap-5 py-4 px-3 text-zinc-300 font-lexend">
+    <div className="flex flex-col gap-5 py-4 px-3 text-zinc-700 dark:text-zinc-300 font-lexend transition-colors">
       {/* Brand Header */}
-      <div className="px-3 py-2 flex items-center justify-between border-b border-zinc-900 pb-3">
+      <div className="px-3 py-2 flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800/80 pb-3">
         <a
           href="/"
           onClick={(e) => handleNav(e, '/')}
-          className="flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl bg-[#141416] border border-zinc-800/80 hover:border-zinc-700 transition-all cursor-pointer group"
+          className="flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl bg-zinc-100 hover:bg-zinc-200/70 dark:bg-[#141416] border border-zinc-200 dark:border-zinc-800/80 hover:border-zinc-300 dark:hover:border-zinc-700 transition-all cursor-pointer group shadow-2xs"
         >
           <TeachFlowLogo size={30} showText={true} />
         </a>
@@ -113,8 +98,8 @@ export const PreparationSidebar: React.FC<SidebarProps> = ({
           onClick={(e) => handleNav(e, '/preparation')}
           className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all ${
             currentPath === '/preparation'
-              ? 'bg-zinc-800/80 text-white font-semibold'
-              : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+              ? 'bg-zinc-100 dark:bg-zinc-800/80 text-zinc-900 dark:text-white font-semibold shadow-2xs'
+              : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/70'
           }`}
         >
           <LayoutDashboard className="w-4 h-4 text-zinc-400 shrink-0" />
@@ -126,8 +111,8 @@ export const PreparationSidebar: React.FC<SidebarProps> = ({
           onClick={(e) => handleNav(e, '/preparation/roadmaps')}
           className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all ${
             currentPath.startsWith('/preparation/roadmaps') || currentPath.startsWith('/roadmaps')
-              ? 'bg-zinc-800/80 text-white font-semibold'
-              : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+              ? 'bg-zinc-100 dark:bg-zinc-800/80 text-zinc-900 dark:text-white font-semibold shadow-2xs'
+              : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/70'
           }`}
         >
           <div className="flex items-center gap-2.5">
@@ -151,8 +136,8 @@ export const PreparationSidebar: React.FC<SidebarProps> = ({
             <div
               className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all cursor-pointer ${
                 currentPath.startsWith('/preparation/dsa-sheets')
-                  ? 'bg-zinc-800/60 text-white font-semibold'
-                  : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+                  ? 'bg-zinc-100 dark:bg-zinc-800/60 text-zinc-900 dark:text-white font-semibold shadow-2xs'
+                  : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/70'
               }`}
               onClick={() => setDsaSheetsExpanded(!dsaSheetsExpanded)}
             >
@@ -195,8 +180,8 @@ export const PreparationSidebar: React.FC<SidebarProps> = ({
                       onClick={(e) => handleNav(e, sub.href)}
                       className={`block py-1.5 px-2 rounded-lg text-xs truncate transition-colors ${
                         isSubActive
-                          ? 'text-white font-bold bg-zinc-800/80'
-                          : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60'
+                          ? 'text-zinc-900 dark:text-white font-bold bg-zinc-200/80 dark:bg-zinc-800/80'
+                          : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/60'
                       }`}
                     >
                       {sub.label}
@@ -285,8 +270,8 @@ export const PreparationSidebar: React.FC<SidebarProps> = ({
             <div
               className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all cursor-pointer ${
                 currentPath.includes('/preparation/dsa-playlists')
-                  ? 'bg-zinc-800/60 text-white font-semibold'
-                  : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+                  ? 'bg-zinc-100 dark:bg-zinc-800/60 text-zinc-900 dark:text-white font-semibold shadow-2xs'
+                  : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/70'
               }`}
               onClick={() => setDsaPlaylistsExpanded(!dsaPlaylistsExpanded)}
             >
@@ -363,8 +348,8 @@ export const PreparationSidebar: React.FC<SidebarProps> = ({
                 currentPath.includes('/dbms-playlists') ||
                 currentPath.includes('/os-playlists') ||
                 currentPath.includes('/oops-playlists')
-                  ? 'bg-zinc-800/60 text-white font-semibold'
-                  : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+                  ? 'bg-zinc-100 dark:bg-zinc-800/60 text-zinc-900 dark:text-white font-semibold shadow-2xs'
+                  : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/70'
               }`}
               onClick={() => setCoreSubjectsExpanded(!coreSubjectsExpanded)}
             >
@@ -413,8 +398,8 @@ export const PreparationSidebar: React.FC<SidebarProps> = ({
                       onClick={(e) => handleNav(e, '/preparation/dbms-playlists/love-babbar-dbms')}
                       className={`block py-1 px-2 rounded-lg text-xs truncate transition-colors ${
                         currentPath === '/preparation/dbms-playlists/love-babbar-dbms'
-                          ? 'text-white font-bold bg-zinc-800/80'
-                          : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60'
+                          ? 'text-zinc-900 dark:text-white font-bold bg-zinc-200/80 dark:bg-zinc-800/80'
+                          : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/60'
                       }`}
                     >
                       Love Babbar DBMS
@@ -424,8 +409,8 @@ export const PreparationSidebar: React.FC<SidebarProps> = ({
                       onClick={(e) => handleNav(e, '/preparation/dbms-playlists/riti-kumari-dbms')}
                       className={`block py-1 px-2 rounded-lg text-xs truncate transition-colors ${
                         currentPath === '/preparation/dbms-playlists/riti-kumari-dbms'
-                          ? 'text-white font-bold bg-zinc-800/80'
-                          : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60'
+                          ? 'text-zinc-900 dark:text-white font-bold bg-zinc-200/80 dark:bg-zinc-800/80'
+                          : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/60'
                       }`}
                     >
                       Riti Kumari DBMS
@@ -448,8 +433,8 @@ export const PreparationSidebar: React.FC<SidebarProps> = ({
                       onClick={(e) => handleNav(e, '/preparation/os-playlists/love-babbar-os')}
                       className={`block py-1 px-2 rounded-lg text-xs truncate transition-colors ${
                         currentPath === '/preparation/os-playlists/love-babbar-os'
-                          ? 'text-white font-bold bg-zinc-800/80'
-                          : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60'
+                          ? 'text-zinc-900 dark:text-white font-bold bg-zinc-200/80 dark:bg-zinc-800/80'
+                          : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/60'
                       }`}
                     >
                       Love Babbar OS
@@ -459,8 +444,8 @@ export const PreparationSidebar: React.FC<SidebarProps> = ({
                       onClick={(e) => handleNav(e, '/preparation/os-playlists/riti-kumari-os')}
                       className={`block py-1 px-2 rounded-lg text-xs truncate transition-colors ${
                         currentPath === '/preparation/os-playlists/riti-kumari-os'
-                          ? 'text-white font-bold bg-zinc-800/80'
-                          : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60'
+                          ? 'text-zinc-900 dark:text-white font-bold bg-zinc-200/80 dark:bg-zinc-800/80'
+                          : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/60'
                       }`}
                     >
                       Riti Kumari OS
@@ -470,8 +455,8 @@ export const PreparationSidebar: React.FC<SidebarProps> = ({
                       onClick={(e) => handleNav(e, '/preparation/os-playlists/vivek-gupta-os')}
                       className={`block py-1 px-2 rounded-lg text-xs truncate transition-colors ${
                         currentPath === '/preparation/os-playlists/vivek-gupta-os'
-                          ? 'text-white font-bold bg-zinc-800/80'
-                          : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60'
+                          ? 'text-zinc-900 dark:text-white font-bold bg-zinc-200/80 dark:bg-zinc-800/80'
+                          : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/60'
                       }`}
                     >
                       Vivek Gupta OS
@@ -481,8 +466,8 @@ export const PreparationSidebar: React.FC<SidebarProps> = ({
                       onClick={(e) => handleNav(e, '/preparation/os-playlists/neso-academy-os')}
                       className={`block py-1 px-2 rounded-lg text-xs truncate transition-colors ${
                         currentPath === '/preparation/os-playlists/neso-academy-os'
-                          ? 'text-white font-bold bg-zinc-800/80'
-                          : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60'
+                          ? 'text-zinc-900 dark:text-white font-bold bg-zinc-200/80 dark:bg-zinc-800/80'
+                          : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/60'
                       }`}
                     >
                       Neso Academy OS
@@ -505,8 +490,8 @@ export const PreparationSidebar: React.FC<SidebarProps> = ({
                       onClick={(e) => handleNav(e, '/preparation/oops-playlists/code-with-harry-oop')}
                       className={`block py-1 px-2 rounded-lg text-xs truncate transition-colors ${
                         currentPath === '/preparation/oops-playlists/code-with-harry-oop'
-                          ? 'text-white font-bold bg-zinc-800/80'
-                          : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60'
+                          ? 'text-zinc-900 dark:text-white font-bold bg-zinc-200/80 dark:bg-zinc-800/80'
+                          : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/60'
                       }`}
                     >
                       Code With Harry OOP
@@ -516,8 +501,8 @@ export const PreparationSidebar: React.FC<SidebarProps> = ({
                       onClick={(e) => handleNav(e, '/preparation/oops-playlists/rohit-negi-oop')}
                       className={`block py-1 px-2 rounded-lg text-xs truncate transition-colors ${
                         currentPath === '/preparation/oops-playlists/rohit-negi-oop'
-                          ? 'text-white font-bold bg-zinc-800/80'
-                          : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60'
+                          ? 'text-zinc-900 dark:text-white font-bold bg-zinc-200/80 dark:bg-zinc-800/80'
+                          : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/60'
                       }`}
                     >
                       Rohit Negi OOP
@@ -527,8 +512,8 @@ export const PreparationSidebar: React.FC<SidebarProps> = ({
                       onClick={(e) => handleNav(e, '/preparation/oops-playlists/kunal-kushwaha-oop')}
                       className={`block py-1 px-2 rounded-lg text-xs truncate transition-colors ${
                         currentPath === '/preparation/oops-playlists/kunal-kushwaha-oop'
-                          ? 'text-white font-bold bg-zinc-800/80'
-                          : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60'
+                          ? 'text-zinc-900 dark:text-white font-bold bg-zinc-200/80 dark:bg-zinc-800/80'
+                          : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/60'
                       }`}
                     >
                       Kunal Kushwaha OOP
@@ -538,8 +523,8 @@ export const PreparationSidebar: React.FC<SidebarProps> = ({
                       onClick={(e) => handleNav(e, '/preparation/oops-playlists/jennys-oop')}
                       className={`block py-1 px-2 rounded-lg text-xs truncate transition-colors ${
                         currentPath === '/preparation/oops-playlists/jennys-oop'
-                          ? 'text-white font-bold bg-zinc-800/80'
-                          : 'text-zinc-400 hover:text-white hover:bg-zinc-900/60'
+                          ? 'text-zinc-900 dark:text-white font-bold bg-zinc-200/80 dark:bg-zinc-800/80'
+                          : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/60'
                       }`}
                     >
                       Jenny's OOP
@@ -555,8 +540,8 @@ export const PreparationSidebar: React.FC<SidebarProps> = ({
             <div
               className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all cursor-pointer ${
                 currentPath.includes('/preparation/system-design-playlists')
-                  ? 'bg-zinc-800/60 text-white font-semibold'
-                  : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+                  ? 'bg-zinc-100 dark:bg-zinc-800/60 text-zinc-900 dark:text-white font-semibold shadow-2xs'
+                  : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/70'
               }`}
               onClick={() => setSystemDesignExpanded(!systemDesignExpanded)}
             >
@@ -667,18 +652,121 @@ export const PreparationSidebar: React.FC<SidebarProps> = ({
           RESOURCES
         </div>
         <div className="space-y-1">
-          <a
-            href="/preparation/role-wise"
-            onClick={(e) => handleNav(e, '/preparation/role-wise')}
-            className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all ${
-              currentPath.startsWith('/preparation/role-wise')
-                ? 'bg-zinc-800/80 text-white font-semibold'
-                : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
-            }`}
-          >
-            <Users className="w-4 h-4 text-zinc-400 shrink-0" />
-            <span>Role Wise Questions</span>
-          </a>
+          {/* Role Wise Questions Expandable */}
+          <div>
+            <div
+              className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all cursor-pointer ${
+                currentPath.startsWith('/preparation/role-wise')
+                  ? 'bg-zinc-100 dark:bg-zinc-800/60 text-zinc-900 dark:text-white font-semibold shadow-2xs'
+                  : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/70'
+              }`}
+              onClick={() => setRoleWiseExpanded(!roleWiseExpanded)}
+            >
+              <a
+                href="/preparation/role-wise"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleNav(e, '/preparation/role-wise');
+                }}
+                className="flex items-center gap-2.5 flex-1"
+              >
+                <Users className="w-4 h-4 text-zinc-400 shrink-0" />
+                <span>Role Wise Questions</span>
+              </a>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setRoleWiseExpanded(!roleWiseExpanded);
+                }}
+                className="p-0.5 text-zinc-400 hover:text-zinc-900 dark:hover:text-white"
+              >
+                <ChevronDown
+                  className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                    roleWiseExpanded ? 'rotate-180' : ''
+                  }`}
+                />
+              </button>
+            </div>
+
+            {roleWiseExpanded && (
+              <div className="pl-8 pr-2 py-1 space-y-0.5">
+                <a
+                  href="/preparation/role-wise/data-engineer"
+                  onClick={(e) => handleNav(e, '/preparation/role-wise/data-engineer')}
+                  className={`block py-1.5 px-2 rounded-lg text-xs truncate transition-colors ${
+                    currentPath === '/preparation/role-wise/data-engineer'
+                      ? 'text-zinc-900 dark:text-white font-bold bg-zinc-200/80 dark:bg-zinc-800/80'
+                      : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/60'
+                  }`}
+                >
+                  Data Engineer
+                </a>
+                <a
+                  href="/preparation/role-wise/frontend-developer"
+                  onClick={(e) => handleNav(e, '/preparation/role-wise/frontend-developer')}
+                  className={`block py-1.5 px-2 rounded-lg text-xs truncate transition-colors ${
+                    currentPath === '/preparation/role-wise/frontend-developer'
+                      ? 'text-zinc-900 dark:text-white font-bold bg-zinc-200/80 dark:bg-zinc-800/80'
+                      : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/60'
+                  }`}
+                >
+                  Frontend Developer
+                </a>
+                <a
+                  href="/preparation/role-wise/backend-developer"
+                  onClick={(e) => handleNav(e, '/preparation/role-wise/backend-developer')}
+                  className={`block py-1.5 px-2 rounded-lg text-xs truncate transition-colors ${
+                    currentPath === '/preparation/role-wise/backend-developer'
+                      ? 'text-zinc-900 dark:text-white font-bold bg-zinc-200/80 dark:bg-zinc-800/80'
+                      : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/60'
+                  }`}
+                >
+                  Backend Developer
+                </a>
+                <a
+                  href="/preparation/role-wise/full-stack-developer"
+                  onClick={(e) => handleNav(e, '/preparation/role-wise/full-stack-developer')}
+                  className={`block py-1.5 px-2 rounded-lg text-xs truncate transition-colors ${
+                    currentPath === '/preparation/role-wise/full-stack-developer'
+                      ? 'text-zinc-900 dark:text-white font-bold bg-zinc-200/80 dark:bg-zinc-800/80'
+                      : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/60'
+                  }`}
+                >
+                  Full Stack Developer
+                </a>
+                <a
+                  href="/preparation/role-wise/data-scientist"
+                  onClick={(e) => handleNav(e, '/preparation/role-wise/data-scientist')}
+                  className={`block py-1.5 px-2 rounded-lg text-xs truncate transition-colors ${
+                    currentPath === '/preparation/role-wise/data-scientist'
+                      ? 'text-zinc-900 dark:text-white font-bold bg-zinc-200/80 dark:bg-zinc-800/80'
+                      : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/60'
+                  }`}
+                >
+                  Data Scientist
+                </a>
+                <a
+                  href="/preparation/role-wise/devops-engineer"
+                  onClick={(e) => handleNav(e, '/preparation/role-wise/devops-engineer')}
+                  className={`block py-1.5 px-2 rounded-lg text-xs truncate transition-colors ${
+                    currentPath === '/preparation/role-wise/devops-engineer'
+                      ? 'text-zinc-900 dark:text-white font-bold bg-zinc-200/80 dark:bg-zinc-800/80'
+                      : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/60'
+                  }`}
+                >
+                  DevOps Engineer
+                </a>
+                <a
+                  href="/preparation/role-wise"
+                  onClick={(e) => handleNav(e, '/preparation/role-wise')}
+                  className="block py-1 px-2 rounded-lg text-[11px] font-semibold text-blue-600 dark:text-blue-400 hover:underline transition-colors"
+                >
+                  Explore All 30+ Roles →
+                </a>
+              </div>
+            )}
+          </div>
 
           <a
             href="/preparation/most-asked-questions"
@@ -744,6 +832,44 @@ export const PreparationSidebar: React.FC<SidebarProps> = ({
             <Scroll className="w-4 h-4 text-zinc-400 shrink-0" />
             <span>Cool Notes</span>
           </a>
+
+          {/* User Profile Navigation Link */}
+          <div className="pt-3 border-t border-zinc-200 dark:border-zinc-800 mt-2">
+            <a
+              href="/preparation/profile"
+              onClick={(e) => handleNav(e, '/preparation/profile')}
+              className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all ${
+                currentPath === '/preparation/profile' || currentPath === '/profile'
+                  ? 'bg-blue-600/20 text-blue-400 border border-blue-500/30 font-semibold'
+                  : 'text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900'
+              }`}
+            >
+              <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-amber-400 to-yellow-300 p-0.5 overflow-hidden shrink-0 flex items-center justify-center">
+                {user?.avatar ? (
+                  <img
+                    src={user.avatar}
+                    alt={user.name || 'Avatar'}
+                    onError={(e) => {
+                      (e.target as HTMLElement).style.display = 'none';
+                    }}
+                    className="w-full h-full rounded-full object-cover"
+                  />
+                ) : (
+                  <span className="text-[10px] font-bold text-zinc-900 leading-none">
+                    {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
+                  </span>
+                )}
+              </div>
+              <div className="min-w-0 flex-1">
+                <span className="truncate block font-semibold text-xs">
+                  {user?.name || (isAuthenticated ? 'My Profile' : 'Sign In')}
+                </span>
+                <span className="text-[10px] text-zinc-500 font-mono block truncate">
+                  {user?.role || (isAuthenticated ? 'Developer' : 'Free Access')}
+                </span>
+              </div>
+            </a>
+          </div>
         </div>
       </div>
     </div>
@@ -759,9 +885,9 @@ export const PreparationSidebar: React.FC<SidebarProps> = ({
             onClick={closeDrawer}
             aria-label="Close sidebar overlay"
           />
-          <div className="relative w-72 sm:w-80 max-w-[85vw] bg-[#07090e] border-r border-zinc-900 h-full overflow-y-auto overscroll-contain custom-scrollbar z-50 flex flex-col shadow-2xl animate-in slide-in-from-left duration-300 ease-out">
+          <div className="relative w-72 sm:w-80 max-w-[85vw] bg-white dark:bg-[#07090e] border-r border-zinc-200 dark:border-zinc-200 dark:border-zinc-800 h-full overflow-y-auto overscroll-contain custom-scrollbar z-50 flex flex-col shadow-2xl animate-in slide-in-from-left duration-300 ease-out">
             {/* Mobile Drawer Header with Close Button */}
-            <div className="px-4 py-3 border-b border-zinc-800 flex items-center justify-between shrink-0">
+            <div className="px-4 py-3 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between shrink-0">
               <a
                 href="/"
                 onClick={(e) => handleNav(e, '/')}
@@ -788,7 +914,7 @@ export const PreparationSidebar: React.FC<SidebarProps> = ({
 
       {/* Desktop Persistent Sidebar */}
       <aside
-        className={`hidden lg:block shrink-0 h-screen sticky top-0 overflow-y-auto custom-scrollbar border-r border-[#161c28] bg-[#07090e] transition-all ${
+        className={`hidden lg:block shrink-0 h-screen sticky top-0 overflow-y-auto custom-scrollbar border-r border-zinc-200 dark:border-[#161c28] bg-white dark:bg-[#07090e] transition-colors duration-200 ${
           collapsed ? 'w-16' : 'w-64'
         }`}
       >

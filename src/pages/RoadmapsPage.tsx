@@ -1,4 +1,6 @@
 import React, { useState, useMemo } from 'react';
+import { useAuth } from '../context/AuthContext';
+import { AuthGate } from '../components/AuthGate';
 import {
   Search,
   Bookmark,
@@ -27,6 +29,7 @@ interface RoadmapsPageProps {
 }
 
 export const RoadmapsPage: React.FC<RoadmapsPageProps> = ({ navigate }) => {
+  const { isAuthenticated } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [bookmarkedSlugs, setBookmarkedSlugs] = useState<string[]>(() => {
@@ -245,14 +248,34 @@ export const RoadmapsPage: React.FC<RoadmapsPageProps> = ({ navigate }) => {
 
           {/* Right Main Column: Roadmap Grids matching screenshot */}
           <main className="space-y-10 min-w-0">
-
-            {/* 1. NEW ROADMAPS SECTION */}
-            {newRoadmaps.length > 0 && (
-              <section className="space-y-3">
-                <div className="text-[11px] font-bold uppercase tracking-wider text-blue-600 font-mono">
-                  NEW ROADMAPS
+            {!isAuthenticated ? (
+              <AuthGate
+                totalCount={ALL_ROADMAPS_SUMMARY.length}
+                featureName="developer career roadmaps"
+                title="Sign in to access Developer Roadmaps"
+              >
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-2">
+                  {roleRoadmaps.slice(0, 8).map((roadmap) => (
+                    <div
+                      key={roadmap.slug}
+                      className="group flex items-center justify-between p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#0c1017] shadow-xs"
+                    >
+                      <span className="font-semibold text-sm text-zinc-900 dark:text-zinc-100">
+                        {roadmap.title}
+                      </span>
+                    </div>
+                  ))}
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              </AuthGate>
+            ) : (
+              <>
+                {/* 1. NEW ROADMAPS SECTION */}
+                {newRoadmaps.length > 0 && (
+                  <section className="space-y-3">
+                    <div className="text-[11px] font-bold uppercase tracking-wider text-blue-600 font-mono">
+                      NEW ROADMAPS
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   {newRoadmaps.map((roadmap) => {
                     const bookmarked = isBookmarked(roadmap.slug);
                     return (
@@ -429,7 +452,8 @@ export const RoadmapsPage: React.FC<RoadmapsPageProps> = ({ navigate }) => {
                 </button>
               </div>
             )}
-
+            </>
+          )}
           </main>
         </div>
       </div>

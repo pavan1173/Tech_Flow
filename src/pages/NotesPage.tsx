@@ -1,5 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { coolNotesList, NoteItem } from '../data/coolNotesData';
+import { useAuth } from '../context/AuthContext';
+import { AuthGate } from '../components/AuthGate';
 import {
   FileText,
   Search,
@@ -25,6 +27,7 @@ interface NotesPageProps {
 const ITEMS_PER_PAGE = 12;
 
 export const NotesPage: React.FC<NotesPageProps> = ({ navigate }) => {
+  const { isAuthenticated, openAuthModal } = useAuth();
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -130,7 +133,7 @@ export const NotesPage: React.FC<NotesPageProps> = ({ navigate }) => {
           <div className="w-7 h-7 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center text-zinc-300">
             <FileText className="w-4 h-4" />
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-white">
             Notes
           </h1>
         </div>
@@ -149,7 +152,7 @@ export const NotesPage: React.FC<NotesPageProps> = ({ navigate }) => {
               id="notes-category-filter"
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="appearance-none pl-9 pr-10 py-2.5 text-xs sm:text-sm font-lexend font-medium bg-[#0c1017] border border-[#1b2230] rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 hover:border-zinc-700 transition-all cursor-pointer min-w-[200px]"
+              className="appearance-none pl-9 pr-10 py-2.5 text-xs sm:text-sm font-lexend font-medium bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-[#1b2230] rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 hover:border-zinc-700 transition-all cursor-pointer min-w-[200px]"
               aria-label="Filter notes by category"
             >
               <option value="All">All Categories</option>
@@ -179,7 +182,7 @@ export const NotesPage: React.FC<NotesPageProps> = ({ navigate }) => {
             placeholder="Search notes by keyword..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-[#0c1017] border border-[#1b2230] text-xs text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all"
+            className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-[#1b2230] text-xs text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all"
           />
           {searchQuery && (
             <button
@@ -194,7 +197,7 @@ export const NotesPage: React.FC<NotesPageProps> = ({ navigate }) => {
 
       {/* 4. Grid of Notes Cards (matching hynts.in exactly) */}
       {paginatedNotes.length === 0 ? (
-        <div className="rounded-2xl border border-[#1b2230] bg-[#0c1017] p-12 text-center space-y-3">
+        <div className="rounded-2xl border border-zinc-200 dark:border-[#1b2230] bg-white dark:bg-[#0c1017] p-12 text-center space-y-3">
           <FileText className="w-10 h-10 text-zinc-600 mx-auto" />
           <h3 className="text-base font-bold text-white">No notes found</h3>
           <p className="text-xs text-zinc-400 max-w-sm mx-auto">
@@ -210,13 +213,40 @@ export const NotesPage: React.FC<NotesPageProps> = ({ navigate }) => {
             Reset Filters
           </button>
         </div>
+      ) : !isAuthenticated ? (
+        <AuthGate
+          totalCount={coolNotesList.length}
+          featureName="handwritten CS notes"
+          title="Sign in to access CS Revision Notes"
+        >
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 pt-1">
+            {paginatedNotes.slice(0, 6).map((note) => (
+              <div
+                key={note.id}
+                className="group relative w-full text-left rounded-xl overflow-hidden border border-zinc-200 dark:border-[#1b2230] h-[286px] bg-white dark:bg-[#0c1017]"
+              >
+                <img
+                  src={note.thumbnail_url}
+                  alt={note.title}
+                  className="absolute inset-0 w-full h-full object-cover object-top"
+                />
+                <div className="absolute inset-x-0 bottom-0 z-10 h-[65%] bg-gradient-to-t from-black/95 via-black/70 to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 z-20 p-4 flex flex-col gap-1.5">
+                  <h3 className="font-semibold font-lexend text-sm text-white leading-snug line-clamp-2">
+                    {note.title}
+                  </h3>
+                </div>
+              </div>
+            ))}
+          </div>
+        </AuthGate>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 pt-1">
           {paginatedNotes.map((note) => (
             <button
               key={note.id}
               onClick={() => openNoteModal(note)}
-              className="group relative w-full text-left rounded-xl overflow-hidden border border-[#1b2230] hover:border-blue-500/50 hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500/50 cursor-pointer h-[286px] bg-[#0c1017]"
+              className="group relative w-full text-left rounded-xl overflow-hidden border border-zinc-200 dark:border-[#1b2230] hover:border-blue-500/50 hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500/50 cursor-pointer h-[286px] bg-white dark:bg-[#0c1017]"
               aria-label={`Open note: ${note.title}`}
             >
               {/* Thumbnail Image Cover */}
@@ -329,7 +359,7 @@ export const NotesPage: React.FC<NotesPageProps> = ({ navigate }) => {
           {/* Modal Container */}
           <div className="relative z-10 flex flex-col w-full h-full max-w-6xl mx-auto my-2 sm:my-4 px-2 sm:px-6">
             {/* Modal Header Bar */}
-            <div className="flex items-center gap-3 bg-[#0d121c] border border-[#1b2230] rounded-t-xl px-4 py-3 shrink-0 shadow-lg">
+            <div className="flex items-center gap-3 bg-zinc-100 dark:bg-[#0d121c] border border-zinc-200 dark:border-[#1b2230] rounded-t-xl px-4 py-3 shrink-0 shadow-lg">
               {/* PDF Icon Badge */}
               <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center justify-center">
                 <FileText className="w-4 h-4 text-red-400" />
@@ -402,7 +432,7 @@ export const NotesPage: React.FC<NotesPageProps> = ({ navigate }) => {
             </div>
 
             {/* Modal Body: Embedded PDF Viewport */}
-            <div className="relative flex-1 bg-zinc-950 border-x border-b border-[#1b2230] rounded-b-xl overflow-hidden shadow-2xl">
+            <div className="relative flex-1 bg-zinc-950 border-x border-b border-zinc-200 dark:border-[#1b2230] rounded-b-xl overflow-hidden shadow-2xl">
               {/* Spinner while loading */}
               {pdfLoading && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 z-10 bg-zinc-950">
