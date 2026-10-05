@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { TeachFlowLogo } from './TeachFlowLogo';
 import { useAuth } from '../context/AuthContext';
+import { SectionProgressBadge } from './SectionProgressBadge';
+import { useNavigationProgress } from '../utils/navigationProgress';
 import {
   LayoutDashboard,
   FileCode,
@@ -43,6 +45,7 @@ export const PreparationSidebar: React.FC<SidebarProps> = ({
   setMobileOpen,
 }) => {
   const { user, isAuthenticated } = useAuth();
+  const navProgress = useNavigationProgress();
   // Local fallback if not passed
   const [internalMobileOpen, setInternalMobileOpen] = useState(false);
   const isDrawerOpen = setMobileOpen ? mobileOpen : internalMobileOpen;
@@ -115,13 +118,16 @@ export const PreparationSidebar: React.FC<SidebarProps> = ({
               : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/70'
           }`}
         >
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2.5 min-w-0 pr-2">
             <Compass className="w-4 h-4 text-blue-400 shrink-0" />
-            <span>Developer Roadmaps</span>
+            <span className="truncate">Developer Roadmaps</span>
           </div>
-          <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 font-bold border border-blue-500/30">
-            95+
-          </span>
+          <SectionProgressBadge
+            solved={navProgress.roadmaps.solved}
+            total={navProgress.roadmaps.total}
+            percentage={navProgress.roadmaps.percentage}
+            zeroLabel="95+"
+          />
         </a>
       </div>
 
@@ -147,44 +153,61 @@ export const PreparationSidebar: React.FC<SidebarProps> = ({
                   e.stopPropagation();
                   handleNav(e, '/preparation/dsa-sheets');
                 }}
-                className="flex items-center gap-2.5 flex-1"
+                className="flex items-center gap-2.5 flex-1 min-w-0 pr-2"
               >
                 <FileCode className="w-4 h-4 text-zinc-400 shrink-0" />
-                <span>DSA Sheets</span>
+                <span className="truncate">DSA Sheets</span>
               </a>
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setDsaSheetsExpanded(!dsaSheetsExpanded);
-                }}
-                className="p-0.5 text-zinc-400 hover:text-white"
-              >
-                <ChevronDown
-                  className={`w-3.5 h-3.5 transition-transform duration-200 ${
-                    dsaSheetsExpanded ? 'rotate-180' : ''
-                  }`}
+              <div className="flex items-center gap-1.5 shrink-0">
+                <SectionProgressBadge
+                  solved={navProgress.dsaSheetsOverall.solved}
+                  total={navProgress.dsaSheetsOverall.total}
+                  percentage={navProgress.dsaSheetsOverall.percentage}
+                  zeroLabel="8 Sheets"
                 />
-              </button>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setDsaSheetsExpanded(!dsaSheetsExpanded);
+                  }}
+                  className="p-0.5 text-zinc-400 hover:text-white"
+                >
+                  <ChevronDown
+                    className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                      dsaSheetsExpanded ? 'rotate-180' : ''
+                    }`}
+                  />
+                </button>
+              </div>
             </div>
 
             {/* Sub items */}
             {dsaSheetsExpanded && (
-              <div className="pl-8 pr-2 py-1 space-y-1">
+              <div className="pl-6 pr-2 py-1 space-y-1">
                 {dsaSubSheets.map((sub) => {
                   const isSubActive = currentPath === sub.href;
+                  const slug = sub.href.replace('/preparation/dsa-sheets/', '');
+                  const sheetStat = navProgress.dsaSheets[slug] || { solved: 0, total: 0, percentage: 0 };
                   return (
                     <a
                       key={sub.href}
                       href={sub.href}
                       onClick={(e) => handleNav(e, sub.href)}
-                      className={`block py-1.5 px-2 rounded-lg text-xs truncate transition-colors ${
+                      className={`flex items-center justify-between py-1.5 px-2 rounded-lg text-xs transition-colors ${
                         isSubActive
                           ? 'text-zinc-900 dark:text-white font-bold bg-zinc-200/80 dark:bg-zinc-800/80'
                           : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/60'
                       }`}
                     >
-                      {sub.label}
+                      <span className="truncate pr-1">{sub.label}</span>
+                      <SectionProgressBadge
+                        solved={sheetStat.solved}
+                        total={sheetStat.total}
+                        percentage={sheetStat.percentage}
+                        size="sm"
+                        showBar={false}
+                      />
                     </a>
                   );
                 })}
@@ -195,66 +218,102 @@ export const PreparationSidebar: React.FC<SidebarProps> = ({
           <a
             href="/preparation/company-wise-dsa-sheet"
             onClick={(e) => handleNav(e, '/preparation/company-wise-dsa-sheet')}
-            className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all ${
+            className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all ${
               currentPath.startsWith('/preparation/company-wise-dsa-sheet')
-                ? 'bg-zinc-800/80 text-white font-semibold'
-                : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+                ? 'bg-zinc-100 dark:bg-zinc-800/80 text-zinc-900 dark:text-white font-semibold shadow-2xs'
+                : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/70'
             }`}
           >
-            <Building2 className="w-4 h-4 text-zinc-400 shrink-0" />
-            <span>Company Wise DSA</span>
+            <div className="flex items-center gap-2.5 min-w-0 pr-2">
+              <Building2 className="w-4 h-4 text-zinc-400 shrink-0" />
+              <span className="truncate">Company Wise DSA</span>
+            </div>
+            <SectionProgressBadge
+              solved={navProgress.companyWise.solved}
+              total={navProgress.companyWise.total}
+              percentage={navProgress.companyWise.percentage}
+              zeroLabel="45 Cos"
+            />
           </a>
 
           <a
             href="/preparation/20-essential-dsa-patterns"
             onClick={(e) => handleNav(e, '/preparation/20-essential-dsa-patterns')}
-            className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all ${
+            className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all ${
               currentPath === '/preparation/20-essential-dsa-patterns'
-                ? 'bg-zinc-800/80 text-white font-semibold'
-                : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+                ? 'bg-zinc-100 dark:bg-zinc-800/80 text-zinc-900 dark:text-white font-semibold shadow-2xs'
+                : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/70'
             }`}
           >
-            <Sparkles className="w-4 h-4 text-zinc-400 shrink-0" />
-            <span>20 DSA Patterns</span>
+            <div className="flex items-center gap-2.5 min-w-0 pr-2">
+              <Sparkles className="w-4 h-4 text-zinc-400 shrink-0" />
+              <span className="truncate">20 DSA Patterns</span>
+            </div>
+            <SectionProgressBadge
+              solved={navProgress.patterns.solved}
+              total={navProgress.patterns.total}
+              percentage={navProgress.patterns.percentage}
+            />
           </a>
 
           <a
             href="/preparation/package-wise-dsa-sheet"
             onClick={(e) => handleNav(e, '/preparation/package-wise-dsa-sheet')}
-            className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all ${
+            className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all ${
               currentPath === '/preparation/package-wise-dsa-sheet'
-                ? 'bg-zinc-800/80 text-white font-semibold'
-                : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+                ? 'bg-zinc-100 dark:bg-zinc-800/80 text-zinc-900 dark:text-white font-semibold shadow-2xs'
+                : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/70'
             }`}
           >
-            <CircleDollarSign className="w-4 h-4 text-zinc-400 shrink-0" />
-            <span>Package Wise DSA</span>
+            <div className="flex items-center gap-2.5 min-w-0 pr-2">
+              <CircleDollarSign className="w-4 h-4 text-zinc-400 shrink-0" />
+              <span className="truncate">Package Wise DSA</span>
+            </div>
+            <SectionProgressBadge
+              solved={navProgress.packageWise.solved}
+              total={navProgress.packageWise.total}
+              percentage={navProgress.packageWise.percentage}
+            />
           </a>
 
           <a
             href="/preparation/sql-sheet"
             onClick={(e) => handleNav(e, '/preparation/sql-sheet')}
-            className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all ${
+            className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all ${
               currentPath === '/preparation/sql-sheet'
-                ? 'bg-zinc-800/80 text-white font-semibold'
-                : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+                ? 'bg-zinc-100 dark:bg-zinc-800/80 text-zinc-900 dark:text-white font-semibold shadow-2xs'
+                : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/70'
             }`}
           >
-            <Database className="w-4 h-4 text-zinc-400 shrink-0" />
-            <span>SQL Sheet</span>
+            <div className="flex items-center gap-2.5 min-w-0 pr-2">
+              <Database className="w-4 h-4 text-zinc-400 shrink-0" />
+              <span className="truncate">SQL Sheet</span>
+            </div>
+            <SectionProgressBadge
+              solved={navProgress.sql.solved}
+              total={navProgress.sql.total}
+              percentage={navProgress.sql.percentage}
+            />
           </a>
 
           <a
             href="/preparation/system-design-sheet"
             onClick={(e) => handleNav(e, '/preparation/system-design-sheet')}
-            className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all ${
+            className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all ${
               currentPath === '/preparation/system-design-sheet'
-                ? 'bg-zinc-800/80 text-white font-semibold'
-                : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+                ? 'bg-zinc-100 dark:bg-zinc-800/80 text-zinc-900 dark:text-white font-semibold shadow-2xs'
+                : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/70'
             }`}
           >
-            <Layers className="w-4 h-4 text-zinc-400 shrink-0" />
-            <span>System Design Sheet</span>
+            <div className="flex items-center gap-2.5 min-w-0 pr-2">
+              <Layers className="w-4 h-4 text-zinc-400 shrink-0" />
+              <span className="truncate">System Design Sheet</span>
+            </div>
+            <SectionProgressBadge
+              solved={navProgress.systemDesign.solved}
+              total={navProgress.systemDesign.total}
+              percentage={navProgress.systemDesign.percentage}
+            />
           </a>
         </div>
       </div>
@@ -281,25 +340,33 @@ export const PreparationSidebar: React.FC<SidebarProps> = ({
                   e.stopPropagation();
                   handleNav(e, '/preparation/dsa-playlists');
                 }}
-                className="flex items-center gap-2.5 flex-1"
+                className="flex items-center gap-2.5 flex-1 min-w-0 pr-2"
               >
                 <Tv className="w-4 h-4 text-zinc-400 shrink-0" />
-                <span>DSA Playlists</span>
+                <span className="truncate">DSA Playlists</span>
               </a>
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setDsaPlaylistsExpanded(!dsaPlaylistsExpanded);
-                }}
-                className="p-0.5 text-zinc-400 hover:text-white"
-              >
-                <ChevronDown
-                  className={`w-3.5 h-3.5 transition-transform duration-200 ${
-                    dsaPlaylistsExpanded ? 'rotate-180' : ''
-                  }`}
+              <div className="flex items-center gap-1.5 shrink-0">
+                <SectionProgressBadge
+                  solved={navProgress.dsaPlaylists.solved}
+                  total={navProgress.dsaPlaylists.total}
+                  percentage={navProgress.dsaPlaylists.percentage}
+                  zeroLabel="Courses"
                 />
-              </button>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setDsaPlaylistsExpanded(!dsaPlaylistsExpanded);
+                  }}
+                  className="p-0.5 text-zinc-400 hover:text-white"
+                >
+                  <ChevronDown
+                    className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                      dsaPlaylistsExpanded ? 'rotate-180' : ''
+                    }`}
+                  />
+                </button>
+              </div>
             </div>
 
             {dsaPlaylistsExpanded && (
@@ -668,99 +735,74 @@ export const PreparationSidebar: React.FC<SidebarProps> = ({
                   e.stopPropagation();
                   handleNav(e, '/preparation/role-wise');
                 }}
-                className="flex items-center gap-2.5 flex-1"
+                className="flex items-center gap-2.5 flex-1 min-w-0 pr-2"
               >
                 <Users className="w-4 h-4 text-zinc-400 shrink-0" />
-                <span>Role Wise Questions</span>
+                <span className="truncate">Role Wise Questions</span>
               </a>
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setRoleWiseExpanded(!roleWiseExpanded);
-                }}
-                className="p-0.5 text-zinc-400 hover:text-zinc-900 dark:hover:text-white"
-              >
-                <ChevronDown
-                  className={`w-3.5 h-3.5 transition-transform duration-200 ${
-                    roleWiseExpanded ? 'rotate-180' : ''
-                  }`}
+              <div className="flex items-center gap-1.5 shrink-0">
+                <SectionProgressBadge
+                  solved={navProgress.roleWiseOverall.solved}
+                  total={navProgress.roleWiseOverall.total}
+                  percentage={navProgress.roleWiseOverall.percentage}
+                  zeroLabel="30+ Roles"
                 />
-              </button>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setRoleWiseExpanded(!roleWiseExpanded);
+                  }}
+                  className="p-0.5 text-zinc-400 hover:text-zinc-900 dark:hover:text-white"
+                >
+                  <ChevronDown
+                    className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                      roleWiseExpanded ? 'rotate-180' : ''
+                    }`}
+                  />
+                </button>
+              </div>
             </div>
 
             {roleWiseExpanded && (
-              <div className="pl-8 pr-2 py-1 space-y-0.5">
-                <a
-                  href="/preparation/role-wise/data-engineer"
-                  onClick={(e) => handleNav(e, '/preparation/role-wise/data-engineer')}
-                  className={`block py-1.5 px-2 rounded-lg text-xs truncate transition-colors ${
-                    currentPath === '/preparation/role-wise/data-engineer'
-                      ? 'text-zinc-900 dark:text-white font-bold bg-zinc-200/80 dark:bg-zinc-800/80'
-                      : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/60'
-                  }`}
-                >
-                  Data Engineer
-                </a>
-                <a
-                  href="/preparation/role-wise/frontend-developer"
-                  onClick={(e) => handleNav(e, '/preparation/role-wise/frontend-developer')}
-                  className={`block py-1.5 px-2 rounded-lg text-xs truncate transition-colors ${
-                    currentPath === '/preparation/role-wise/frontend-developer'
-                      ? 'text-zinc-900 dark:text-white font-bold bg-zinc-200/80 dark:bg-zinc-800/80'
-                      : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/60'
-                  }`}
-                >
-                  Frontend Developer
-                </a>
-                <a
-                  href="/preparation/role-wise/backend-developer"
-                  onClick={(e) => handleNav(e, '/preparation/role-wise/backend-developer')}
-                  className={`block py-1.5 px-2 rounded-lg text-xs truncate transition-colors ${
-                    currentPath === '/preparation/role-wise/backend-developer'
-                      ? 'text-zinc-900 dark:text-white font-bold bg-zinc-200/80 dark:bg-zinc-800/80'
-                      : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/60'
-                  }`}
-                >
-                  Backend Developer
-                </a>
-                <a
-                  href="/preparation/role-wise/full-stack-developer"
-                  onClick={(e) => handleNav(e, '/preparation/role-wise/full-stack-developer')}
-                  className={`block py-1.5 px-2 rounded-lg text-xs truncate transition-colors ${
-                    currentPath === '/preparation/role-wise/full-stack-developer'
-                      ? 'text-zinc-900 dark:text-white font-bold bg-zinc-200/80 dark:bg-zinc-800/80'
-                      : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/60'
-                  }`}
-                >
-                  Full Stack Developer
-                </a>
-                <a
-                  href="/preparation/role-wise/data-scientist"
-                  onClick={(e) => handleNav(e, '/preparation/role-wise/data-scientist')}
-                  className={`block py-1.5 px-2 rounded-lg text-xs truncate transition-colors ${
-                    currentPath === '/preparation/role-wise/data-scientist'
-                      ? 'text-zinc-900 dark:text-white font-bold bg-zinc-200/80 dark:bg-zinc-800/80'
-                      : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/60'
-                  }`}
-                >
-                  Data Scientist
-                </a>
-                <a
-                  href="/preparation/role-wise/devops-engineer"
-                  onClick={(e) => handleNav(e, '/preparation/role-wise/devops-engineer')}
-                  className={`block py-1.5 px-2 rounded-lg text-xs truncate transition-colors ${
-                    currentPath === '/preparation/role-wise/devops-engineer'
-                      ? 'text-zinc-900 dark:text-white font-bold bg-zinc-200/80 dark:bg-zinc-800/80'
-                      : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/60'
-                  }`}
-                >
-                  DevOps Engineer
-                </a>
+              <div className="pl-6 pr-2 py-1 space-y-1">
+                {[
+                  { slug: 'data-engineer', label: 'Data Engineer' },
+                  { slug: 'frontend-developer', label: 'Frontend Developer' },
+                  { slug: 'backend-developer', label: 'Backend Developer' },
+                  { slug: 'full-stack-developer', label: 'Full Stack Developer' },
+                  { slug: 'data-scientist', label: 'Data Scientist' },
+                  { slug: 'devops-engineer', label: 'DevOps Engineer' },
+                ].map((role) => {
+                  const roleHref = `/preparation/role-wise/${role.slug}`;
+                  const isRoleActive = currentPath === roleHref;
+                  const roleStat = navProgress.roles[role.slug] || { solved: 0, total: 0, percentage: 0 };
+                  return (
+                    <a
+                      key={role.slug}
+                      href={roleHref}
+                      onClick={(e) => handleNav(e, roleHref)}
+                      className={`flex items-center justify-between py-1.5 px-2 rounded-lg text-xs transition-colors ${
+                        isRoleActive
+                          ? 'text-zinc-900 dark:text-white font-bold bg-zinc-200/80 dark:bg-zinc-800/80'
+                          : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/60'
+                      }`}
+                    >
+                      <span className="truncate pr-1">{role.label}</span>
+                      <SectionProgressBadge
+                        solved={roleStat.solved}
+                        total={roleStat.total}
+                        percentage={roleStat.percentage}
+                        size="sm"
+                        showBar={false}
+                      />
+                    </a>
+                  );
+                })}
                 <a
                   href="/preparation/role-wise"
                   onClick={(e) => handleNav(e, '/preparation/role-wise')}
-                  className="block py-1 px-2 rounded-lg text-[11px] font-semibold text-blue-600 dark:text-blue-400 hover:underline transition-colors"
+                  className="block py-1.5 px-2 rounded-lg text-[11px] font-semibold text-blue-600 dark:text-blue-400 hover:underline transition-colors"
                 >
                   Explore All 30+ Roles →
                 </a>
@@ -771,27 +813,41 @@ export const PreparationSidebar: React.FC<SidebarProps> = ({
           <a
             href="/preparation/most-asked-questions"
             onClick={(e) => handleNav(e, '/preparation/most-asked-questions')}
-            className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all ${
+            className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all ${
               currentPath.startsWith('/preparation/most-asked-questions')
-                ? 'bg-zinc-800/80 text-white font-semibold'
-                : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+                ? 'bg-zinc-100 dark:bg-zinc-800/80 text-zinc-900 dark:text-white font-semibold shadow-2xs'
+                : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/70'
             }`}
           >
-            <HelpCircle className="w-4 h-4 text-zinc-400 shrink-0" />
-            <span>Most Asked Questions</span>
+            <div className="flex items-center gap-2.5 min-w-0 pr-2">
+              <HelpCircle className="w-4 h-4 text-zinc-400 shrink-0" />
+              <span className="truncate">Most Asked Questions</span>
+            </div>
+            <SectionProgressBadge
+              solved={navProgress.mostAsked.solved}
+              total={navProgress.mostAsked.total}
+              percentage={navProgress.mostAsked.percentage}
+            />
           </a>
 
           <a
             href="/preparation/hr-questions"
             onClick={(e) => handleNav(e, '/preparation/hr-questions')}
-            className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all ${
+            className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all ${
               currentPath === '/preparation/hr-questions'
-                ? 'bg-zinc-800/80 text-white font-semibold'
-                : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+                ? 'bg-zinc-100 dark:bg-zinc-800/80 text-zinc-900 dark:text-white font-semibold shadow-2xs'
+                : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/70'
             }`}
           >
-            <MessageSquareQuote className="w-4 h-4 text-zinc-400 shrink-0" />
-            <span>HR Interview Questions</span>
+            <div className="flex items-center gap-2.5 min-w-0 pr-2">
+              <MessageSquareQuote className="w-4 h-4 text-zinc-400 shrink-0" />
+              <span className="truncate">HR Interview Questions</span>
+            </div>
+            <SectionProgressBadge
+              solved={navProgress.hr.solved}
+              total={navProgress.hr.total}
+              percentage={navProgress.hr.percentage}
+            />
           </a>
 
           <a

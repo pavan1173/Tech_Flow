@@ -220,6 +220,7 @@ export const RoadmapDetailPage: React.FC<RoadmapDetailPageProps> = ({ slug, navi
         : [...currentList, topicId];
       try {
         localStorage.setItem(storageKey, JSON.stringify(updated));
+        window.dispatchEvent(new Event('teachflow_roadmap_updated'));
       } catch (err) {
         console.error(err);
       }
@@ -230,12 +231,22 @@ export const RoadmapDetailPage: React.FC<RoadmapDetailPageProps> = ({ slug, navi
   const markAllComplete = () => {
     const allIds = allTopics.map((t) => t.id);
     setCompletedTopicIds(allIds);
-    localStorage.setItem(storageKey, JSON.stringify(allIds));
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(allIds));
+      window.dispatchEvent(new Event('teachflow_roadmap_updated'));
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const resetProgress = () => {
     setCompletedTopicIds([]);
-    localStorage.removeItem(storageKey);
+    try {
+      localStorage.removeItem(storageKey);
+      window.dispatchEvent(new Event('teachflow_roadmap_updated'));
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
