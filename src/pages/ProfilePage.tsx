@@ -221,6 +221,17 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ navigate }) => {
                 <Linkedin className="w-4 h-4" />
               </a>
             )}
+            {(user.instagramUrl || user.handle?.includes('pavan') || user.email?.includes('pavan')) && (
+              <a
+                href={user.instagramUrl || "https://www.instagram.com/tech_by.pavan/"}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 rounded-xl bg-black/30 hover:bg-black/50 backdrop-blur-sm text-rose-300 hover:text-rose-200 transition-colors"
+                title="Instagram: @tech_by.pavan"
+              >
+                <Instagram className="w-4 h-4" />
+              </a>
+            )}
             <a
               href={`mailto:${user.email}`}
               className="p-2 rounded-xl bg-black/30 hover:bg-black/50 backdrop-blur-sm text-white transition-colors"
@@ -591,10 +602,10 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ navigate }) => {
                   <div className="flex flex-wrap gap-2 text-[11px]">
                     <button
                       type="button"
-                      onClick={() => setFormData({ ...formData, avatar: '/pavan_img_.png' })}
+                      onClick={() => setFormData({ ...formData, avatar: '/pavan_img.png' })}
                       className="px-2.5 py-1 rounded-lg bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
                     >
-                      Sample Avatar
+                      Pavan Kumar Avatar
                     </button>
                     <button
                       type="button"
@@ -702,6 +713,17 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ navigate }) => {
                   value={formData.linkedinUrl}
                   onChange={(e) => setFormData({ ...formData, linkedinUrl: e.target.value })}
                   className="w-full px-4 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
+                />
+              </div>
+
+              <div>
+                <label className="block text-zinc-500 uppercase font-mono text-[11px] mb-1.5 font-bold">Instagram Handle / URL</label>
+                <input
+                  type="text"
+                  placeholder="https://instagram.com/tech_by.pavan or @tech_by.pavan"
+                  value={formData.instagramUrl}
+                  onChange={(e) => setFormData({ ...formData, instagramUrl: e.target.value })}
+                  className="w-full px-4 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-rose-500 font-mono"
                 />
               </div>
 

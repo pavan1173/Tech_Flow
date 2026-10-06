@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { faqData, testimonialsData } from '../data/common';
 import { TeachFlowLogo } from '../components/TeachFlowLogo';
+import { DeveloperProfileCard } from '../components/DeveloperProfileCard';
 import {
   ArrowRight,
   Code2,
@@ -257,6 +258,26 @@ export const HomePage: React.FC<HomePageProps> = ({ navigate }) => {
               </button>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ── MEET THE DEVELOPER / CREATOR SPOTLIGHT ── */}
+      <section className="py-20 md:py-28 bg-gradient-to-b from-transparent via-amber-500/[0.04] to-transparent border-b border-zinc-200 dark:border-zinc-800/80">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6">
+          <div className="text-center space-y-3 mb-12">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 text-xs font-bold font-mono tracking-wider">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>THE MIND BEHIND HACKPATH</span>
+            </span>
+            <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-zinc-950 dark:text-white">
+              Meet the Developer
+            </h2>
+            <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto">
+              Engineered, curated, and open-sourced by Pavan Kumar to democratize coding education and placement preparation for developers worldwide.
+            </p>
+          </div>
+
+          <DeveloperProfileCard navigate={navigate} />
         </div>
       </section>
 

@@ -44,16 +44,19 @@ export interface User {
 }
 
 const createDefaultUserForEmail = (email: string, name?: string, avatar?: string, uid?: string): User => {
-  const username = email.split('@')[0] || 'developer';
+  const isPavan = email.toLowerCase().includes('pavan') || email.toLowerCase() === 'mpavankumar110405@gmail.com';
+  const username = isPavan ? 'tech_by.pavan' : (email.split('@')[0] || 'developer');
 
   return {
     uid,
-    name: name || username.charAt(0).toUpperCase() + username.slice(1),
+    name: name || (isPavan ? 'Pavan Kumar' : username.charAt(0).toUpperCase() + username.slice(1)),
     email,
-    avatar: avatar || '',
+    avatar: avatar || (isPavan ? '/pavan_img.png' : ''),
     handle: `@${username}`,
-    role: 'Software Developer',
-    bio: 'Software engineer preparing for top product companies, mastering DSA patterns, system design, and SQL.',
+    role: isPavan ? 'Founder & Lead Developer' : 'Software Developer',
+    bio: isPavan
+      ? 'Developer & Creator of HackPath. Building free, world-class resources for software engineers to crack top tech placements.'
+      : 'Software engineer preparing for top product companies, mastering DSA patterns, system design, and SQL.',
     targetCompany: 'Google / Amazon / Microsoft / Uber',
     targetPackage: '35+ LPA',
     college: '',
@@ -63,7 +66,7 @@ const createDefaultUserForEmail = (email: string, name?: string, avatar?: string
     leetcodeUrl: '',
     codechefUrl: '',
     portfolioUrl: '',
-    instagramUrl: '',
+    instagramUrl: isPavan ? 'https://www.instagram.com/tech_by.pavan/' : '',
     phone: '',
     codingProfiles: {
       leetcode: {

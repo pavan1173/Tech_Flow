@@ -1,5 +1,6 @@
 import React from 'react';
 import { Sparkles, ArrowRight, Heart, Users, Target, ShieldCheck, Compass, Code, Layers, Building2, Database, FileText, Mail, CheckCircle2, Award } from 'lucide-react';
+import { DeveloperProfileCard } from '../components/DeveloperProfileCard';
 
 interface AboutPageProps {
   navigate: (to: string) => void;
@@ -176,6 +177,11 @@ export const AboutPage: React.FC<AboutPageProps> = ({ navigate }) => {
             Led by developer Pavan Kumar (@tech_by.pavan) with thousands of engineers sharing real-time hiring updates and placement guidance.
           </p>
         </div>
+      </section>
+
+      {/* Developer Spotlight */}
+      <section className="pt-4">
+        <DeveloperProfileCard navigate={navigate} />
       </section>
     </div>
   );

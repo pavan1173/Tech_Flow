@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useProgress } from '../context/ProgressContext';
 import { useAuth } from '../context/AuthContext';
 import { CodingPlatformsCard } from '../components/CodingPlatformsCard';
+import { DeveloperProfileCard } from '../components/DeveloperProfileCard';
 import {
   Flame,
   ChevronLeft,
@@ -9,6 +10,7 @@ import {
   User,
   Github,
   Linkedin,
+  Instagram,
   Globe,
   Mail,
   Edit3,
@@ -378,6 +380,17 @@ export const PreparationDashboardPage: React.FC<PrepDashboardProps> = ({ navigat
                   <Linkedin className="w-4 h-4" />
                 </a>
               )}
+              {(user.instagramUrl || user.handle?.includes('pavan') || user.email?.includes('pavan')) && (
+                <a
+                  href={user.instagramUrl || "https://www.instagram.com/tech_by.pavan/"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-xl bg-gradient-to-tr from-amber-500/10 via-rose-500/10 to-purple-500/10 hover:from-amber-500/20 hover:via-rose-500/20 hover:to-purple-500/20 text-rose-500 transition-colors"
+                  title="Instagram Profile (@tech_by.pavan)"
+                >
+                  <Instagram className="w-4 h-4" />
+                </a>
+              )}
 
               <button
                 onClick={() => navigate('/preparation/profile')}
@@ -408,6 +421,28 @@ export const PreparationDashboardPage: React.FC<PrepDashboardProps> = ({ navigat
 
       {/* ── COMPETITIVE CODING PLATFORMS COMPONENT (LeetCode + CodeChef + GitHub) ── */}
       <CodingPlatformsCard navigate={navigate} />
+
+      {/* ── DEVELOPER OF THE APP SPOTLIGHT ── */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse" />
+            <span className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 font-mono">
+              PLATFORM DEVELOPER &amp; CREATOR
+            </span>
+          </div>
+          <a
+            href="https://www.instagram.com/tech_by.pavan/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs text-rose-500 hover:text-rose-600 dark:text-rose-400 font-bold flex items-center gap-1 font-mono transition-colors"
+          >
+            <Instagram className="w-3.5 h-3.5" />
+            <span>@tech_by.pavan</span>
+          </a>
+        </div>
+        <DeveloperProfileCard navigate={navigate} />
+      </div>
 
       {/* ── TOP STATS ROW ── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
