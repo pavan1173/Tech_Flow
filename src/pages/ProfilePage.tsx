@@ -20,7 +20,6 @@ import {
   Layers,
   ArrowRight,
   Code2,
-  Database,
   Compass,
   Instagram,
   Github,
@@ -30,8 +29,7 @@ import {
   Award,
   Zap,
   ShieldCheck,
-  Star,
-  Copy
+  Star
 } from 'lucide-react';
 
 interface ProfilePageProps {
@@ -45,15 +43,6 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ navigate }) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'platforms' | 'edit' | 'bookmarks'>('overview');
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [imgLoadError, setImgLoadError] = useState(false);
-  const [copiedUid, setCopiedUid] = useState(false);
-
-  const handleCopyUid = () => {
-    if (user?.uid) {
-      navigator.clipboard?.writeText(user.uid);
-      setCopiedUid(true);
-      setTimeout(() => setCopiedUid(false), 2000);
-    }
-  };
 
   // Form State initialized from current user
   const [formData, setFormData] = useState({
@@ -158,7 +147,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ navigate }) => {
         <div>
           <span className="text-[11px] font-mono uppercase tracking-wider text-blue-600 dark:text-blue-400 font-bold flex items-center gap-1.5">
             <ShieldCheck className="w-3.5 h-3.5" />
-            <span>AUTHENTICATED DEVELOPER PROFILE & DATABASE</span>
+            <span>DEVELOPER PROFILE</span>
           </span>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 dark:text-white">
             {user.name}'s Profile
@@ -184,7 +173,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ navigate }) => {
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-white/10 to-transparent pointer-events-none" />
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/30 backdrop-blur-md border border-white/20 text-xs font-bold text-white">
             <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-            <span>Firebase Synced Account</span>
+            <span>Active Member</span>
           </div>
 
           <div className="flex items-center gap-2">
@@ -432,73 +421,6 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ navigate }) => {
         <div className="space-y-6 animate-in fade-in duration-150">
           {/* Coding Platforms Live Metrics */}
           <CodingPlatformsCard navigate={navigate} />
-
-          {/* Database Identity & Login Audit Card */}
-          <div className="p-6 rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#0c1017] space-y-4 shadow-sm">
-            <div className="flex items-center justify-between pb-3 border-b border-zinc-200 dark:border-zinc-800">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center font-bold">
-                  <Database className="w-4 h-4" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-sm text-zinc-900 dark:text-white flex items-center gap-2">
-                    <span>Cloud Firestore Safe Storage &amp; User Records</span>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-500/20">
-                      LIVE RECORD
-                    </span>
-                  </h3>
-                  <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                    All past solved questions, bookmarks, notes, and profile links are automatically synchronized and secured under your account ID.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-1 text-xs">
-              <div className="p-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800">
-                <span className="text-[10px] font-mono uppercase text-zinc-400 block mb-1">Firebase User ID (UID)</span>
-                <div className="flex items-center justify-between gap-1">
-                  <span className="font-mono text-zinc-800 dark:text-zinc-200 truncate text-[11px] max-w-[150px]" title={user.uid}>
-                    {user.uid || 'Anonymous'}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={handleCopyUid}
-                    className="p-1 rounded-md text-zinc-400 hover:text-blue-500 hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors cursor-pointer shrink-0"
-                    title="Copy UID"
-                  >
-                    {copiedUid ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
-                  </button>
-                </div>
-              </div>
-
-              <div className="p-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800">
-                <span className="text-[10px] font-mono uppercase text-zinc-400 block mb-1">Questions Solved In DB</span>
-                <p className="font-bold text-emerald-600 dark:text-emerald-400 text-sm">
-                  {totalSolved} questions saved
-                </p>
-                <span className="text-[10px] text-zinc-400 font-mono mt-0.5 block">Synced to progress/{user.uid?.slice(0, 6)}...</span>
-              </div>
-
-              <div className="p-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800">
-                <span className="text-[10px] font-mono uppercase text-zinc-400 block mb-1">Login Count &amp; Sessions</span>
-                <p className="font-bold text-zinc-900 dark:text-white text-sm">
-                  {user.loginCount || 1} logins recorded
-                </p>
-                <span className="text-[10px] text-zinc-400 font-mono mt-0.5 block">
-                  Via {user.authProvider === 'google.com' ? 'Google OAuth' : 'Email/Password'}
-                </span>
-              </div>
-
-              <div className="p-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800">
-                <span className="text-[10px] font-mono uppercase text-zinc-400 block mb-1">Last Login Record</span>
-                <p className="font-medium text-zinc-800 dark:text-zinc-200 text-xs">
-                  {user.lastLoginAt ? new Date(user.lastLoginAt).toLocaleDateString() + ' ' + new Date(user.lastLoginAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Active now'}
-                </p>
-                <span className="text-[10px] text-emerald-500 font-mono mt-0.5 block">Session Verified</span>
-              </div>
-            </div>
-          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Left Column: Target Career Blueprint */}
@@ -837,7 +759,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ navigate }) => {
                 className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow-md transition-all cursor-pointer"
               >
                 <Save className="w-4 h-4" />
-                <span>Save to Firestore Database</span>
+                <span>Save Changes</span>
               </button>
             </div>
           </form>
@@ -850,7 +772,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ navigate }) => {
           <div className="flex items-center justify-between pb-2 border-b border-zinc-200 dark:border-zinc-800">
             <div>
               <h3 className="font-bold text-base text-zinc-900 dark:text-white">Starred Questions for Revision</h3>
-              <p className="text-xs text-zinc-500">Synchronized across your Firestore account in real time.</p>
+              <p className="text-xs text-zinc-500">Access and practice your saved questions anytime.</p>
             </div>
             <span className="text-xs font-mono font-bold px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-500">
               {totalBookmarksCount} Questions Saved
@@ -862,7 +784,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ navigate }) => {
               <Bookmark className="w-6 h-6 fill-indigo-500" />
             </div>
             <p className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">
-              Your bookmarks are saved under your UID <span className="font-mono text-xs text-blue-400">{user.uid || 'current'}</span> on Firestore.
+              Bookmark questions during your practice sessions to quickly review them here.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
               <button

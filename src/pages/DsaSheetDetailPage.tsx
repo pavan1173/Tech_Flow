@@ -201,11 +201,11 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
   };
 
   return (
-    <div className="min-h-screen bg-[#07090e] text-zinc-100 p-3 sm:p-6 lg:p-8 font-lexend space-y-5 max-w-7xl mx-auto">
+    <div className="min-h-screen bg-[#fcfcfb] dark:bg-[#07090e] text-zinc-900 dark:text-zinc-100 p-3 sm:p-6 lg:p-8 font-lexend space-y-5 max-w-7xl mx-auto transition-colors duration-200">
       {/* Back button */}
       <button
         onClick={() => navigate('/preparation/dsa-sheets')}
-        className="inline-flex items-center gap-2 text-xs font-semibold text-zinc-400 hover:text-white transition-colors cursor-pointer"
+        className="inline-flex items-center gap-2 text-xs font-semibold text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white transition-colors cursor-pointer"
       >
         <ArrowLeft className="w-4 h-4" />
         <span>Back to All DSA Sheets</span>
@@ -217,7 +217,7 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
           {sheetData.title}
         </h1>
 
-        <div className="text-xs sm:text-[13px] text-zinc-400 leading-relaxed max-w-4xl font-normal">
+        <div className="text-xs sm:text-[13px] text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-4xl font-normal">
           {sheetData.description ? (
             <div>
               <p className={showFullDesc ? '' : 'line-clamp-2'}>
@@ -226,7 +226,7 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
               {sheetData.description.length > 140 && (
                 <button
                   onClick={() => setShowFullDesc(!showFullDesc)}
-                  className="text-blue-400 hover:text-blue-300 font-semibold text-xs mt-1 inline-block cursor-pointer"
+                  className="text-blue-500 dark:text-blue-400 hover:underline font-semibold text-xs mt-1 inline-block cursor-pointer"
                 >
                   {showFullDesc ? 'Read Less' : 'Read More'}
                 </button>
@@ -235,9 +235,9 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
           ) : null}
         </div>
 
-        {/* Creator Attribution */}
-        <div className="flex items-center gap-2 text-xs text-zinc-400 font-medium">
-          <span>By {sheetData.creatorName || 'Raj Vikramaditya (Striver)'}</span>
+        {/* Sheet Overview Tag */}
+        <div className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400 font-medium">
+          <span className="font-semibold text-zinc-700 dark:text-zinc-300">Curated Problem Sheet</span>
           <span>•</span>
           <span>{totalCount} Problems</span>
         </div>
@@ -248,7 +248,7 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
           <div className="relative w-10 h-10 flex items-center justify-center shrink-0">
             <svg className="w-10 h-10 transform -rotate-90" viewBox="0 0 36 36">
               <path
-                className="text-zinc-800"
+                className="text-zinc-200 dark:text-zinc-800"
                 strokeWidth="3.5"
                 stroke="currentColor"
                 fill="none"
@@ -264,16 +264,16 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
                 d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
               />
             </svg>
-            <span className="absolute font-bold text-[10px] text-white">
+            <span className="absolute font-bold text-[10px] text-zinc-900 dark:text-white">
               {progressPercent}%
             </span>
           </div>
 
           <div className="flex flex-col">
-            <span className="text-[11px] font-semibold text-zinc-400">
+            <span className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">
               Overall Progress
             </span>
-            <span className="text-xs font-bold text-white tracking-wide">
+            <span className="text-xs font-bold text-zinc-900 dark:text-white tracking-wide">
               {solvedCount}/{totalCount} Completed
             </span>
           </div>
@@ -289,7 +289,7 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
             placeholder="Search problems, topics, or tags..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 rounded-xl bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-[#1b2230] text-xs sm:text-sm text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-full pl-9 pr-4 py-2 rounded-xl bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-[#1b2230] text-xs sm:text-sm text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
           />
         </div>
 
@@ -303,7 +303,7 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
                 className={`px-2.5 sm:px-3 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                   selectedDifficulty === diff
                     ? 'bg-blue-600 text-white shadow-xs'
-                    : 'text-zinc-400 hover:text-white'
+                    : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800/60'
                 }`}
               >
                 {diff}
@@ -316,11 +316,11 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
             onClick={() => setOnlyBookmarks(!onlyBookmarks)}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-colors cursor-pointer shrink-0 ${
               onlyBookmarks
-                ? 'bg-amber-500/10 border-amber-500/40 text-amber-400'
-                : 'bg-white dark:bg-[#0c1017] border-zinc-200 dark:border-[#1b2230] text-zinc-400 hover:text-white'
+                ? 'bg-amber-500/10 border-amber-500/40 text-amber-600 dark:text-amber-400'
+                : 'bg-white dark:bg-[#0c1017] border-zinc-200 dark:border-[#1b2230] text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-50 dark:hover:bg-zinc-800/60'
             }`}
           >
-            <Bookmark className={`w-3.5 h-3.5 ${onlyBookmarks ? 'fill-amber-400 text-amber-400' : 'text-zinc-400'}`} />
+            <Bookmark className={`w-3.5 h-3.5 ${onlyBookmarks ? 'fill-amber-500 text-amber-500 dark:fill-amber-400 dark:text-amber-400' : 'text-zinc-400'}`} />
             <span>Saved</span>
           </button>
 
@@ -328,14 +328,14 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
           <div className="flex items-center gap-1.5 ml-1 shrink-0 text-xs">
             <button
               onClick={expandAll}
-              className="px-2 py-1 rounded-lg font-medium text-zinc-400 hover:text-white hover:bg-zinc-800/60 transition-colors cursor-pointer"
+              className="px-2 py-1 rounded-lg font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800/60 transition-colors cursor-pointer"
             >
               Expand
             </button>
-            <span className="text-zinc-600">/</span>
+            <span className="text-zinc-400 dark:text-zinc-600">/</span>
             <button
               onClick={collapseAll}
-              className="px-2 py-1 rounded-lg font-medium text-zinc-400 hover:text-white hover:bg-zinc-800/60 transition-colors cursor-pointer"
+              className="px-2 py-1 rounded-lg font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800/60 transition-colors cursor-pointer"
             >
               Collapse
             </button>
@@ -431,31 +431,35 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
           return (
             <div
               key={topicGroup.topicName || tIdx}
-              className="rounded-xl border border-[#181d28] bg-white dark:bg-[#0c1017] overflow-hidden shadow-xs transition-all duration-200"
+              className="rounded-xl border border-zinc-200 dark:border-[#181d28] bg-white dark:bg-[#0c1017] overflow-hidden shadow-xs transition-all duration-200"
             >
               {/* Step / Topic Header matching screenshot */}
               <button
                 onClick={() => toggleTopicAccordion(tIdx)}
-                className="w-full px-4 sm:px-5 py-3.5 flex items-center justify-between bg-zinc-50 dark:bg-[#0e131d] hover:bg-[#121824] transition-colors text-left select-none cursor-pointer"
+                className={`w-full px-4 sm:px-5 py-3.5 flex items-center justify-between transition-colors text-left select-none cursor-pointer ${
+                  isTopicOpen
+                    ? 'bg-zinc-100/90 dark:bg-[#121824]'
+                    : 'bg-white hover:bg-zinc-50 dark:bg-[#0c1017] dark:hover:bg-[#101622]'
+                }`}
               >
                 <div className="flex items-center gap-2.5 min-w-0 flex-1">
                   <ChevronDown
                     className={`w-4 h-4 text-zinc-400 transition-transform duration-200 shrink-0 ${
-                      isTopicOpen ? 'rotate-0 text-blue-400' : '-rotate-90'
+                      isTopicOpen ? 'rotate-0 text-blue-500 dark:text-blue-400' : '-rotate-90'
                     }`}
                   />
-                  <span className="font-bold text-sm sm:text-[14px] text-zinc-100 truncate">
+                  <span className="font-bold text-sm sm:text-[14px] text-zinc-900 dark:text-zinc-100 truncate">
                     {displayName}
                   </span>
                 </div>
 
                 <div className="flex items-center gap-3 shrink-0 ml-3">
-                  <span className="text-xs font-semibold text-zinc-400 font-mono">
+                  <span className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 font-mono">
                     {topicSolvedCount}/{allTopicProbs.length}
                   </span>
 
                   {/* Progress bar line matching screenshot */}
-                  <div className="w-20 sm:w-28 h-1.5 rounded-full bg-[#1b2332] overflow-hidden">
+                  <div className="w-20 sm:w-28 h-1.5 rounded-full bg-zinc-200 dark:bg-[#1b2332] overflow-hidden">
                     <div
                       className="h-full rounded-full bg-blue-500 transition-all duration-300"
                       style={{ width: `${topicPercent}%` }}
@@ -466,10 +470,10 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
 
               {/* Topic Content */}
               {isTopicOpen && (
-                <div className="border-t border-zinc-200 dark:border-[#18202d] bg-zinc-100 dark:bg-[#090d14]">
+                <div className="border-t border-zinc-200 dark:border-[#18202d] bg-white dark:bg-[#090d14]">
                   {/* If single subtopic, render problems directly matching screenshot */}
                   {isSingleTopic ? (
-                    <div className="divide-y divide-[#151c2a]">
+                    <div className="divide-y divide-zinc-200 dark:divide-[#151c2a]">
                       {filteredSubTopics[0]?.problems.map((prob, pIdx) => {
                         const probTitle = prob.problem_name || prob.title || prob.question_name || 'Untitled Problem';
                         const probId = `${slug}-${probTitle}`;
@@ -488,7 +492,7 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
                           <div
                             key={probId || pIdx}
                             className={`px-3.5 sm:px-5 py-3 flex items-center justify-between gap-3 transition-colors group ${
-                              solved ? 'bg-[#0b1019]/40 hover:bg-[#0e1420]' : 'hover:bg-[#111724]'
+                              solved ? 'bg-zinc-50/80 dark:bg-[#0b1019]/40 hover:bg-zinc-100/80 dark:hover:bg-[#0e1420]' : 'hover:bg-zinc-50 dark:hover:bg-[#111724]'
                             }`}
                           >
                             {/* Left: Checkbox + Title + Tag */}
@@ -498,7 +502,7 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
                                 className={`w-4 h-4 rounded-[4px] border flex items-center justify-center transition-all shrink-0 cursor-pointer ${
                                   solved
                                     ? 'bg-blue-600 border-blue-600 text-white'
-                                    : 'border-zinc-700 bg-transparent hover:border-zinc-500'
+                                    : 'border-zinc-300 dark:border-zinc-700 bg-white dark:bg-transparent hover:border-zinc-500'
                                 }`}
                                 title={solved ? 'Mark as Unsolved' : 'Mark as Solved'}
                               >
@@ -512,8 +516,8 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
                                   rel="noopener noreferrer"
                                   className={`text-xs sm:text-[13.5px] font-semibold transition-colors truncate ${
                                     solved
-                                      ? 'line-through text-zinc-500 hover:text-zinc-300'
-                                      : 'text-zinc-200 hover:text-white'
+                                      ? 'line-through text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300'
+                                      : 'text-zinc-900 dark:text-zinc-200 hover:text-blue-600 dark:hover:text-white'
                                   }`}
                                 >
                                   {probTitle}
@@ -681,30 +685,30 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
                         return (
                           <div
                             key={subGroup.subTopicName || stIdx}
-                            className="rounded-lg border border-zinc-200 dark:border-[#19212e] bg-white dark:bg-[#0d1119] overflow-hidden"
+                            className="rounded-lg border border-zinc-200 dark:border-[#19212e] bg-white dark:bg-[#0d1119] overflow-hidden shadow-2xs"
                           >
                             <button
                               onClick={() => toggleSubTopicAccordion(subKey)}
-                              className="w-full px-3.5 py-2.5 flex items-center justify-between bg-[#101622] hover:bg-[#141b2a] transition-colors text-left select-none cursor-pointer"
+                              className="w-full px-3.5 py-2.5 flex items-center justify-between bg-zinc-100/80 hover:bg-zinc-200/70 dark:bg-[#101622] dark:hover:bg-[#141b2a] transition-colors text-left select-none cursor-pointer"
                             >
-                              <span className="font-semibold text-xs sm:text-[13px] text-zinc-200 truncate">
+                              <span className="font-semibold text-xs sm:text-[13px] text-zinc-800 dark:text-zinc-200 truncate">
                                 {displaySubName}
                               </span>
 
                               <div className="flex items-center gap-2.5 shrink-0 ml-2">
-                                <span className="text-[11px] text-zinc-400 font-mono">
+                                <span className="text-[11px] text-zinc-500 dark:text-zinc-400 font-mono">
                                   {subSolvedCount}/{subGroup.problems.length}
                                 </span>
                                 <ChevronDown
                                   className={`w-3.5 h-3.5 text-zinc-400 transition-transform duration-200 ${
-                                    isSubOpen ? 'rotate-180 text-blue-400' : ''
+                                    isSubOpen ? 'rotate-180 text-blue-500 dark:text-blue-400' : ''
                                   }`}
                                 />
                               </div>
                             </button>
 
                             {isSubOpen && (
-                              <div className="divide-y divide-zinc-200 dark:divide-[#171f2d] bg-zinc-50 dark:bg-[#0a0e16]">
+                              <div className="divide-y divide-zinc-200 dark:divide-[#171f2d] bg-white dark:bg-[#0a0e16]">
                                 {subGroup.problems.map((prob, pIdx) => {
                                   const probTitle = prob.problem_name || prob.title || prob.question_name || 'Untitled Problem';
                                   const probId = `${slug}-${probTitle}`;
@@ -720,7 +724,7 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
                                   return (
                                     <div
                                       key={probId || pIdx}
-                                      className="px-3.5 py-2.5 sm:py-3 flex items-center justify-between gap-3 hover:bg-[#111724] transition-colors group"
+                                      className="px-3.5 py-2.5 sm:py-3 flex items-center justify-between gap-3 hover:bg-zinc-50 dark:hover:bg-[#111724] transition-colors group"
                                     >
                                       <div className="flex items-center gap-3 min-w-0 flex-1">
                                         <button
@@ -728,7 +732,7 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
                                           className={`w-4 h-4 rounded-md border flex items-center justify-center transition-all shrink-0 cursor-pointer ${
                                             solved
                                               ? 'bg-blue-600 border-blue-600 text-white'
-                                              : 'border-zinc-600 bg-transparent hover:border-zinc-400'
+                                              : 'border-zinc-300 dark:border-zinc-600 bg-white dark:bg-transparent hover:border-zinc-500'
                                           }`}
                                         >
                                           {solved && <Check className="w-3 h-3 stroke-[3]" />}
@@ -741,8 +745,8 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
                                             rel="noopener noreferrer"
                                             className={`text-xs sm:text-[13px] font-medium transition-colors ${
                                               solved
-                                                ? 'line-through text-zinc-500 hover:text-zinc-300'
-                                                : 'text-zinc-200 hover:text-blue-400'
+                                                ? 'line-through text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300'
+                                                : 'text-zinc-900 dark:text-zinc-200 hover:text-blue-600 dark:hover:text-blue-400'
                                             }`}
                                           >
                                             {probTitle}
@@ -810,22 +814,22 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
 
       {/* Notes Modal */}
       {activeNoteProblem && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-black/60 dark:bg-black/80 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white dark:bg-[#0e121a] border border-zinc-200 dark:border-[#1e2433] rounded-2xl max-w-lg w-full p-5 space-y-4 shadow-2xl">
             <div className="flex items-center justify-between">
-              <h3 className="font-bold text-sm text-white flex items-center gap-2">
-                <FileText className="w-4 h-4 text-blue-400" />
+              <h3 className="font-bold text-sm text-zinc-900 dark:text-white flex items-center gap-2">
+                <FileText className="w-4 h-4 text-blue-500" />
                 <span>Notes for Problem</span>
               </h3>
               <button
                 onClick={() => setActiveNoteProblem(null)}
-                className="p-1 rounded-lg text-zinc-400 hover:text-white"
+                className="p-1 rounded-lg text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <div className="text-xs text-zinc-400 font-medium">
+            <div className="text-xs text-zinc-600 dark:text-zinc-400 font-medium">
               {activeNoteProblem.title}
             </div>
 
@@ -834,13 +838,13 @@ export const DsaSheetDetailPage: React.FC<DsaSheetDetailPageProps> = ({ slug, na
               onChange={(e) => setNoteContent(e.target.value)}
               placeholder="Write your approach, edge cases, time/space complexity notes..."
               rows={6}
-              className="w-full p-3 rounded-xl bg-[#07090e] border border-zinc-200 dark:border-[#1e2433] text-xs text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-blue-500 resize-none font-mono"
+              className="w-full p-3 rounded-xl bg-zinc-50 dark:bg-[#07090e] border border-zinc-200 dark:border-[#1e2433] text-xs text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 resize-none font-mono transition-colors"
             />
 
             <div className="flex justify-end gap-2 pt-2">
               <button
                 onClick={() => setActiveNoteProblem(null)}
-                className="px-3 py-1.5 rounded-lg text-xs text-zinc-400 hover:text-white transition-colors"
+                className="px-3 py-1.5 rounded-lg text-xs text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
               >
                 Cancel
               </button>

@@ -115,26 +115,26 @@ export const MostAskedDetailPage: React.FC<MostAskedDetailPageProps> = ({ slug, 
   const progressPercentage = Math.round((solvedCount / Math.max(topic.questions.length, 1)) * 100);
 
   return (
-    <div className="min-h-screen bg-[#07090e] text-zinc-100 p-4 sm:p-6 lg:p-8 font-lexend space-y-6 max-w-7xl mx-auto">
+    <div className="min-h-screen bg-[#fcfcfb] dark:bg-[#07090e] text-zinc-900 dark:text-zinc-100 p-4 sm:p-6 lg:p-8 font-lexend space-y-6 max-w-7xl mx-auto transition-colors duration-200">
       {/* Breadcrumb */}
-      <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-zinc-400">
+      <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400">
         <a
           href="/preparation"
           onClick={(e) => handleNav(e, '/preparation')}
-          className="hover:text-white transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded-sm"
+          className="hover:text-zinc-900 dark:hover:text-white transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded-sm"
         >
           Preparation
         </a>
-        <ChevronRight className="w-3.5 h-3.5 text-zinc-600 shrink-0" aria-hidden="true" />
+        <ChevronRight className="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-600 shrink-0" aria-hidden="true" />
         <a
           href="/preparation/most-asked-questions"
           onClick={(e) => handleNav(e, '/preparation/most-asked-questions')}
-          className="hover:text-white transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded-sm"
+          className="hover:text-zinc-900 dark:hover:text-white transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded-sm"
         >
           Most Asked Questions
         </a>
-        <ChevronRight className="w-3.5 h-3.5 text-zinc-600 shrink-0" aria-hidden="true" />
-        <span className="text-white font-medium">{topic.title}</span>
+        <ChevronRight className="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-600 shrink-0" aria-hidden="true" />
+        <span className="text-zinc-900 dark:text-white font-medium">{topic.title}</span>
       </nav>
 
       {/* Header Title Section */}
@@ -142,7 +142,7 @@ export const MostAskedDetailPage: React.FC<MostAskedDetailPageProps> = ({ slug, 
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-white">
           {topic.fullTitle}
         </h1>
-        <p className="text-xs sm:text-sm text-zinc-400 font-normal max-w-5xl leading-relaxed">
+        <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 font-normal max-w-5xl leading-relaxed">
           {topic.longDescription}
         </p>
       </header>
@@ -159,7 +159,7 @@ export const MostAskedDetailPage: React.FC<MostAskedDetailPageProps> = ({ slug, 
                 cy="18"
                 r="14"
                 fill="none"
-                className="stroke-[#1b2230]"
+                className="stroke-zinc-200 dark:stroke-[#1b2230]"
                 strokeWidth="3.5"
               />
               <circle
@@ -174,14 +174,14 @@ export const MostAskedDetailPage: React.FC<MostAskedDetailPageProps> = ({ slug, 
                 strokeLinecap="round"
               />
             </svg>
-            <span className="absolute text-[10px] font-bold text-white font-mono">
+            <span className="absolute text-[10px] font-bold text-zinc-900 dark:text-white font-mono">
               {progressPercentage}%
             </span>
           </div>
 
           <div>
-            <div className="text-xs font-bold text-white">Overall Progress</div>
-            <div className="text-[11px] text-zinc-400 font-mono">
+            <div className="text-xs font-bold text-zinc-900 dark:text-white">Overall Progress</div>
+            <div className="text-[11px] text-zinc-500 dark:text-zinc-400 font-mono">
               {solvedCount}/{totalInTopic}
             </div>
           </div>
@@ -200,12 +200,12 @@ export const MostAskedDetailPage: React.FC<MostAskedDetailPageProps> = ({ slug, 
             onClick={() => setActiveFilter('All')}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
               activeFilter === 'All'
-                ? 'bg-zinc-800 text-white shadow-xs'
-                : 'text-zinc-400 hover:text-white'
+                ? 'bg-zinc-900 text-white dark:bg-zinc-200 dark:text-zinc-900 shadow-xs'
+                : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
             }`}
           >
             <span>All</span>
-            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-zinc-700/60 text-zinc-300">
+            <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${activeFilter === 'All' ? 'bg-zinc-700 text-zinc-200 dark:bg-zinc-300 dark:text-zinc-800' : 'bg-zinc-100 text-zinc-600 dark:bg-zinc-700/60 dark:text-zinc-300'}`}>
               {counts.total}
             </span>
           </button>
@@ -217,12 +217,12 @@ export const MostAskedDetailPage: React.FC<MostAskedDetailPageProps> = ({ slug, 
             onClick={() => setActiveFilter('Easy')}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 ${
               activeFilter === 'Easy'
-                ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                : 'text-zinc-400 hover:text-emerald-400'
+                ? 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30'
+                : 'text-zinc-600 dark:text-zinc-400 hover:text-emerald-600 dark:hover:text-emerald-400'
             }`}
           >
             <span>Easy</span>
-            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-zinc-800 text-emerald-400">
+            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-50 dark:bg-zinc-800 text-emerald-700 dark:text-emerald-400">
               {counts.easy}
             </span>
           </button>
@@ -234,12 +234,12 @@ export const MostAskedDetailPage: React.FC<MostAskedDetailPageProps> = ({ slug, 
             onClick={() => setActiveFilter('Medium')}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 ${
               activeFilter === 'Medium'
-                ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-                : 'text-zinc-400 hover:text-amber-400'
+                ? 'bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30'
+                : 'text-zinc-600 dark:text-zinc-400 hover:text-amber-600 dark:hover:text-amber-400'
             }`}
           >
             <span>Medium</span>
-            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-zinc-800 text-amber-400">
+            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-amber-50 dark:bg-zinc-800 text-amber-700 dark:text-amber-400">
               {counts.medium}
             </span>
           </button>
@@ -251,12 +251,12 @@ export const MostAskedDetailPage: React.FC<MostAskedDetailPageProps> = ({ slug, 
             onClick={() => setActiveFilter('Hard')}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 ${
               activeFilter === 'Hard'
-                ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
-                : 'text-zinc-400 hover:text-rose-400'
+                ? 'bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-500/30'
+                : 'text-zinc-600 dark:text-zinc-400 hover:text-rose-600 dark:hover:text-rose-400'
             }`}
           >
             <span>Hard</span>
-            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-zinc-800 text-rose-400">
+            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-rose-50 dark:bg-zinc-800 text-rose-700 dark:text-rose-400">
               {counts.hard}
             </span>
           </button>
@@ -268,12 +268,12 @@ export const MostAskedDetailPage: React.FC<MostAskedDetailPageProps> = ({ slug, 
             onClick={() => setActiveFilter('Bookmarked')}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-500 ${
               activeFilter === 'Bookmarked'
-                ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'
-                : 'text-zinc-400 hover:text-yellow-400'
+                ? 'bg-yellow-500/20 text-yellow-600 dark:text-yellow-400 border border-yellow-500/30'
+                : 'text-zinc-600 dark:text-zinc-400 hover:text-yellow-600 dark:hover:text-yellow-400'
             }`}
           >
             <span>Bookmarked</span>
-            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-zinc-800 text-yellow-400">
+            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-yellow-50 dark:bg-zinc-800 text-yellow-700 dark:text-yellow-400">
               {bookmarkedIds.length}
             </span>
           </button>
@@ -289,7 +289,7 @@ export const MostAskedDetailPage: React.FC<MostAskedDetailPageProps> = ({ slug, 
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           aria-label={`Search questions in ${topic.title}`}
-          className="w-full pl-9 pr-4 py-2 rounded-xl bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-[#1b2230] text-xs text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-150"
+          className="w-full pl-9 pr-4 py-2 rounded-xl bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-[#1b2230] text-xs text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-150"
         />
       </div>
 

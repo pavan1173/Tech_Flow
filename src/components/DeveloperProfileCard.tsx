@@ -136,26 +136,22 @@ export const DeveloperProfileCard: React.FC<DeveloperProfileCardProps> = ({
               <Sparkles className="w-3.5 h-3.5" />
               FOUNDER & LEAD ARCHITECT
             </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-zinc-950 dark:text-white tracking-tight">
-              Pavan Kumar
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 dark:text-white tracking-tight">
+              HackPath Engineering Team
             </h2>
             <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 text-xs sm:text-sm font-mono">
               <span className="font-semibold text-blue-600 dark:text-blue-400">
-                @tech_by.pavan
+                @hackpath.dev
               </span>
               <span className="text-zinc-400 hidden sm:inline">•</span>
-              <a
-                href="mailto:mpavankumar110405@gmail.com"
-                className="text-zinc-600 dark:text-zinc-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors flex items-center gap-1"
-              >
-                <Mail className="w-3.5 h-3.5 text-amber-500" />
-                <span>mpavankumar110405@gmail.com</span>
-              </a>
+              <span className="text-zinc-600 dark:text-zinc-300">
+                Open Source Placement Ecosystem
+              </span>
             </div>
           </div>
 
           <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed max-w-xl">
-            Software Engineer, Educator, and Creator of <strong>HackPath</strong>. Built with the sole mission to empower aspiring developers to crack top tech MNCs & startups with 100% free, curated DSA sheets, 20 coding patterns, and interactive roadmaps.
+            Built with the sole mission to empower aspiring software engineers to crack top tech MNCs & startups with 100% free, curated DSA sheets, 20 coding patterns, and interactive roadmaps.
           </p>
 
           {/* Highlights */}
@@ -174,33 +170,14 @@ export const DeveloperProfileCard: React.FC<DeveloperProfileCardProps> = ({
             </div>
           </div>
 
-          {/* Social Links */}
+          {/* Action Links */}
           <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 pt-2">
-            <a
-              href="https://www.instagram.com/tech_by.pavan/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-pink-600 to-purple-600 text-white text-xs font-semibold hover:opacity-90 transition-opacity shadow-sm"
-            >
-              <Instagram className="w-4 h-4" />
-              <span>@tech_by.pavan</span>
-              <ExternalLink className="w-3 h-3 opacity-80" />
-            </a>
-
-            <a
-              href="mailto:mpavankumar110405@gmail.com"
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-300 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 text-xs font-semibold transition-colors"
-            >
-              <Mail className="w-4 h-4 text-blue-500" />
-              <span>mpavankumar110405@gmail.com</span>
-            </a>
-
             {navigate && (
               <button
-                onClick={() => navigate('/profile')}
+                onClick={() => navigate('/preparation')}
                 className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-sm transition-colors cursor-pointer"
               >
-                <span>View Full Profile</span>
+                <span>Start Preparation</span>
                 <ExternalLink className="w-3 h-3 opacity-90" />
               </button>
             )}

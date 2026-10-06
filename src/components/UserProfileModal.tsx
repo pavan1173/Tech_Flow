@@ -213,7 +213,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ navigate }) 
           {saveSuccess && (
             <div className="p-3 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold flex items-center gap-2 animate-in fade-in">
               <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-              <span>Profile updated in Firebase Firestore database!</span>
+              <span>Profile updated successfully!</span>
             </div>
           )}
 

@@ -65,30 +65,30 @@ export const PlaylistsPage: React.FC<PlaylistsPageProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-[#07090e] text-zinc-100 p-4 sm:p-6 lg:p-8 font-lexend space-y-6 max-w-7xl mx-auto pb-24">
+    <div className="min-h-screen bg-[#fcfcfb] dark:bg-[#07090e] text-zinc-900 dark:text-zinc-100 p-4 sm:p-6 lg:p-8 font-lexend space-y-6 max-w-7xl mx-auto pb-24 transition-colors duration-200">
       {/* Breadcrumb */}
-      <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-zinc-400">
+      <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400">
         <a
           href="/preparation"
           onClick={(e) => handleNav(e, '/preparation')}
-          className="hover:text-white transition-colors"
+          className="hover:text-zinc-900 dark:hover:text-white transition-colors"
         >
           Preparation
         </a>
-        <ChevronRight className="w-3.5 h-3.5 text-zinc-600 shrink-0" />
-        <span className="text-white font-medium">Video Playlists</span>
+        <ChevronRight className="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-600 shrink-0" />
+        <span className="text-zinc-900 dark:text-white font-medium">Video Playlists</span>
       </nav>
 
       {/* Header */}
       <div className="space-y-3 pb-2 border-b border-zinc-200 dark:border-[#18202d]">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-semibold">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-xs font-semibold">
           <Youtube className="w-3.5 h-3.5 text-red-500" />
           <span>Complete Video Learning Hub</span>
         </div>
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-zinc-900 dark:text-white">
           All Courses & Video Playlists
         </h1>
-        <p className="text-xs sm:text-sm text-zinc-400 max-w-3xl leading-relaxed">
+        <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 max-w-3xl leading-relaxed">
           Follow authentic, comprehensive playlists across Data Structures & Algorithms, DBMS, Operating Systems, OOPs, and System Design. Every course features an embedded video player, lecture tracking, practice problem links, and autosaved notes.
         </p>
       </div>
@@ -107,14 +107,14 @@ export const PlaylistsPage: React.FC<PlaylistsPageProps> = ({
                 className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
                   isActive
                     ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20'
-                    : 'bg-white dark:bg-[#0c1017] text-zinc-400 hover:text-white border border-zinc-200 dark:border-[#1b2230]'
+                    : 'bg-white dark:bg-[#0c1017] text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white border border-zinc-200 dark:border-[#1b2230]'
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" />
                 <span>{cat.label}</span>
                 <span
                   className={`text-[10px] px-1.5 py-0.5 rounded-full ${
-                    isActive ? 'bg-white/20 text-white' : 'bg-zinc-800 text-zinc-400'
+                    isActive ? 'bg-white/20 text-white' : 'bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400'
                   }`}
                 >
                   {cat.count}
@@ -132,7 +132,7 @@ export const PlaylistsPage: React.FC<PlaylistsPageProps> = ({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search playlists, topics, channels..."
-            className="w-full pl-9 pr-3 py-2 rounded-xl bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-[#1b2230] text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500"
+            className="w-full pl-9 pr-3 py-2 rounded-xl bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-[#1b2230] text-xs text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:border-blue-500"
           />
         </div>
       </div>
@@ -180,25 +180,25 @@ export const PlaylistsPage: React.FC<PlaylistsPageProps> = ({
               {/* Content info */}
               <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
                 <div className="space-y-2">
-                  <div className="flex items-center justify-between text-xs text-zinc-400">
-                    <span className="font-semibold text-blue-400">{playlist.instructor}</span>
-                    <span className="text-amber-400 font-bold">★ {playlist.rating}</span>
+                  <div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400">
+                    <span className="font-semibold text-blue-600 dark:text-blue-400">{playlist.instructor}</span>
+                    <span className="text-amber-500 dark:text-amber-400 font-bold">★ {playlist.rating}</span>
                   </div>
 
                   <h2
                     onClick={() => navigate(detailUrl)}
-                    className="font-bold text-sm sm:text-base text-white group-hover:text-blue-300 transition-colors leading-snug line-clamp-2 cursor-pointer"
+                    className="font-bold text-sm sm:text-base text-zinc-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-300 transition-colors leading-snug line-clamp-2 cursor-pointer"
                   >
                     {playlist.title}
                   </h2>
 
-                  <p className="text-xs text-zinc-400 line-clamp-2 leading-relaxed">
+                  <p className="text-xs text-zinc-600 dark:text-zinc-400 line-clamp-2 leading-relaxed">
                     {playlist.description}
                   </p>
                 </div>
 
                 <div className="pt-3 border-t border-zinc-200 dark:border-[#18202d] flex items-center justify-between text-xs">
-                  <span className="font-mono text-zinc-400 font-semibold">
+                  <span className="font-mono text-zinc-500 dark:text-zinc-400 font-semibold">
                     {playlist.totalVideos} Lectures
                   </span>
 
@@ -207,7 +207,7 @@ export const PlaylistsPage: React.FC<PlaylistsPageProps> = ({
                       href={playlist.playlistUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-1.5 rounded-lg bg-[#141b28] hover:bg-[#1a2334] text-zinc-400 hover:text-red-400 transition-colors"
+                      className="p-1.5 rounded-lg bg-zinc-100 hover:bg-zinc-200 dark:bg-[#141b28] dark:hover:bg-[#1a2334] text-zinc-500 dark:text-zinc-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
                       title="Open in YouTube"
                     >
                       <Youtube className="w-3.5 h-3.5" />

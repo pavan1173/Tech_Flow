@@ -18,30 +18,30 @@ export const OopsPlaylistsPage: React.FC<OopsPlaylistsPageProps> = ({ navigate }
   };
 
   return (
-    <div className="min-h-screen bg-[#07090e] text-zinc-100 p-4 sm:p-6 lg:p-8 font-lexend space-y-6 max-w-7xl mx-auto pb-24">
+    <div className="min-h-screen bg-[#fcfcfb] dark:bg-[#07090e] text-zinc-900 dark:text-zinc-100 p-4 sm:p-6 lg:p-8 font-lexend space-y-6 max-w-7xl mx-auto pb-24 transition-colors duration-200">
       {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-xs text-zinc-400">
+      <div className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400">
         <a
           href="/preparation"
           onClick={(e) => handleNav(e, '/preparation')}
-          className="hover:text-white transition-colors"
+          className="hover:text-zinc-900 dark:hover:text-white transition-colors"
         >
           Preparation
         </a>
-        <ChevronRight className="w-3.5 h-3.5 text-zinc-600" />
-        <span className="text-white font-medium">OOPS Playlists</span>
+        <ChevronRight className="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-600" />
+        <span className="text-zinc-900 dark:text-white font-medium">OOPS Playlists</span>
       </div>
 
       {/* Header */}
       <div className="space-y-2">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-semibold">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-400 text-xs font-semibold">
           <Award className="w-3.5 h-3.5" />
           <span>Object Oriented Design</span>
         </div>
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-zinc-900 dark:text-white">
           OOPS Playlists
         </h1>
-        <p className="text-xs sm:text-sm text-zinc-400 font-normal max-w-3xl">
+        <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 font-normal max-w-3xl">
           Master object-oriented programming, design patterns, encapsulation, polymorphism, inheritance, and clean architecture with top courses.
         </p>
       </div>
@@ -77,26 +77,26 @@ export const OopsPlaylistsPage: React.FC<OopsPlaylistsPageProps> = ({ navigate }
 
               <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
                 <div className="space-y-2">
-                  <div className="flex items-center justify-between text-xs text-zinc-400">
-                    <span className="font-semibold text-purple-400">{playlist.instructor}</span>
-                    <span className="text-amber-400 font-bold">★ {playlist.rating}</span>
+                  <div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400">
+                    <span className="font-semibold text-purple-600 dark:text-purple-400">{playlist.instructor}</span>
+                    <span className="text-amber-500 dark:text-amber-400 font-bold">★ {playlist.rating}</span>
                   </div>
 
-                  <h2 className="font-bold text-sm sm:text-base text-white group-hover:text-purple-300 transition-colors leading-snug line-clamp-2">
+                  <h2 className="font-bold text-sm sm:text-base text-zinc-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-300 transition-colors leading-snug line-clamp-2">
                     {playlist.title}
                   </h2>
 
-                  <p className="text-xs text-zinc-400 line-clamp-2 leading-relaxed">
+                  <p className="text-xs text-zinc-600 dark:text-zinc-400 line-clamp-2 leading-relaxed">
                     {playlist.description}
                   </p>
                 </div>
 
                 <div className="pt-3 border-t border-zinc-200 dark:border-[#18202d] flex items-center justify-between text-xs">
-                  <span className="font-mono text-zinc-400 font-semibold">
+                  <span className="font-mono text-zinc-500 dark:text-zinc-400 font-semibold">
                     {playlist.totalVideos} Lectures
                   </span>
 
-                  <span className="text-purple-400 group-hover:translate-x-1 transition-transform font-bold inline-flex items-center gap-1 text-xs">
+                  <span className="text-purple-600 dark:text-purple-400 group-hover:translate-x-1 transition-transform font-bold inline-flex items-center gap-1 text-xs">
                     Watch Playlist
                     <ChevronRight className="w-3.5 h-3.5" />
                   </span>

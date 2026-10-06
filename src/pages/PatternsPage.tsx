@@ -176,9 +176,9 @@ export const PatternsPage: React.FC<PatternsPageProps> = ({ navigate }) => {
           </button>
         </div>
 
-        {/* Creator Attribution */}
-        <div className="flex items-center gap-2 text-xs text-zinc-400 font-medium">
-          <span>By HackPath platform</span>
+        {/* Sheet Overview Tag */}
+        <div className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400 font-medium">
+          <span className="font-semibold text-zinc-700 dark:text-zinc-300">Essential Coding Patterns</span>
           <span>•</span>
           <span>{totalCount} Problems</span>
         </div>
@@ -189,7 +189,7 @@ export const PatternsPage: React.FC<PatternsPageProps> = ({ navigate }) => {
           <div className="relative w-10 h-10 flex items-center justify-center shrink-0">
             <svg className="w-10 h-10 transform -rotate-90" viewBox="0 0 36 36">
               <path
-                className="text-zinc-800"
+                className="text-zinc-200 dark:text-zinc-800"
                 strokeWidth="3.5"
                 stroke="currentColor"
                 fill="none"
@@ -205,16 +205,16 @@ export const PatternsPage: React.FC<PatternsPageProps> = ({ navigate }) => {
                 d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
               />
             </svg>
-            <span className="absolute font-bold text-[10px] text-white">
+            <span className="absolute font-bold text-[10px] text-zinc-900 dark:text-white">
               {progressPercent}%
             </span>
           </div>
 
           <div className="flex flex-col">
-            <span className="text-[11px] font-semibold text-zinc-400">
+            <span className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">
               Overall Progress
             </span>
-            <span className="text-xs font-bold text-white tracking-wide">
+            <span className="text-xs font-bold text-zinc-900 dark:text-white tracking-wide">
               {solvedCount}/{totalCount}
             </span>
           </div>
@@ -230,7 +230,7 @@ export const PatternsPage: React.FC<PatternsPageProps> = ({ navigate }) => {
             placeholder="Search patterns, problems, or tags..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 rounded-xl bg-white dark:bg-[#0e121a] border border-zinc-200 dark:border-[#1e2433] text-xs sm:text-sm text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-full pl-9 pr-4 py-2 rounded-xl bg-white dark:bg-[#0e121a] border border-zinc-200 dark:border-[#1e2433] text-xs sm:text-sm text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
           />
         </div>
 
@@ -244,7 +244,7 @@ export const PatternsPage: React.FC<PatternsPageProps> = ({ navigate }) => {
                 className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                   selectedDifficulty === diff
                     ? 'bg-blue-600 text-white shadow-xs'
-                    : 'text-zinc-400 hover:text-white'
+                    : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800/60'
                 }`}
               >
                 {diff}
@@ -257,11 +257,11 @@ export const PatternsPage: React.FC<PatternsPageProps> = ({ navigate }) => {
             onClick={() => setOnlyBookmarks(!onlyBookmarks)}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-colors cursor-pointer ${
               onlyBookmarks
-                ? 'bg-amber-500/10 border-amber-500/40 text-amber-400'
-                : 'bg-white dark:bg-[#0e121a] border-zinc-200 dark:border-[#1e2433] text-zinc-400 hover:text-white'
+                ? 'bg-amber-500/10 border-amber-500/40 text-amber-600 dark:text-amber-400'
+                : 'bg-white dark:bg-[#0e121a] border-zinc-200 dark:border-[#1e2433] text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-50 dark:hover:bg-zinc-800/60'
             }`}
           >
-            <Star className={`w-3.5 h-3.5 ${onlyBookmarks ? 'fill-amber-400 text-amber-400' : 'text-zinc-400'}`} />
+            <Star className={`w-3.5 h-3.5 ${onlyBookmarks ? 'fill-amber-500 text-amber-500 dark:fill-amber-400 dark:text-amber-400' : 'text-zinc-400'}`} />
             <span>Starred</span>
           </button>
 
@@ -269,14 +269,14 @@ export const PatternsPage: React.FC<PatternsPageProps> = ({ navigate }) => {
           <div className="flex items-center gap-1.5 ml-1">
             <button
               onClick={expandAll}
-              className="px-2 py-1 rounded-lg text-xs font-medium text-zinc-400 hover:text-white hover:bg-zinc-800/60 transition-colors cursor-pointer"
+              className="px-2 py-1 rounded-lg text-xs font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800/60 transition-colors cursor-pointer"
             >
               Expand All
             </button>
-            <span className="text-zinc-600 text-xs">/</span>
+            <span className="text-zinc-400 dark:text-zinc-600 text-xs">/</span>
             <button
               onClick={collapseAll}
-              className="px-2 py-1 rounded-lg text-xs font-medium text-zinc-400 hover:text-white hover:bg-zinc-800/60 transition-colors cursor-pointer"
+              className="px-2 py-1 rounded-lg text-xs font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800/60 transition-colors cursor-pointer"
             >
               Collapse All
             </button>
@@ -365,21 +365,25 @@ export const PatternsPage: React.FC<PatternsPageProps> = ({ navigate }) => {
               {/* Level 1: Pattern Header */}
               <button
                 onClick={() => toggleTopicAccordion(tIdx)}
-                className="w-full px-4 sm:px-5 py-3.5 flex items-center justify-between bg-zinc-50 dark:bg-[#0e131d] hover:bg-[#121824] transition-colors text-left select-none cursor-pointer"
+                className={`w-full px-4 sm:px-5 py-3.5 flex items-center justify-between transition-colors text-left select-none cursor-pointer ${
+                  isTopicOpen
+                    ? 'bg-zinc-100/90 dark:bg-[#121824]'
+                    : 'bg-white hover:bg-zinc-50 dark:bg-[#0c1017] dark:hover:bg-[#101622]'
+                }`}
               >
                 <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                  <span className="font-bold text-sm sm:text-[14px] text-zinc-100 truncate">
+                  <span className="font-bold text-sm sm:text-[14px] text-zinc-900 dark:text-zinc-100 truncate">
                     {topicGroup.topicName}
                   </span>
                 </div>
 
                 <div className="flex items-center gap-3 shrink-0 ml-3">
-                  <span className="text-xs font-semibold text-zinc-400 font-mono">
+                  <span className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 font-mono">
                     {topicSolvedCount}/{allTopicProbs.length}
                   </span>
 
                   {/* Progress bar line matching screenshot */}
-                  <div className="w-24 sm:w-32 h-1.5 rounded-full bg-[#1b2332] overflow-hidden">
+                  <div className="w-24 sm:w-32 h-1.5 rounded-full bg-zinc-200 dark:bg-[#1b2332] overflow-hidden">
                     <div
                       className="h-full rounded-full bg-blue-500 transition-all duration-300"
                       style={{ width: `${topicPercent}%` }}
@@ -388,7 +392,7 @@ export const PatternsPage: React.FC<PatternsPageProps> = ({ navigate }) => {
 
                   <ChevronDown
                     className={`w-4 h-4 text-zinc-400 transition-transform duration-200 ${
-                      isTopicOpen ? 'rotate-180 text-blue-400' : ''
+                      isTopicOpen ? 'rotate-180 text-blue-500 dark:text-blue-400' : ''
                     }`}
                   />
                 </div>
@@ -396,7 +400,7 @@ export const PatternsPage: React.FC<PatternsPageProps> = ({ navigate }) => {
 
               {/* Level 1 Content */}
               {isTopicOpen && (
-                <div className="p-2 sm:p-3 space-y-2 bg-zinc-100 dark:bg-[#090d14] border-t border-zinc-200 dark:border-[#18202d]">
+                <div className="p-2 sm:p-3 space-y-2 bg-zinc-50 dark:bg-[#090d14] border-t border-zinc-200 dark:border-[#18202d]">
                   {filteredSubTopics.length === 0 ? (
                     <div className="p-4 text-center text-xs text-zinc-500">
                       No matching problems in this pattern.
@@ -419,24 +423,24 @@ export const PatternsPage: React.FC<PatternsPageProps> = ({ navigate }) => {
                       return (
                         <div
                           key={subGroup.subTopicName || stIdx}
-                          className="rounded-lg border border-zinc-200 dark:border-[#19212e] bg-white dark:bg-[#0d1119] overflow-hidden"
+                          className="rounded-lg border border-zinc-200 dark:border-[#19212e] bg-white dark:bg-[#0d1119] overflow-hidden shadow-2xs"
                         >
                           {/* Level 2: SubTopic Header (e.g. General or specific category) */}
                           <button
                             onClick={() => toggleSubTopicAccordion(subKey)}
-                            className="w-full px-3.5 py-2.5 flex items-center justify-between bg-[#101622] hover:bg-[#141b2a] transition-colors text-left select-none cursor-pointer"
+                            className="w-full px-3.5 py-2.5 flex items-center justify-between bg-zinc-100/80 hover:bg-zinc-200/70 dark:bg-[#101622] dark:hover:bg-[#141b2a] transition-colors text-left select-none cursor-pointer"
                           >
-                            <span className="font-semibold text-xs sm:text-[13px] text-zinc-200 truncate">
+                            <span className="font-semibold text-xs sm:text-[13px] text-zinc-800 dark:text-zinc-200 truncate">
                               {subGroup.subTopicName}
                             </span>
 
                             <div className="flex items-center gap-2.5 shrink-0 ml-2">
-                              <span className="text-[11px] text-zinc-400 font-mono">
+                              <span className="text-[11px] text-zinc-500 dark:text-zinc-400 font-mono">
                                 {subSolvedCount}/{subGroup.problems.length}
                               </span>
                               <ChevronDown
                                 className={`w-3.5 h-3.5 text-zinc-400 transition-transform duration-200 ${
-                                  isSubOpen ? 'rotate-180 text-blue-400' : ''
+                                  isSubOpen ? 'rotate-180 text-blue-500 dark:text-blue-400' : ''
                                 }`}
                               />
                             </div>
@@ -444,7 +448,7 @@ export const PatternsPage: React.FC<PatternsPageProps> = ({ navigate }) => {
 
                           {/* Level 3: Problem Items */}
                           {isSubOpen && (
-                            <div className="divide-y divide-zinc-200 dark:divide-[#171f2d] bg-zinc-50 dark:bg-[#0a0e16]">
+                            <div className="divide-y divide-zinc-200 dark:divide-[#171f2d] bg-white dark:bg-[#0a0e16]">
                               {subGroup.problems.map((prob, pIdx) => {
                                 const probTitle = prob.problem_name || prob.title || prob.question_name || 'Untitled Problem';
                                 const probId = `pattern-${probTitle}`;
@@ -456,10 +460,10 @@ export const PatternsPage: React.FC<PatternsPageProps> = ({ navigate }) => {
                                 const diffLower = diff.toLowerCase();
                                 const diffBadgeStyle =
                                   diffLower === 'basic' || diffLower === 'easy'
-                                    ? 'text-emerald-400 bg-emerald-950/40 border border-emerald-800/40'
+                                    ? 'text-emerald-700 bg-emerald-50 border border-emerald-200 dark:text-emerald-400 dark:bg-emerald-950/40 dark:border-emerald-800/40'
                                     : diffLower === 'hard'
-                                    ? 'text-rose-400 bg-rose-950/40 border border-rose-800/40'
-                                    : 'text-amber-400 bg-amber-950/40 border border-amber-800/40';
+                                    ? 'text-rose-700 bg-rose-50 border border-rose-200 dark:text-rose-400 dark:bg-rose-950/40 dark:border-rose-800/40'
+                                    : 'text-amber-700 bg-amber-50 border border-amber-200 dark:text-amber-400 dark:bg-amber-950/40 dark:border-amber-800/40';
 
                                 const practiceLink = prob.problemUrl || prob.platform_link || prob.link || `https://leetcode.com/problemset/all/?search=${encodeURIComponent(probTitle)}`;
                                 const videoLink = prob.video_link || '';
@@ -467,7 +471,7 @@ export const PatternsPage: React.FC<PatternsPageProps> = ({ navigate }) => {
                                 return (
                                   <div
                                     key={probId || pIdx}
-                                    className="px-3.5 py-2.5 sm:py-3 flex items-center justify-between gap-3 hover:bg-[#111724] transition-colors group"
+                                    className="px-3.5 py-2.5 sm:py-3 flex items-center justify-between gap-3 hover:bg-zinc-50 dark:hover:bg-[#111724] transition-colors group"
                                   >
                                     {/* Left: Checkbox + Title */}
                                     <div className="flex items-center gap-3 min-w-0 flex-1">
@@ -476,7 +480,7 @@ export const PatternsPage: React.FC<PatternsPageProps> = ({ navigate }) => {
                                         className={`w-4 h-4 rounded-md border flex items-center justify-center transition-all shrink-0 cursor-pointer ${
                                           solved
                                             ? 'bg-blue-600 border-blue-600 text-white'
-                                            : 'border-zinc-600 bg-transparent hover:border-zinc-400'
+                                            : 'border-zinc-300 dark:border-zinc-600 bg-white dark:bg-transparent hover:border-zinc-500'
                                         }`}
                                         title={solved ? 'Mark as Unsolved' : 'Mark as Solved'}
                                       >
@@ -491,8 +495,8 @@ export const PatternsPage: React.FC<PatternsPageProps> = ({ navigate }) => {
                                             rel="noopener noreferrer"
                                             className={`text-xs sm:text-[13px] font-medium transition-colors ${
                                               solved
-                                                ? 'line-through text-zinc-500 hover:text-zinc-300'
-                                                : 'text-zinc-200 hover:text-blue-400'
+                                                ? 'line-through text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300'
+                                                : 'text-zinc-900 dark:text-zinc-200 hover:text-blue-600 dark:hover:text-blue-400'
                                             }`}
                                           >
                                             {probTitle}
@@ -508,7 +512,7 @@ export const PatternsPage: React.FC<PatternsPageProps> = ({ navigate }) => {
                                         href={practiceLink}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="p-1 rounded-md text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+                                        className="p-1 rounded-md text-zinc-400 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
                                         title="Practice Problem on LeetCode"
                                       >
                                         <Code2 className="w-4 h-4" />
@@ -537,14 +541,14 @@ export const PatternsPage: React.FC<PatternsPageProps> = ({ navigate }) => {
                                       {/* Bookmark / Star Button */}
                                       <button
                                         onClick={() => toggleBookmark(probId)}
-                                        className="p-1 rounded-md transition-colors hover:bg-zinc-800 cursor-pointer"
+                                        className="p-1 rounded-md transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer"
                                         title={bookmarked ? 'Remove Bookmark' : 'Bookmark Problem'}
                                       >
                                         <Star
                                           className={`w-3.5 h-3.5 ${
                                             bookmarked
-                                              ? 'fill-amber-400 text-amber-400'
-                                              : 'text-zinc-500 hover:text-zinc-300'
+                                              ? 'fill-amber-500 text-amber-500 dark:fill-amber-400 dark:text-amber-400'
+                                              : 'text-zinc-400 hover:text-zinc-600 dark:text-zinc-500 dark:hover:text-zinc-300'
                                           }`}
                                         />
                                       </button>
@@ -554,8 +558,8 @@ export const PatternsPage: React.FC<PatternsPageProps> = ({ navigate }) => {
                                         onClick={() => openNoteModal(probId, probTitle)}
                                         className={`p-1 rounded-md transition-colors cursor-pointer ${
                                           hasNote
-                                            ? 'text-blue-400 bg-blue-500/10'
-                                            : 'text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800'
+                                            ? 'text-blue-500 dark:text-blue-400 bg-blue-500/10'
+                                            : 'text-zinc-400 hover:text-zinc-600 dark:text-zinc-500 dark:hover:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800'
                                         }`}
                                         title={hasNote ? 'Edit Notes' : 'Add Note'}
                                       >
@@ -581,22 +585,22 @@ export const PatternsPage: React.FC<PatternsPageProps> = ({ navigate }) => {
 
       {/* Notes Modal */}
       {activeNoteProblem && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-black/60 dark:bg-black/80 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white dark:bg-[#0e121a] border border-zinc-200 dark:border-[#1e2433] rounded-2xl max-w-lg w-full p-5 space-y-4 shadow-2xl">
             <div className="flex items-center justify-between">
-              <h3 className="font-bold text-sm text-white flex items-center gap-2">
-                <FileText className="w-4 h-4 text-blue-400" />
+              <h3 className="font-bold text-sm text-zinc-900 dark:text-white flex items-center gap-2">
+                <FileText className="w-4 h-4 text-blue-500" />
                 <span>Notes for Problem</span>
               </h3>
               <button
                 onClick={() => setActiveNoteProblem(null)}
-                className="p-1 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 cursor-pointer"
+                className="p-1 rounded-lg text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <p className="text-xs text-zinc-400 font-medium">
+            <p className="text-xs text-zinc-600 dark:text-zinc-400 font-medium">
               {activeNoteProblem.title}
             </p>
 
@@ -605,13 +609,13 @@ export const PatternsPage: React.FC<PatternsPageProps> = ({ navigate }) => {
               value={noteContent}
               onChange={(e) => setNoteContent(e.target.value)}
               placeholder="Write your pattern template, recurrence relation, time/space complexities..."
-              className="w-full p-3 rounded-xl bg-zinc-100 dark:bg-[#090d14] border border-zinc-200 dark:border-[#1e2433] text-xs sm:text-sm text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-blue-500 resize-none font-mono"
+              className="w-full p-3 rounded-xl bg-zinc-50 dark:bg-[#090d14] border border-zinc-200 dark:border-[#1e2433] text-xs sm:text-sm text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 resize-none font-mono transition-colors"
             />
 
             <div className="flex items-center justify-end gap-2 pt-1">
               <button
                 onClick={() => setActiveNoteProblem(null)}
-                className="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-zinc-400 hover:bg-zinc-800 transition-colors cursor-pointer"
+                className="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
               >
                 Cancel
               </button>

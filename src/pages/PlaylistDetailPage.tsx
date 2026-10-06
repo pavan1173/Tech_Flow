@@ -56,7 +56,7 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
   subjectType = 'dsa',
   navigate,
 }) => {
-  const { isSolved, toggleSolved } = useProgress();
+  const { isSolved, toggleSolved, getNote, saveNote } = useProgress();
 
   // 1. Try finding in authentic scraped hynts dataset
   const hyntsPlaylist = useMemo(() => findHyntsPlaylist(slug), [slug]);
@@ -294,14 +294,17 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
   // Load saved note for the current lecture
   useEffect(() => {
     if (currentLecture) {
-      const savedNote = localStorage.getItem(`lecture-note-${playlist.slug}-${currentLecture.id}`);
+      const noteKey = `lec-${playlist.slug}-${currentLecture.id}`;
+      const savedNote = getNote(noteKey) || localStorage.getItem(`lecture-note-${playlist.slug}-${currentLecture.id}`);
       setNotesText(savedNote || '');
     }
-  }, [currentLecture?.id, playlist.slug]);
+  }, [currentLecture?.id, playlist.slug, getNote]);
 
   const handleSaveNote = (text: string) => {
     setNotesText(text);
     if (currentLecture) {
+      const noteKey = `lec-${playlist.slug}-${currentLecture.id}`;
+      saveNote(noteKey, text);
       localStorage.setItem(`lecture-note-${playlist.slug}-${currentLecture.id}`, text);
     }
   };
@@ -528,26 +531,26 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
   ];
 
   return (
-    <div className="min-h-screen bg-[#07090e] text-zinc-100 p-3 sm:p-6 lg:p-8 font-lexend space-y-6 max-w-7xl mx-auto pb-28">
+    <div className="min-h-screen bg-[#fcfcfb] dark:bg-[#07090e] text-zinc-900 dark:text-zinc-100 p-3 sm:p-6 lg:p-8 font-lexend space-y-6 max-w-7xl mx-auto pb-28 transition-colors duration-200">
       {/* 1. Breadcrumbs */}
-      <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-zinc-400 flex-wrap">
+      <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400 flex-wrap">
         <a
           href="/preparation"
           onClick={(e) => handleNav(e, '/preparation')}
-          className="hover:text-white transition-colors"
+          className="hover:text-zinc-900 dark:hover:text-white transition-colors"
         >
           Preparation
         </a>
-        <ChevronRight className="w-3.5 h-3.5 text-zinc-600 shrink-0" />
+        <ChevronRight className="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-600 shrink-0" />
         <a
           href={getParentHref()}
           onClick={(e) => handleNav(e, getParentHref())}
-          className="hover:text-white transition-colors"
+          className="hover:text-zinc-900 dark:hover:text-white transition-colors"
         >
           {getParentTitle()}
         </a>
-        <ChevronRight className="w-3.5 h-3.5 text-zinc-600 shrink-0" />
-        <span className="text-white font-medium truncate max-w-[220px] sm:max-w-md">
+        <ChevronRight className="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-600 shrink-0" />
+        <span className="text-zinc-900 dark:text-white font-medium truncate max-w-[220px] sm:max-w-md">
           {playlist.title}
         </span>
       </nav>
@@ -561,40 +564,40 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
           <div className="space-y-3 flex-1 min-w-0">
             {/* Badges row */}
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/25 text-xs font-bold tracking-wide">
+              <span className="px-3 py-1 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/25 text-xs font-bold tracking-wide">
                 {playlist.badge}
               </span>
-              <span className="px-2.5 py-0.5 rounded-full bg-zinc-800 text-zinc-300 text-xs font-medium">
+              <span className="px-2.5 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 text-xs font-medium">
                 {playlist.totalVideos} Videos
               </span>
-              <span className="px-2.5 py-0.5 rounded-full bg-zinc-800 text-zinc-300 text-xs font-medium">
+              <span className="px-2.5 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 text-xs font-medium">
                 {playlist.totalDuration}
               </span>
-              <span className="px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 text-xs font-bold">
+              <span className="px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 text-xs font-bold">
                 ★ {playlist.rating}
               </span>
             </div>
 
             {/* Title */}
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-white tracking-tight leading-tight">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-zinc-900 dark:text-white tracking-tight leading-tight">
               {playlist.title}
             </h1>
 
             {/* Description */}
-            <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed max-w-4xl font-normal">
+            <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-4xl font-normal">
               {playlist.description}
             </p>
 
             {/* Instructor and Channel info */}
-            <div className="flex items-center gap-3 text-xs text-zinc-400 pt-1">
+            <div className="flex items-center gap-3 text-xs text-zinc-500 dark:text-zinc-400 pt-1">
               <div className="flex items-center gap-1.5">
                 <span className="text-zinc-500">Instructor:</span>
-                <span className="font-semibold text-zinc-200">{playlist.instructor}</span>
+                <span className="font-semibold text-zinc-800 dark:text-zinc-200">{playlist.instructor}</span>
               </div>
               <span>•</span>
               <div className="flex items-center gap-1.5">
                 <span className="text-zinc-500">Channel:</span>
-                <span className="font-semibold text-zinc-200">{playlist.channel}</span>
+                <span className="font-semibold text-zinc-800 dark:text-zinc-200">{playlist.channel}</span>
               </div>
             </div>
           </div>
@@ -614,13 +617,13 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
             </button>
 
             {/* View Mode Switcher */}
-            <div className="hidden sm:flex items-center bg-[#141b28] border border-[#1f293d] rounded-xl p-1">
+            <div className="hidden sm:flex items-center bg-zinc-100 dark:bg-[#141b28] border border-zinc-200 dark:border-[#1f293d] rounded-xl p-1">
               <button
                 onClick={() => setViewMode('accordion')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                   viewMode === 'accordion'
                     ? 'bg-blue-600 text-white shadow-xs'
-                    : 'text-zinc-400 hover:text-white'
+                    : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white'
                 }`}
                 title="Topic Accordion View"
               >
@@ -632,7 +635,7 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                   viewMode === 'studio'
                     ? 'bg-blue-600 text-white shadow-xs'
-                    : 'text-zinc-400 hover:text-white'
+                    : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white'
                 }`}
                 title="Studio Player View"
               >
@@ -644,7 +647,7 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
             {/* Share Button */}
             <button
               onClick={handleShare}
-              className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-[#141b28] hover:bg-[#1a2334] border border-[#1f293d] text-zinc-300 hover:text-white text-xs font-bold transition-all cursor-pointer"
+              className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-zinc-100 hover:bg-zinc-200 dark:bg-[#141b28] dark:hover:bg-[#1a2334] border border-zinc-200 dark:border-[#1f293d] text-zinc-700 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-white text-xs font-bold transition-all cursor-pointer"
               title="Share course"
             >
               <Share2 className="w-3.5 h-3.5" />
@@ -668,17 +671,17 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
         {/* Course Progress Section matching hynts.in */}
         <div className="pt-4 border-t border-zinc-200 dark:border-[#18202d] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3.5 flex-1 max-w-xl">
-            <div className="flex-1 h-2.5 rounded-full bg-[#161c28] overflow-hidden">
+            <div className="flex-1 h-2.5 rounded-full bg-zinc-200 dark:bg-[#161c28] overflow-hidden">
               <div
                 className="h-full rounded-full bg-emerald-500 transition-all duration-500"
                 style={{ width: `${completionPercent}%` }}
               />
             </div>
             <div className="flex items-center gap-2 shrink-0">
-              <span className="text-xs font-bold text-white font-mono">
+              <span className="text-xs font-bold text-zinc-900 dark:text-white font-mono">
                 {completedCount} / {lectures.length} Completed
               </span>
-              <span className="text-xs font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+              <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
                 {completionPercent}%
               </span>
             </div>
@@ -688,7 +691,7 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
             {completedCount > 0 && (
               <button
                 onClick={() => setShowResetModal(true)}
-                className="text-zinc-500 hover:text-zinc-300 text-[11px] flex items-center gap-1 transition-colors cursor-pointer"
+                className="text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 text-[11px] flex items-center gap-1 transition-colors cursor-pointer"
                 title="Reset completion checkboxes for this playlist"
               >
                 <RotateCcw className="w-3 h-3" />
@@ -696,7 +699,7 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
               </button>
             )}
             <div className="text-[11px] text-zinc-500 flex items-center gap-1.5">
-              <Award className="w-3.5 h-3.5 text-blue-400" />
+              <Award className="w-3.5 h-3.5 text-blue-500 dark:text-blue-400" />
               <span>Full curriculum • Video player • Notes • Practice</span>
             </div>
           </div>
@@ -715,11 +718,11 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
         <div className="p-3 sm:p-4 bg-zinc-50 dark:bg-[#0e131d] border-b border-zinc-200 dark:border-[#1b2230] flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2.5 min-w-0">
             <div className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse shrink-0" />
-            <span className="text-xs font-bold uppercase tracking-wider text-blue-400 font-mono shrink-0">
+            <span className="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 font-mono shrink-0">
               Lecture {activeLectureIndex + 1} of {lectures.length}
             </span>
-            <span className="text-zinc-600 hidden sm:inline">•</span>
-            <span className="text-xs text-zinc-300 font-semibold truncate hidden sm:inline max-w-md">
+            <span className="text-zinc-400 dark:text-zinc-600 hidden sm:inline">•</span>
+            <span className="text-xs text-zinc-700 dark:text-zinc-300 font-semibold truncate hidden sm:inline max-w-md">
               {currentLecture?.title}
             </span>
           </div>
@@ -732,26 +735,26 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
                 onClick={() => setShowSizeControls(!showSizeControls)}
                 className={`p-1.5 px-2.5 rounded-lg text-[11px] font-semibold flex items-center gap-1.5 border transition-all cursor-pointer ${
                   showSizeControls || videoSizeMode !== 'standard'
-                    ? 'bg-blue-600/20 text-blue-300 border-blue-500/40'
-                    : 'bg-[#141b28] hover:bg-[#1a2334] text-zinc-300 hover:text-white border-[#1f293d]'
+                    ? 'bg-blue-600/20 text-blue-600 dark:text-blue-300 border-blue-500/40'
+                    : 'bg-zinc-100 hover:bg-zinc-200 dark:bg-[#141b28] dark:hover:bg-[#1a2334] text-zinc-700 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-white border-zinc-200 dark:border-[#1f293d]'
                 }`}
                 title="Dynamic Video Resizing options"
               >
-                <Sliders className="w-3.5 h-3.5 text-blue-400" />
+                <Sliders className="w-3.5 h-3.5 text-blue-500 dark:text-blue-400" />
                 <span className="capitalize">{videoSizeMode} ({customVideoHeight}px)</span>
               </button>
 
               {/* Dynamic Size Control Popover */}
               {showSizeControls && (
-                <div className="absolute right-0 top-full mt-2 w-72 p-4 bg-[#0c1017] border border-[#1f293d] rounded-2xl shadow-2xl z-50 space-y-3.5 animate-in fade-in zoom-in-95">
-                  <div className="flex items-center justify-between border-b border-[#1b2230] pb-2">
-                    <span className="text-xs font-bold text-white flex items-center gap-1.5">
-                      <Sliders className="w-3.5 h-3.5 text-blue-400" />
+                <div className="absolute right-0 top-full mt-2 w-72 p-4 bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-[#1f293d] rounded-2xl shadow-2xl z-50 space-y-3.5 animate-in fade-in zoom-in-95">
+                  <div className="flex items-center justify-between border-b border-zinc-200 dark:border-[#1b2230] pb-2">
+                    <span className="text-xs font-bold text-zinc-900 dark:text-white flex items-center gap-1.5">
+                      <Sliders className="w-3.5 h-3.5 text-blue-500 dark:text-blue-400" />
                       Dynamic Video Resize
                     </span>
                     <button
                       onClick={() => setShowSizeControls(false)}
-                      className="text-zinc-400 hover:text-white text-xs"
+                      className="text-zinc-400 hover:text-zinc-900 dark:hover:text-white text-xs cursor-pointer"
                     >
                       <X className="w-3.5 h-3.5" />
                     </button>
@@ -875,10 +878,10 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
             {/* Embed Switcher (YouTube vs No-Cookie) */}
             <button
               onClick={() => setEmbedHost(embedHost === 'youtube' ? 'nocookie' : 'youtube')}
-              className="px-2 py-1 rounded-lg bg-[#141b28] hover:bg-[#1a2334] text-zinc-400 hover:text-zinc-200 text-[11px] flex items-center gap-1 border border-[#1f293d] cursor-pointer"
+              className="px-2 py-1 rounded-lg bg-zinc-100 hover:bg-zinc-200 dark:bg-[#141b28] dark:hover:bg-[#1a2334] text-zinc-700 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200 text-[11px] flex items-center gap-1 border border-zinc-200 dark:border-[#1f293d] cursor-pointer"
               title="Switch embed server if video doesn't load on restricted networks"
             >
-              <ShieldCheck className="w-3 h-3 text-blue-400" />
+              <ShieldCheck className="w-3 h-3 text-blue-500 dark:text-blue-400" />
               <span>{embedHost === 'youtube' ? 'YouTube' : 'No-Cookie'}</span>
             </button>
 
@@ -887,8 +890,8 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
               onClick={() => setAutoplayNext(!autoplayNext)}
               className={`px-2 py-1 rounded-lg text-[11px] font-semibold flex items-center gap-1 transition-all cursor-pointer ${
                 autoplayNext
-                  ? 'bg-blue-600/20 text-blue-300 border border-blue-500/30'
-                  : 'bg-[#141b28] text-zinc-400 border border-[#1f293d]'
+                  ? 'bg-blue-600/20 text-blue-600 dark:text-blue-300 border border-blue-500/30'
+                  : 'bg-zinc-100 hover:bg-zinc-200 dark:bg-[#141b28] dark:hover:bg-[#1a2334] text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white border border-zinc-200 dark:border-[#1f293d]'
               }`}
               title="Auto advance to next video"
             >
@@ -899,7 +902,7 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
             {/* Theater Mode Toggle */}
             <button
               onClick={() => setTheaterMode(!theaterMode)}
-              className="p-1.5 px-2.5 rounded-lg bg-[#141b28] hover:bg-[#1a2334] text-zinc-300 hover:text-white transition-colors cursor-pointer text-xs flex items-center gap-1.5 border border-[#1f293d]"
+              className="p-1.5 px-2.5 rounded-lg bg-zinc-100 hover:bg-zinc-200 dark:bg-[#141b28] dark:hover:bg-[#1a2334] text-zinc-700 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-white transition-colors cursor-pointer text-xs flex items-center gap-1.5 border border-zinc-200 dark:border-[#1f293d]"
               title="Toggle Theater Mode (T)"
             >
               {theaterMode ? (
@@ -924,8 +927,8 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
               }}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                 currentLecture && isLectureCompleted(currentLecture.id)
-                  ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                  : 'bg-zinc-800 hover:bg-zinc-700 text-zinc-200'
+                  ? 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30'
+                  : 'bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 border border-zinc-200 dark:border-zinc-700'
               }`}
             >
               <CheckCircle2 className="w-3.5 h-3.5" />
@@ -1075,9 +1078,9 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
                   <button
                     key={m.time}
                     onClick={() => handleJumpToTimestamp(m.seconds)}
-                    className="px-2.5 py-1 rounded-lg bg-[#121824] hover:bg-blue-600 hover:text-white text-zinc-300 text-[11px] font-mono transition-colors whitespace-nowrap cursor-pointer shrink-0 border border-[#1b2436]"
+                    className="px-2.5 py-1 rounded-lg bg-zinc-200 dark:bg-[#121824] hover:bg-blue-600 hover:text-white text-zinc-800 dark:text-zinc-300 text-[11px] font-mono transition-colors whitespace-nowrap cursor-pointer shrink-0 border border-zinc-300 dark:border-[#1b2436]"
                   >
-                    <span className="text-blue-400 font-bold mr-1">{m.time}</span>
+                    <span className="text-blue-600 dark:text-blue-400 font-bold mr-1">{m.time}</span>
                     <span>{m.label}</span>
                   </button>
                 ))}
@@ -1087,10 +1090,10 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
               <div className="p-4 sm:p-5 bg-white dark:bg-[#0c1017] border-t border-zinc-200 dark:border-[#1b2230] space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div className="space-y-1">
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-blue-400 font-mono">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 font-mono">
                       {currentLecture.sectionTitle}
                     </span>
-                    <h2 className="text-base sm:text-lg font-bold text-white leading-snug">
+                    <h2 className="text-base sm:text-lg font-bold text-zinc-900 dark:text-white leading-snug">
                       {currentLecture.title}
                     </h2>
                   </div>
@@ -1100,18 +1103,18 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
                     <button
                       onClick={handlePrev}
                       disabled={activeLectureIndex === 0}
-                      className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-[#141b28] hover:bg-[#1a2334] disabled:opacity-30 disabled:pointer-events-none text-zinc-200 text-xs font-bold transition-colors cursor-pointer border border-[#1f293d]"
+                      className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-zinc-100 hover:bg-zinc-200 dark:bg-[#141b28] dark:hover:bg-[#1a2334] disabled:opacity-30 disabled:pointer-events-none text-zinc-700 dark:text-zinc-200 text-xs font-bold transition-colors cursor-pointer border border-zinc-200 dark:border-[#1f293d]"
                     >
                       <ChevronLeft className="w-4 h-4" />
                       <span>Prev</span>
                     </button>
-                    <span className="text-xs font-mono text-zinc-400 px-2 font-semibold">
+                    <span className="text-xs font-mono text-zinc-500 dark:text-zinc-400 px-2 font-semibold">
                       {activeLectureIndex + 1} / {lectures.length}
                     </span>
                     <button
                       onClick={handleNext}
                       disabled={activeLectureIndex === lectures.length - 1}
-                      className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-[#141b28] hover:bg-[#1a2334] disabled:opacity-30 disabled:pointer-events-none text-zinc-200 text-xs font-bold transition-colors cursor-pointer border border-[#1f293d]"
+                      className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-zinc-100 hover:bg-zinc-200 dark:bg-[#141b28] dark:hover:bg-[#1a2334] disabled:opacity-30 disabled:pointer-events-none text-zinc-700 dark:text-zinc-200 text-xs font-bold transition-colors cursor-pointer border border-zinc-200 dark:border-[#1f293d]"
                     >
                       <span>Next</span>
                       <ChevronRight className="w-4 h-4" />
@@ -1128,7 +1131,7 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
                         href={currentLecture.problemUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 border border-amber-500/25 font-semibold transition-colors"
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 border border-amber-500/25 font-semibold transition-colors"
                       >
                         <Code2 className="w-3.5 h-3.5" />
                         <span>Solve Practice Problem</span>
@@ -1141,7 +1144,7 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
                       href={currentLecture.videoUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-600/10 text-red-400 hover:bg-red-600/20 border border-red-500/20 font-semibold transition-colors"
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-600/10 text-red-600 dark:text-red-400 hover:bg-red-600/20 border border-red-500/20 font-semibold transition-colors"
                     >
                       <Youtube className="w-3.5 h-3.5 fill-current" />
                       <span>Open on YouTube</span>
@@ -1154,7 +1157,7 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
                       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border font-semibold transition-colors cursor-pointer ${
                         activeTab === 'notes'
                           ? 'bg-blue-600 text-white border-blue-500'
-                          : 'bg-[#141b28] text-zinc-300 hover:text-white border-[#1f293d]'
+                          : 'bg-zinc-100 hover:bg-zinc-200 dark:bg-[#141b28] dark:hover:bg-[#1a2334] text-zinc-700 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-white border-zinc-200 dark:border-[#1f293d]'
                       }`}
                     >
                       <StickyNote className="w-3.5 h-3.5" />
@@ -1167,10 +1170,10 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
 
                   <div className="text-[11px] text-zinc-500 font-mono hidden sm:flex items-center gap-2">
                     <span>Keys:</span>
-                    <kbd className="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300">N</kbd> Next
-                    <kbd className="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300">P</kbd> Prev
-                    <kbd className="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300">C</kbd> Done
-                    <kbd className="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300">T</kbd> Theater
+                    <kbd className="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700">N</kbd> Next
+                    <kbd className="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700">P</kbd> Prev
+                    <kbd className="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700">C</kbd> Done
+                    <kbd className="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700">T</kbd> Theater
                   </div>
                 </div>
               </div>
@@ -1181,8 +1184,8 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
               <div className="lg:col-span-4 bg-zinc-50 dark:bg-[#0a0e16] border-t lg:border-t-0 lg:border-l border-zinc-200 dark:border-[#1b2230] p-4 flex flex-col h-full min-h-[360px]">
                 <div className="flex items-center justify-between pb-3 border-b border-zinc-200 dark:border-[#1b2230] mb-3">
                   <div className="flex items-center gap-2">
-                    <StickyNote className="w-4 h-4 text-blue-400" />
-                    <span className="text-xs font-bold text-white">Lecture Notes</span>
+                    <StickyNote className="w-4 h-4 text-blue-500 dark:text-blue-400" />
+                    <span className="text-xs font-bold text-zinc-900 dark:text-white">Lecture Notes</span>
                   </div>
                   <div className="flex items-center gap-1.5 text-[10px] text-zinc-500 font-mono">
                     <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
@@ -1194,19 +1197,19 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
                 <div className="flex items-center gap-1.5 mb-2 overflow-x-auto pb-1 scrollbar-none">
                   <button
                     onClick={() => handleInsertNoteSnippet('• Key insight: ')}
-                    className="px-2 py-0.5 rounded bg-[#141b28] hover:bg-zinc-800 text-zinc-400 hover:text-white text-[10px] whitespace-nowrap border border-[#1f293d]"
+                    className="px-2 py-0.5 rounded bg-zinc-200 hover:bg-zinc-300 dark:bg-[#141b28] dark:hover:bg-zinc-800 text-zinc-700 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white text-[10px] whitespace-nowrap border border-zinc-300 dark:border-[#1f293d]"
                   >
                     + Bullet
                   </button>
                   <button
                     onClick={() => handleInsertNoteSnippet('```cpp\n// Solution code\n\n```')}
-                    className="px-2 py-0.5 rounded bg-[#141b28] hover:bg-zinc-800 text-zinc-400 hover:text-white text-[10px] whitespace-nowrap border border-[#1f293d]"
+                    className="px-2 py-0.5 rounded bg-zinc-200 hover:bg-zinc-300 dark:bg-[#141b28] dark:hover:bg-zinc-800 text-zinc-700 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white text-[10px] whitespace-nowrap border border-zinc-300 dark:border-[#1f293d]"
                   >
                     + Code
                   </button>
                   <button
                     onClick={() => handleInsertNoteSnippet('Time Complexity: O(N)\nSpace Complexity: O(1)')}
-                    className="px-2 py-0.5 rounded bg-[#141b28] hover:bg-zinc-800 text-zinc-400 hover:text-white text-[10px] whitespace-nowrap border border-[#1f293d]"
+                    className="px-2 py-0.5 rounded bg-zinc-200 hover:bg-zinc-300 dark:bg-[#141b28] dark:hover:bg-zinc-800 text-zinc-700 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white text-[10px] whitespace-nowrap border border-zinc-300 dark:border-[#1f293d]"
                   >
                     + Complexity
                   </button>
@@ -1216,7 +1219,7 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
                   value={notesText}
                   onChange={(e) => handleSaveNote(e.target.value)}
                   placeholder={`Take notes for Lecture #${currentLecture.index}: ${currentLecture.title}... Insights, edge cases, time complexities.`}
-                  className="w-full flex-1 min-h-[220px] p-3 rounded-xl bg-[#06080d] border border-[#1a2233] text-xs text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-blue-500 resize-none font-sans leading-relaxed"
+                  className="w-full flex-1 min-h-[220px] p-3 rounded-xl bg-white dark:bg-[#06080d] border border-zinc-200 dark:border-[#1a2233] text-xs text-zinc-900 dark:text-zinc-200 placeholder-zinc-400 dark:placeholder-zinc-600 focus:outline-none focus:border-blue-500 resize-none font-sans leading-relaxed"
                 />
 
                 <div className="flex items-center justify-between pt-3 text-[11px] text-zinc-500">
@@ -1225,7 +1228,7 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
                     <button
                       onClick={handleCopyNotes}
                       disabled={!notesText.trim()}
-                      className="text-blue-400 hover:text-blue-300 disabled:opacity-40 font-semibold cursor-pointer flex items-center gap-1"
+                      className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 disabled:opacity-40 font-semibold cursor-pointer flex items-center gap-1"
                     >
                       <Copy className="w-3 h-3" />
                       <span>{notesCopied ? 'Copied!' : 'Copy'}</span>
@@ -1233,7 +1236,7 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
                     <button
                       onClick={handleDownloadNotes}
                       disabled={!notesText.trim()}
-                      className="text-emerald-400 hover:text-emerald-300 disabled:opacity-40 font-semibold cursor-pointer flex items-center gap-1"
+                      className="text-emerald-500 hover:text-emerald-600 dark:text-emerald-400 dark:hover:text-emerald-300 disabled:opacity-40 font-semibold cursor-pointer flex items-center gap-1"
                     >
                       <Download className="w-3 h-3" />
                       <span>Export .md</span>
@@ -1260,12 +1263,12 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={`Search all ${lectures.length} lectures by title, topic (e.g., binary search, recursion, trees, DP)...`}
-            className="w-full pl-10 pr-9 py-2 rounded-xl bg-[#07090e] border border-[#1e2638] text-xs sm:text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500"
+            className="w-full pl-10 pr-9 py-2 rounded-xl bg-zinc-50 dark:bg-[#07090e] border border-zinc-200 dark:border-[#1e2638] text-xs sm:text-sm text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:border-blue-500"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-900 dark:hover:text-white"
             >
               <X className="w-3.5 h-3.5" />
             </button>
@@ -1279,7 +1282,7 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
             className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
               filterStatus === 'all'
                 ? 'bg-blue-600 text-white shadow-xs'
-                : 'bg-[#141b28] text-zinc-400 hover:text-white border border-[#1f293d]'
+                : 'bg-zinc-100 hover:bg-zinc-200 dark:bg-[#141b28] dark:hover:bg-[#1a2334] text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white border border-zinc-200 dark:border-[#1f293d]'
             }`}
           >
             All ({lectures.length})
@@ -1289,7 +1292,7 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
             className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
               filterStatus === 'incomplete'
                 ? 'bg-amber-600 text-white shadow-xs'
-                : 'bg-[#141b28] text-zinc-400 hover:text-white border border-[#1f293d]'
+                : 'bg-zinc-100 hover:bg-zinc-200 dark:bg-[#141b28] dark:hover:bg-[#1a2334] text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white border border-zinc-200 dark:border-[#1f293d]'
             }`}
           >
             To Watch ({lectures.length - completedCount})
@@ -1299,7 +1302,7 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
             className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
               filterStatus === 'completed'
                 ? 'bg-emerald-600 text-white shadow-xs'
-                : 'bg-[#141b28] text-zinc-400 hover:text-white border border-[#1f293d]'
+                : 'bg-zinc-100 hover:bg-zinc-200 dark:bg-[#141b28] dark:hover:bg-[#1a2334] text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white border border-zinc-200 dark:border-[#1f293d]'
             }`}
           >
             Done ({completedCount})
@@ -1310,14 +1313,14 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
             <div className="flex items-center gap-1 ml-2">
               <button
                 onClick={expandAllSections}
-                className="px-2.5 py-1.5 rounded-xl bg-[#141b28] hover:bg-[#1a2334] border border-[#1f293d] text-zinc-300 hover:text-white text-xs font-semibold cursor-pointer whitespace-nowrap"
+                className="px-2.5 py-1.5 rounded-xl bg-zinc-100 hover:bg-zinc-200 dark:bg-[#141b28] dark:hover:bg-[#1a2334] border border-zinc-200 dark:border-[#1f293d] text-zinc-700 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-white text-xs font-semibold cursor-pointer whitespace-nowrap"
                 title="Expand all sections"
               >
                 Expand All
               </button>
               <button
                 onClick={collapseAllSections}
-                className="px-2.5 py-1.5 rounded-xl bg-[#141b28] hover:bg-[#1a2334] border border-[#1f293d] text-zinc-300 hover:text-white text-xs font-semibold cursor-pointer whitespace-nowrap"
+                className="px-2.5 py-1.5 rounded-xl bg-zinc-100 hover:bg-zinc-200 dark:bg-[#141b28] dark:hover:bg-[#1a2334] border border-zinc-200 dark:border-[#1f293d] text-zinc-700 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-white text-xs font-semibold cursor-pointer whitespace-nowrap"
                 title="Collapse all sections"
               >
                 Collapse All
@@ -1355,17 +1358,17 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
                   {/* Section Accordion Trigger */}
                   <button
                     onClick={() => toggleSection(section.title)}
-                    className="w-full px-4 sm:px-6 py-4 flex items-center justify-between gap-4 text-left hover:bg-[#101622] transition-colors cursor-pointer"
+                    className="w-full px-4 sm:px-6 py-4 flex items-center justify-between gap-4 text-left hover:bg-zinc-50 dark:hover:bg-[#101622] transition-colors cursor-pointer"
                   >
                     <div className="flex items-center gap-3 min-w-0 flex-1">
-                      <div className="w-7 h-7 rounded-lg bg-blue-600/10 border border-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-xs shrink-0 font-mono">
+                      <div className="w-7 h-7 rounded-lg bg-blue-600/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold text-xs shrink-0 font-mono">
                         {sIdx + 1}
                       </div>
                       <div className="min-w-0 flex-1">
-                        <h3 className="text-sm sm:text-base font-bold text-white tracking-tight">
+                        <h3 className="text-sm sm:text-base font-bold text-zinc-900 dark:text-white tracking-tight">
                           {section.title}
                         </h3>
-                        <p className="text-[11px] text-zinc-400 font-medium">
+                        <p className="text-[11px] text-zinc-500 dark:text-zinc-400 font-medium">
                           {sectionTotal} lectures in this module
                         </p>
                       </div>
@@ -1374,18 +1377,18 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
                     {/* Progress indicator & toggle */}
                     <div className="flex items-center gap-3.5 shrink-0">
                       <div className="hidden sm:flex items-center gap-2">
-                        <div className="w-24 h-2 bg-[#161c28] rounded-full overflow-hidden">
+                        <div className="w-24 h-2 bg-zinc-200 dark:bg-[#161c28] rounded-full overflow-hidden">
                           <div
                             className="h-full bg-emerald-500 transition-all duration-300"
                             style={{ width: `${sectionPercent}%` }}
                           />
                         </div>
-                        <span className="text-xs font-mono font-semibold text-zinc-400">
+                        <span className="text-xs font-mono font-semibold text-zinc-500 dark:text-zinc-400">
                           {sectionDoneCount}/{sectionTotal}
                         </span>
                       </div>
 
-                      <div className="w-6 h-6 rounded-md bg-[#141b28] border border-[#1f293d] flex items-center justify-center text-zinc-400">
+                      <div className="w-6 h-6 rounded-md bg-zinc-100 dark:bg-[#141b28] border border-zinc-200 dark:border-[#1f293d] flex items-center justify-center text-zinc-500 dark:text-zinc-400">
                         {isExpanded ? (
                           <ChevronUp className="w-4 h-4" />
                         ) : (
@@ -1397,7 +1400,7 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
 
                   {/* Section Video Items */}
                   {isExpanded && (
-                    <div className="border-t border-zinc-200 dark:border-[#18202d] divide-y divide-[#151c2a]">
+                    <div className="border-t border-zinc-200 dark:border-[#18202d] divide-y divide-zinc-200 dark:divide-[#151c2a]">
                       {section.videos.map((video) => {
                         const isDone = isLectureCompleted(video.id);
                         const isCurrent = lectures[activeLectureIndex]?.id === video.id;
@@ -1408,7 +1411,7 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
                             className={`p-3.5 sm:px-6 sm:py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all ${
                               isCurrent
                                 ? 'bg-blue-600/10 border-l-4 border-l-blue-500'
-                                : 'hover:bg-[#101520]'
+                                : 'hover:bg-zinc-50 dark:hover:bg-[#101520]'
                             }`}
                           >
                             {/* Left: Checkbox + Lecture number + Title */}
@@ -1416,24 +1419,24 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
                               {/* Completion Checkbox */}
                               <button
                                 onClick={() => toggleSolved(`lec-${playlist.slug}-${video.id}`)}
-                                className="mt-0.5 p-0.5 rounded text-zinc-400 hover:text-white transition-colors cursor-pointer shrink-0"
+                                className="mt-0.5 p-0.5 rounded text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors cursor-pointer shrink-0"
                                 title={isDone ? 'Mark as incomplete' : 'Mark as completed'}
                               >
                                 {isDone ? (
-                                  <CheckCircle2 className="w-5 h-5 text-emerald-400 fill-emerald-400/20" />
+                                  <CheckCircle2 className="w-5 h-5 text-emerald-500 fill-emerald-500/20" />
                                 ) : (
-                                  <Circle className="w-5 h-5 text-zinc-500 hover:text-zinc-300" />
+                                  <Circle className="w-5 h-5 text-zinc-400 hover:text-zinc-600 dark:text-zinc-500 dark:hover:text-zinc-300" />
                                 )}
                               </button>
 
                               <div className="min-w-0 flex-1 space-y-1">
                                 <div className="flex items-center gap-2 flex-wrap">
-                                  <span className="text-[11px] font-mono font-bold text-zinc-400 bg-zinc-800/80 px-2 py-0.5 rounded">
+                                  <span className="text-[11px] font-mono font-bold text-zinc-600 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-800/80 px-2 py-0.5 rounded">
                                     #{video.index}
                                   </span>
                                   {isCurrent && (
-                                    <span className="text-[10px] font-bold text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 rounded-full uppercase tracking-wider flex items-center gap-1">
-                                      <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-ping inline-block" />
+                                    <span className="text-[10px] font-bold text-blue-600 dark:text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 rounded-full uppercase tracking-wider flex items-center gap-1">
+                                      <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-ping inline-block" />
                                       Now Playing
                                     </span>
                                   )}
@@ -1449,10 +1452,10 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
                                   onClick={() => handleSelectVideo(video)}
                                   className={`text-xs sm:text-sm font-semibold leading-snug cursor-pointer transition-colors ${
                                     isDone
-                                      ? 'text-zinc-400 line-through'
+                                      ? 'text-zinc-400 dark:text-zinc-500 line-through'
                                       : isCurrent
-                                      ? 'text-blue-300 font-bold'
-                                      : 'text-zinc-200 hover:text-white'
+                                      ? 'text-blue-600 dark:text-blue-300 font-bold'
+                                      : 'text-zinc-800 dark:text-zinc-200 hover:text-blue-600 dark:hover:text-white'
                                   }`}
                                 >
                                   {video.title}
@@ -1467,7 +1470,7 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
                                   href={video.problemUrl}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#141b28] hover:bg-[#1a2334] border border-[#1f293d] text-amber-400 text-xs font-semibold transition-colors"
+                                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-100 hover:bg-zinc-200 dark:bg-[#141b28] dark:hover:bg-[#1a2334] border border-zinc-200 dark:border-[#1f293d] text-amber-600 dark:text-amber-400 text-xs font-semibold transition-colors"
                                   title="Solve on LeetCode / Practice"
                                 >
                                   <Code2 className="w-3.5 h-3.5" />
@@ -1479,7 +1482,7 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
                                 href={video.videoUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="p-2 rounded-xl bg-[#141b28] hover:bg-[#1a2334] border border-[#1f293d] text-zinc-400 hover:text-red-400 transition-colors"
+                                className="p-2 rounded-xl bg-zinc-100 hover:bg-zinc-200 dark:bg-[#141b28] dark:hover:bg-[#1a2334] border border-zinc-200 dark:border-[#1f293d] text-zinc-500 dark:text-zinc-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
                                 title="Open in YouTube"
                               >
                                 <Youtube className="w-3.5 h-3.5" />
@@ -1491,7 +1494,7 @@ export const PlaylistDetailPage: React.FC<PlaylistDetailPageProps> = ({
                                 className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer shadow-xs ${
                                   isCurrent
                                     ? 'bg-blue-600 text-white'
-                                    : 'bg-zinc-800 hover:bg-blue-600 text-zinc-200 hover:text-white'
+                                    : 'bg-zinc-100 hover:bg-blue-600 dark:bg-zinc-800 dark:hover:bg-blue-600 text-zinc-700 hover:text-white dark:text-zinc-200 dark:hover:text-white'
                                 }`}
                               >
                                 <Play className="w-3.5 h-3.5 fill-current" />

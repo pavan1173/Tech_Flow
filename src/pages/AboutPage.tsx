@@ -1,6 +1,5 @@
 import React from 'react';
 import { Sparkles, ArrowRight, Heart, Users, Target, ShieldCheck, Compass, Code, Layers, Building2, Database, FileText, Mail, CheckCircle2, Award } from 'lucide-react';
-import { DeveloperProfileCard } from '../components/DeveloperProfileCard';
 
 interface AboutPageProps {
   navigate: (to: string) => void;
@@ -67,19 +66,25 @@ export const AboutPage: React.FC<AboutPageProps> = ({ navigate }) => {
         </p>
       </div>
 
-      {/* Developer Profile Section */}
-      <section className="space-y-6">
-        <div className="text-center md:text-left space-y-1">
-          <h2 className="text-xl font-bold text-zinc-950 dark:text-white flex items-center justify-center md:justify-start gap-2">
-            <Award className="w-5 h-5 text-amber-500" />
-            <span>Meet the Developer &amp; Creator</span>
-          </h2>
-          <p className="text-xs text-zinc-500">
-            The visionary engineer and educator behind the HackPath platform
-          </p>
+      {/* Platform Pillars Highlight */}
+      <section className="p-8 sm:p-10 rounded-3xl bg-gradient-to-r from-blue-600/10 via-indigo-600/10 to-transparent border border-blue-500/20 space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <h2 className="text-xl sm:text-2xl font-bold text-zinc-950 dark:text-white flex items-center gap-2">
+              <Award className="w-5 h-5 text-amber-500" />
+              <span>Built for Developers by the Open-Source Community</span>
+            </h2>
+            <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 max-w-2xl">
+              An open, unified preparation environment combining real-time Firebase progress synchronization, curated competitive programming sheets, and comprehensive interview roadmaps.
+            </p>
+          </div>
+          <button
+            onClick={() => navigate('/preparation')}
+            className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-sm transition-all cursor-pointer shrink-0 self-start sm:self-auto"
+          >
+            Start Preparing Now →
+          </button>
         </div>
-
-        <DeveloperProfileCard navigate={navigate} />
       </section>
 
       {/* What is HackPath? Detailed Application Overview */}

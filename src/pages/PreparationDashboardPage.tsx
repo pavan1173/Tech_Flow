@@ -304,7 +304,7 @@ export const PreparationDashboardPage: React.FC<PrepDashboardProps> = ({ navigat
                     </div>
                   )}
                 </div>
-                <div className="absolute bottom-0 right-1 w-5 h-5 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-[#0c1017] flex items-center justify-center" title="Connected to Firestore">
+                <div className="absolute bottom-0 right-1 w-5 h-5 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-[#0c1017] flex items-center justify-center" title="Active Account">
                   <CheckCircle2 className="w-3 h-3 text-white" />
                 </div>
               </div>
@@ -327,7 +327,7 @@ export const PreparationDashboardPage: React.FC<PrepDashboardProps> = ({ navigat
                 </div>
 
                 <p className="text-xs text-zinc-600 dark:text-zinc-300 max-w-xl pt-0.5 line-clamp-2">
-                  {user.bio || 'Tracking your individual preparation progress on HackPath with realtime Firebase Firestore persistence.'}
+                  {user.bio || 'Tracking your individual preparation progress across roadmaps, DSA sheets, and interview topics.'}
                 </p>
               </div>
             </div>
@@ -443,10 +443,16 @@ export const PreparationDashboardPage: React.FC<PrepDashboardProps> = ({ navigat
             <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
           </div>
           <div className="text-3xl font-extrabold text-zinc-900 dark:text-white">
-            {codechefStats?.rating || 1640} <span className="text-base text-amber-500">{codechefStats?.stars || '3★'}</span>
+            {codechefStats?.rating ? (
+              <>
+                {codechefStats.rating} <span className="text-base text-amber-500">{codechefStats.stars}</span>
+              </>
+            ) : (
+              <span className="text-xl text-zinc-400 font-normal">Not Linked</span>
+            )}
           </div>
-          <span className="text-[11px] text-indigo-600 dark:text-indigo-400 font-medium mt-1 block font-mono">
-            {codechefStats?.fullySolved || 0} fully solved
+          <span className="text-[11px] text-zinc-400 font-medium mt-1 block font-mono">
+            {codechefStats?.fullySolved ? `${codechefStats.fullySolved} fully solved` : 'Link handle in settings'}
           </span>
         </div>
 
@@ -808,12 +814,12 @@ export const PreparationDashboardPage: React.FC<PrepDashboardProps> = ({ navigat
 
           <div className="space-y-3.5">
             {[
-              { label: 'LeetCode Problems Solved', count: leetcodeStats?.totalSolved || 0, total: 500, link: `https://leetcode.com/u/${leetcodeStats?.username || ''}`, isExternal: true, badge: 'Platform' },
-              { label: 'CodeChef Fully Solved', count: codechefStats?.fullySolved || 0, total: 250, link: `https://www.codechef.com/users/${codechefStats?.username || ''}`, isExternal: true, badge: 'Platform' },
-              { label: 'DSA Patterns & Practice', count: categoryCounts.dsa, total: 180, link: '/preparation/20-essential-dsa-patterns', isExternal: false, badge: 'HackPath' },
-              { label: 'SQL & Database Queries', count: categoryCounts.sql, total: 110, link: '/preparation/sql-sheet', isExternal: false, badge: 'HackPath' },
-              { label: 'System Design (HLD & LLD)', count: categoryCounts.systemDesign, total: 60, link: '/preparation/system-design-sheet', isExternal: false, badge: 'HackPath' },
-              { label: 'GitHub Public Repositories', count: githubStats?.publicRepos || 0, total: 50, link: `https://github.com/${githubStats?.username || ''}`, isExternal: true, badge: 'Code Hub' },
+              { label: 'DSA Sheets & Core Topics', count: categoryCounts.dsa, total: 450, link: '/preparation/dsa-sheets', badge: 'Sheets' },
+              { label: '20 Essential DSA Patterns', count: categoryCounts.dsa, total: 180, link: '/preparation/20-essential-dsa-patterns', badge: 'Patterns' },
+              { label: 'SQL & Database Queries', count: categoryCounts.sql, total: 110, link: '/preparation/sql-sheet', badge: 'SQL' },
+              { label: 'System Design (HLD & LLD)', count: categoryCounts.systemDesign, total: 60, link: '/preparation/system-design-sheet', badge: 'Architecture' },
+              { label: 'Company-Wise DSA Sets', count: categoryCounts.interviewQs, total: 200, link: '/preparation/company-wise-dsa-sheet', badge: 'Companies' },
+              { label: 'Role-Wise Interview Questions', count: categoryCounts.interviewQs, total: 250, link: '/preparation/role-wise', badge: 'Roles' },
             ].map((cat, idx) => {
               const pct = cat.total > 0 ? Math.min(100, Math.round((cat.count / cat.total) * 100)) : 0;
               return (
@@ -823,25 +829,13 @@ export const PreparationDashboardPage: React.FC<PrepDashboardProps> = ({ navigat
                       <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-500 font-bold">
                         {cat.badge}
                       </span>
-                      {cat.isExternal ? (
-                        <a
-                          href={cat.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="font-semibold text-zinc-800 dark:text-zinc-200 hover:text-blue-500 transition-colors flex items-center gap-1"
-                        >
-                          <span>{cat.label}</span>
-                          <ExternalLink className="w-3 h-3 text-zinc-400" />
-                        </a>
-                      ) : (
-                        <a
-                          href={cat.link}
-                          onClick={(e) => { e.preventDefault(); navigate(cat.link); }}
-                          className="font-semibold text-zinc-800 dark:text-zinc-200 hover:text-blue-500 transition-colors"
-                        >
-                          {cat.label}
-                        </a>
-                      )}
+                      <a
+                        href={cat.link}
+                        onClick={(e) => { e.preventDefault(); navigate(cat.link); }}
+                        className="font-semibold text-zinc-800 dark:text-zinc-200 hover:text-blue-500 transition-colors cursor-pointer"
+                      >
+                        {cat.label}
+                      </a>
                     </div>
                     <span className="font-mono text-[11px] text-zinc-500 font-bold">
                       {cat.count} / {cat.total} ({pct}%)
@@ -860,8 +854,8 @@ export const PreparationDashboardPage: React.FC<PrepDashboardProps> = ({ navigat
 
           <div className="pt-2 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
             <span className="text-xs text-zinc-500 font-mono flex items-center gap-1">
-              <Database className="w-3.5 h-3.5 text-blue-500" />
-              <span>Persisted on Firebase Firestore</span>
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+              <span>Progress Synchronized</span>
             </span>
             <button
               onClick={() => navigate('/preparation/20-essential-dsa-patterns')}

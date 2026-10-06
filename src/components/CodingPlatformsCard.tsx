@@ -95,7 +95,7 @@ export const CodingPlatformsCard: React.FC<CodingPlatformsCardProps> = ({
               <h2 className="text-lg sm:text-xl font-black text-zinc-900 dark:text-white tracking-tight flex items-center gap-2">
                 <span>Competitive Coding Profiles &amp; Metrics</span>
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-500/20">
-                  DB Synced
+                  Live Stats
                 </span>
               </h2>
               <p className="text-xs text-zinc-500 dark:text-zinc-400">

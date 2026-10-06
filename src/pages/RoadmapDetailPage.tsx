@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useProgress } from '../context/ProgressContext';
 import { AuthGate } from '../components/AuthGate';
 import {
   ArrowLeft,
@@ -39,6 +40,7 @@ interface RoadmapDetailPageProps {
 
 export const RoadmapDetailPage: React.FC<RoadmapDetailPageProps> = ({ slug, navigate }) => {
   const { isAuthenticated } = useAuth();
+  const { getCustomData, setCustomData, customDataMap } = useProgress();
   // Find detailed roadmap or generate structured dynamic fallback
   const roadmapData: RoadmapDetail = React.useMemo(() => {
     if (ROADMAP_DETAILS[slug]) {
@@ -178,10 +180,14 @@ export const RoadmapDetailPage: React.FC<RoadmapDetailPageProps> = ({ slug, navi
   // Selected topic for the inspector drawer/modal
   const [activeTopic, setActiveTopic] = useState<RoadmapTopic | null>(null);
 
-  // Completed topics tracking in localStorage
+  // Completed topics tracking in ProgressContext & DB with localStorage backup
   const storageKey = `teachflow_roadmap_completed_${slug}`;
   const [completedTopicIds, setCompletedTopicIds] = useState<string[]>(() => {
     try {
+      const fromContext = getCustomData(storageKey);
+      if (Array.isArray(fromContext)) {
+        return fromContext.filter((item): item is string => typeof item === 'string');
+      }
       const saved = localStorage.getItem(storageKey);
       if (saved) {
         const parsed = JSON.parse(saved);
@@ -194,6 +200,14 @@ export const RoadmapDetailPage: React.FC<RoadmapDetailPageProps> = ({ slug, navi
       return [];
     }
   });
+
+  // Keep in sync if remote DB updates customDataMap
+  useEffect(() => {
+    const remote = customDataMap[storageKey];
+    if (Array.isArray(remote)) {
+      setCompletedTopicIds(remote);
+    }
+  }, [customDataMap, storageKey]);
 
   const safeCompletedIds = React.useMemo(() => {
     return Array.isArray(completedTopicIds) ? completedTopicIds : [];
@@ -219,6 +233,7 @@ export const RoadmapDetailPage: React.FC<RoadmapDetailPageProps> = ({ slug, navi
         ? currentList.filter((id) => id !== topicId)
         : [...currentList, topicId];
       try {
+        setCustomData(storageKey, updated);
         localStorage.setItem(storageKey, JSON.stringify(updated));
         window.dispatchEvent(new Event('teachflow_roadmap_updated'));
       } catch (err) {
@@ -232,6 +247,7 @@ export const RoadmapDetailPage: React.FC<RoadmapDetailPageProps> = ({ slug, navi
     const allIds = allTopics.map((t) => t.id);
     setCompletedTopicIds(allIds);
     try {
+      setCustomData(storageKey, allIds);
       localStorage.setItem(storageKey, JSON.stringify(allIds));
       window.dispatchEvent(new Event('teachflow_roadmap_updated'));
     } catch (err) {
@@ -242,6 +258,7 @@ export const RoadmapDetailPage: React.FC<RoadmapDetailPageProps> = ({ slug, navi
   const resetProgress = () => {
     setCompletedTopicIds([]);
     try {
+      setCustomData(storageKey, []);
       localStorage.removeItem(storageKey);
       window.dispatchEvent(new Event('teachflow_roadmap_updated'));
     } catch (err) {

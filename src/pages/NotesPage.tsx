@@ -113,31 +113,31 @@ export const NotesPage: React.FC<NotesPageProps> = ({ navigate }) => {
   };
 
   return (
-    <div className="min-h-screen bg-[#07090e] text-zinc-100 p-4 sm:p-6 lg:p-8 font-lexend space-y-6 max-w-7xl mx-auto">
+    <div className="min-h-screen bg-[#fcfcfb] dark:bg-[#07090e] text-zinc-900 dark:text-zinc-100 p-4 sm:p-6 lg:p-8 font-lexend space-y-6 max-w-7xl mx-auto transition-colors duration-200">
       {/* 1. Breadcrumbs matching hynts.in */}
-      <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-zinc-400">
+      <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400">
         <a
           href="/preparation"
           onClick={(e) => handleNav(e, '/preparation')}
-          className="hover:text-white transition-colors"
+          className="hover:text-zinc-900 dark:hover:text-white transition-colors"
         >
           Preparation
         </a>
-        <ChevronRight className="w-3.5 h-3.5 text-zinc-600 shrink-0" />
-        <span className="text-white font-medium">Cool Notes</span>
+        <ChevronRight className="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-600 shrink-0" />
+        <span className="text-zinc-900 dark:text-white font-medium">Cool Notes</span>
       </nav>
 
       {/* 2. Header Section matching hynts.in */}
       <div className="space-y-1.5">
         <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center text-zinc-300">
+          <div className="w-7 h-7 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 flex items-center justify-center text-zinc-700 dark:text-zinc-300">
             <FileText className="w-4 h-4" />
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-white">
             Notes
           </h1>
         </div>
-        <p className="text-xs sm:text-sm text-zinc-400 font-normal">
+        <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 font-normal">
           Curated PDF study notes — click any card to open the PDF in-page.
         </p>
       </div>
@@ -152,7 +152,7 @@ export const NotesPage: React.FC<NotesPageProps> = ({ navigate }) => {
               id="notes-category-filter"
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="appearance-none pl-9 pr-10 py-2.5 text-xs sm:text-sm font-lexend font-medium bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-[#1b2230] rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 hover:border-zinc-700 transition-all cursor-pointer min-w-[200px]"
+              className="appearance-none pl-9 pr-10 py-2.5 text-xs sm:text-sm font-lexend font-medium bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-[#1b2230] rounded-xl text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 hover:border-zinc-400 dark:hover:border-zinc-700 transition-all cursor-pointer min-w-[200px]"
               aria-label="Filter notes by category"
             >
               <option value="All">All Categories</option>
@@ -168,26 +168,26 @@ export const NotesPage: React.FC<NotesPageProps> = ({ navigate }) => {
           </div>
 
           {/* Notes count indicator */}
-          <p className="text-xs text-zinc-400 font-lexend">
-            <span className="font-semibold text-white">{filteredNotes.length}</span> note
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 font-lexend">
+            <span className="font-semibold text-zinc-900 dark:text-white">{filteredNotes.length}</span> note
             {filteredNotes.length === 1 ? '' : 's'} found
           </p>
         </div>
 
         {/* Search Bar */}
         <div className="relative w-full sm:w-72">
-          <Search className="w-3.5 h-3.5 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             placeholder="Search notes by keyword..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-[#1b2230] text-xs text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all"
+            className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-[#1b2230] text-xs text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-900 dark:hover:text-white"
             >
               <X className="w-3.5 h-3.5" />
             </button>
@@ -298,8 +298,8 @@ export const NotesPage: React.FC<NotesPageProps> = ({ navigate }) => {
             disabled={currentPage === 1}
             className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold font-lexend transition-all cursor-pointer ${
               currentPage === 1
-                ? 'opacity-40 cursor-not-allowed text-zinc-500'
-                : 'text-zinc-300 hover:text-white hover:bg-zinc-800'
+                ? 'opacity-40 cursor-not-allowed text-zinc-400 dark:text-zinc-500'
+                : 'text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800'
             }`}
           >
             <ChevronLeft className="w-3.5 h-3.5" />
@@ -317,7 +317,7 @@ export const NotesPage: React.FC<NotesPageProps> = ({ navigate }) => {
                 className={`w-8 h-8 rounded-lg text-xs font-bold font-lexend transition-all cursor-pointer ${
                   isActive
                     ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
-                    : 'text-zinc-400 hover:text-white hover:bg-zinc-800/80'
+                    : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800/80'
                 }`}
               >
                 {pageNum}
@@ -331,8 +331,8 @@ export const NotesPage: React.FC<NotesPageProps> = ({ navigate }) => {
             disabled={currentPage === totalPages}
             className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold font-lexend transition-all cursor-pointer ${
               currentPage === totalPages
-                ? 'opacity-40 cursor-not-allowed text-zinc-500'
-                : 'text-zinc-300 hover:text-white hover:bg-zinc-800'
+                ? 'opacity-40 cursor-not-allowed text-zinc-400 dark:text-zinc-500'
+                : 'text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800'
             }`}
           >
             <span>Next</span>
@@ -359,25 +359,25 @@ export const NotesPage: React.FC<NotesPageProps> = ({ navigate }) => {
           {/* Modal Container */}
           <div className="relative z-10 flex flex-col w-full h-full max-w-6xl mx-auto my-2 sm:my-4 px-2 sm:px-6">
             {/* Modal Header Bar */}
-            <div className="flex items-center gap-3 bg-zinc-100 dark:bg-[#0d121c] border border-zinc-200 dark:border-[#1b2230] rounded-t-xl px-4 py-3 shrink-0 shadow-lg">
+            <div className="flex items-center gap-3 bg-white dark:bg-[#0d121c] border border-zinc-200 dark:border-[#1b2230] rounded-t-xl px-4 py-3 shrink-0 shadow-lg">
               {/* PDF Icon Badge */}
               <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center justify-center">
-                <FileText className="w-4 h-4 text-red-400" />
+                <FileText className="w-4 h-4 text-red-500 dark:text-red-400" />
               </div>
 
               {/* Title & Category Info */}
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold font-lexend text-white truncate">
+                <p className="text-sm font-semibold font-lexend text-zinc-900 dark:text-white truncate">
                   {activeNote.title}
                 </p>
-                <div className="flex items-center gap-2 text-xs text-zinc-400 font-lexend truncate">
-                  <span className="text-blue-400 font-medium">{activeNote.category}</span>
+                <div className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400 font-lexend truncate">
+                  <span className="text-blue-600 dark:text-blue-400 font-medium">{activeNote.category}</span>
                   <span>•</span>
                   <span>{activeNote.date}</span>
                   {activeNote.description && (
                     <>
                       <span>•</span>
-                      <span className="text-zinc-400 truncate max-w-xs">{activeNote.description}</span>
+                      <span className="text-zinc-500 dark:text-zinc-400 truncate max-w-xs">{activeNote.description}</span>
                     </>
                   )}
                 </div>
@@ -388,10 +388,10 @@ export const NotesPage: React.FC<NotesPageProps> = ({ navigate }) => {
                 {/* Share Link */}
                 <button
                   onClick={() => copyShareLink(activeNote)}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold font-lexend bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold font-lexend bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white border border-zinc-200 dark:border-transparent transition-colors cursor-pointer"
                   title="Copy Google Drive Link"
                 >
-                  {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Share2 className="w-3.5 h-3.5" />}
+                  {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Share2 className="w-3.5 h-3.5" />}
                   <span className="hidden sm:inline">{copiedLink ? 'Copied!' : 'Share'}</span>
                 </button>
 
@@ -400,7 +400,7 @@ export const NotesPage: React.FC<NotesPageProps> = ({ navigate }) => {
                   href={activeNote.file_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold font-lexend bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold font-lexend bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white border border-zinc-200 dark:border-transparent transition-colors cursor-pointer"
                   aria-label="Open in new tab"
                 >
                   <ExternalLink className="w-3.5 h-3.5" />
@@ -413,7 +413,7 @@ export const NotesPage: React.FC<NotesPageProps> = ({ navigate }) => {
                   target="_blank"
                   rel="noopener noreferrer"
                   download
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold font-lexend bg-blue-600 hover:bg-blue-500 text-white transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold font-lexend bg-blue-600 hover:bg-blue-500 text-white transition-colors cursor-pointer shadow-xs"
                   title="Download / View PDF"
                 >
                   <Download className="w-3.5 h-3.5" />
@@ -423,7 +423,7 @@ export const NotesPage: React.FC<NotesPageProps> = ({ navigate }) => {
                 {/* Close Modal Button */}
                 <button
                   onClick={closeNoteModal}
-                  className="inline-flex items-center justify-center w-8 h-8 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer"
+                  className="inline-flex items-center justify-center w-8 h-8 rounded-lg text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
                   aria-label="Close modal"
                 >
                   <X className="w-4 h-4" />

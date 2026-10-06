@@ -56,18 +56,18 @@ export const ResumeTemplatesPage: React.FC<ResumeTemplatesPageProps> = ({ naviga
   };
 
   return (
-    <div className="min-h-screen bg-[#07090e] text-zinc-100 p-4 sm:p-6 lg:p-8 font-lexend space-y-8 max-w-7xl mx-auto">
+    <div className="min-h-screen bg-[#fcfcfb] dark:bg-[#07090e] text-zinc-900 dark:text-zinc-100 p-4 sm:p-6 lg:p-8 font-lexend space-y-8 max-w-7xl mx-auto transition-colors duration-200">
       {/* 1. Breadcrumbs matching hynts.in */}
-      <div className="flex items-center gap-2 text-xs text-zinc-400">
+      <div className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400">
         <a
           href="/preparation"
           onClick={(e) => handleNav(e, '/preparation')}
-          className="hover:text-white transition-colors"
+          className="hover:text-zinc-900 dark:hover:text-white transition-colors"
         >
           Preparation
         </a>
-        <ChevronRight className="w-3.5 h-3.5 text-zinc-600 shrink-0" />
-        <span className="text-white font-medium">Resume Templates</span>
+        <ChevronRight className="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-600 shrink-0" />
+        <span className="text-zinc-900 dark:text-white font-medium">Resume Templates</span>
       </div>
 
       {/* 2. Header Section matching hynts.in */}
@@ -75,7 +75,7 @@ export const ResumeTemplatesPage: React.FC<ResumeTemplatesPageProps> = ({ naviga
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-white">
           Resume Templates
         </h1>
-        <p className="text-xs sm:text-sm text-zinc-400 font-normal max-w-4xl leading-relaxed">
+        <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 font-normal max-w-4xl leading-relaxed">
           Stand out from the crowd with these battle-tested, ATS-friendly resume templates. Preview and download the exact templates used to land offers at FAANG and top tech companies.
         </p>
       </div>
@@ -182,20 +182,20 @@ export const ResumeTemplatesPage: React.FC<ResumeTemplatesPageProps> = ({ naviga
           onClick={() => setPreviewTemplate(null)}
         >
           <div
-            className="relative w-full max-w-4xl max-h-[92vh] bg-white dark:bg-[#0c1017] border border-zinc-800 rounded-2xl shadow-2xl flex flex-col overflow-hidden text-zinc-100"
+            className="relative w-full max-w-4xl max-h-[92vh] bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-2xl flex flex-col overflow-hidden text-zinc-900 dark:text-zinc-100"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Top Bar */}
-            <div className="px-5 py-3.5 bg-zinc-100 dark:bg-[#090d14] border-b border-zinc-800/80 flex items-center justify-between gap-3">
+            <div className="px-5 py-3.5 bg-zinc-100 dark:bg-[#090d14] border-b border-zinc-200 dark:border-zinc-800/80 flex items-center justify-between gap-3">
               <div className="flex items-center gap-3 min-w-0">
-                <div className="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center shrink-0">
+                <div className="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
                   <FileText className="w-4 h-4" />
                 </div>
                 <div className="min-w-0">
-                  <h2 className="text-sm sm:text-base font-extrabold text-white truncate">
+                  <h2 className="text-sm sm:text-base font-extrabold text-zinc-900 dark:text-white truncate">
                     {previewTemplate.name}
                   </h2>
-                  <p className="text-[11px] text-zinc-400">
+                  <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
                     {previewTemplate.recommendedFor || 'ATS-Optimized Tech Template'}
                   </p>
                 </div>
@@ -206,10 +206,10 @@ export const ResumeTemplatesPage: React.FC<ResumeTemplatesPageProps> = ({ naviga
                 {/* Share Link */}
                 <button
                   onClick={() => copyShareLink(previewTemplate)}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white hover:bg-zinc-200/70 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white border border-zinc-200 dark:border-transparent transition-colors cursor-pointer"
                   title="Copy Google Drive Link"
                 >
-                  {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Share2 className="w-3.5 h-3.5" />}
+                  {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Share2 className="w-3.5 h-3.5" />}
                   <span className="hidden sm:inline">{copiedLink ? 'Copied!' : 'Share'}</span>
                 </button>
 
@@ -218,7 +218,7 @@ export const ResumeTemplatesPage: React.FC<ResumeTemplatesPageProps> = ({ naviga
                   href={previewTemplate.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white hover:bg-zinc-200/70 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white border border-zinc-200 dark:border-transparent transition-colors cursor-pointer"
                   aria-label="Open in Google Drive"
                 >
                   <ExternalLink className="w-3.5 h-3.5" />
@@ -228,7 +228,7 @@ export const ResumeTemplatesPage: React.FC<ResumeTemplatesPageProps> = ({ naviga
                 {/* Download Template */}
                 <button
                   onClick={() => handleDownload(previewTemplate)}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-white hover:bg-zinc-100 text-zinc-900 transition-colors shadow-sm cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white transition-colors shadow-sm cursor-pointer"
                 >
                   <Download className="w-3.5 h-3.5" />
                   <span>Download</span>
@@ -237,7 +237,7 @@ export const ResumeTemplatesPage: React.FC<ResumeTemplatesPageProps> = ({ naviga
                 {/* Close Button */}
                 <button
                   onClick={() => setPreviewTemplate(null)}
-                  className="inline-flex items-center justify-center w-8 h-8 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer ml-1"
+                  className="inline-flex items-center justify-center w-8 h-8 rounded-lg text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors cursor-pointer ml-1"
                   aria-label="Close modal"
                 >
                   <X className="w-4 h-4" />

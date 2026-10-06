@@ -941,7 +941,7 @@ export const PreparationSidebar: React.FC<SidebarProps> = ({
             onClick={closeDrawer}
             aria-label="Close sidebar overlay"
           />
-          <div className="relative w-72 sm:w-80 max-w-[85vw] bg-white dark:bg-[#07090e] border-r border-zinc-200 dark:border-zinc-200 dark:border-zinc-800 h-full overflow-y-auto overscroll-contain custom-scrollbar z-50 flex flex-col shadow-2xl animate-in slide-in-from-left duration-300 ease-out">
+          <div className="relative w-72 sm:w-80 max-w-[85vw] bg-white dark:bg-[#07090e] border-r border-zinc-200 dark:border-zinc-800 h-full overflow-y-auto overscroll-contain custom-scrollbar z-50 flex flex-col shadow-2xl animate-in slide-in-from-left duration-300 ease-out">
             {/* Mobile Drawer Header with Close Button */}
             <div className="px-4 py-3 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between shrink-0">
               <a

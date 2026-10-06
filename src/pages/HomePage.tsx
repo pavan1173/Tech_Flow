@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { faqData, testimonialsData } from '../data/common';
 import { TeachFlowLogo } from '../components/TeachFlowLogo';
-import { DeveloperProfileCard } from '../components/DeveloperProfileCard';
 import {
   ArrowRight,
   Code2,
@@ -212,22 +211,52 @@ export const HomePage: React.FC<HomePageProps> = ({ navigate }) => {
         </div>
       </section>
 
-      {/* ── FOUNDER / CREATOR STORY ("One Of You, Who Built This For You") ── */}
+      {/* ── PLATFORM MISSION & ARCHITECTURE ── */}
       <section className="py-20 bg-zinc-50/60 dark:bg-zinc-950 border-y border-zinc-200 dark:border-zinc-800/80">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 space-y-6">
           <div className="text-center space-y-2 mb-8">
             <span className="text-xs font-bold uppercase tracking-wider text-[#6C47FF] dark:text-[#9c81ff] font-mono">
-              BEHIND HACKPATH
+              THE HACKPATH MISSION
             </span>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-zinc-950 dark:text-white">
-              One Of You, Who Built This For You
+              Democratizing Technical Interview Preparation
             </h2>
             <p className="text-sm text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto">
-              Created by software engineer Pavan Kumar (@tech_by.pavan) to give every student the exact roadmap and tools to land their dream offer.
+              Built to give every engineer equal access to high-yield roadmaps, verified interview question sets, and real-time progress tracking with zero paywalls.
             </p>
           </div>
 
-          <DeveloperProfileCard navigate={navigate} />
+          <div className="rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#0c1017] p-6 sm:p-10 shadow-lg space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200/80 dark:border-zinc-800">
+                <span className="text-[10px] font-mono font-bold text-blue-500 uppercase tracking-wider">CURATED CURRICULUM</span>
+                <p className="text-lg font-black text-zinc-900 dark:text-white mt-1">8 Premier DSA Sheets</p>
+                <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">Striver, Love Babbar, Blind 75, Neetcode, and more.</p>
+              </div>
+              <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200/80 dark:border-zinc-800">
+                <span className="text-[10px] font-mono font-bold text-emerald-500 uppercase tracking-wider">TARGETED PREP</span>
+                <p className="text-lg font-black text-zinc-900 dark:text-white mt-1">45+ Tech Companies</p>
+                <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">High-frequency questions asked at FAANG and top unicorns.</p>
+              </div>
+              <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200/80 dark:border-zinc-800">
+                <span className="text-[10px] font-mono font-bold text-amber-500 uppercase tracking-wider">ACCESSIBILITY</span>
+                <p className="text-lg font-black text-zinc-900 dark:text-white mt-1">100% Free Forever</p>
+                <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">No subscription fees, no locked chapters, no paywalls.</p>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-zinc-100 dark:border-zinc-800/80">
+              <p className="text-xs text-zinc-600 dark:text-zinc-400 text-center sm:text-left">
+                Start mastering 20 coding patterns, System Design HLD/LLD, and Top 110 SQL queries today.
+              </p>
+              <button
+                onClick={() => navigate('/preparation')}
+                className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-sm transition-all cursor-pointer shrink-0"
+              >
+                Open Preparation Hub →
+              </button>
+            </div>
+          </div>
         </div>
       </section>
 

@@ -102,17 +102,33 @@ export function useNavigationProgress(): NavigationProgressStats {
     let totalCompletedRoadmapTopics = 0;
     let completedRoadmapsCount = 0;
     const totalRoadmaps = 95;
+    const countedRoadmapKeys = new Set<string>();
+
+    // First check customDataMap (Firestore DB synced)
+    if (customDataMap) {
+      Object.keys(customDataMap).forEach((key) => {
+        if (key.startsWith('teachflow_roadmap_completed_')) {
+          const arr = customDataMap[key];
+          if (Array.isArray(arr) && arr.length > 0) {
+            totalCompletedRoadmapTopics += arr.length;
+            completedRoadmapsCount++;
+            countedRoadmapKeys.add(key);
+          }
+        }
+      });
+    }
 
     try {
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
-        if (key && key.startsWith('teachflow_roadmap_completed_')) {
+        if (key && key.startsWith('teachflow_roadmap_completed_') && !countedRoadmapKeys.has(key)) {
           const raw = localStorage.getItem(key);
           if (raw) {
             const arr = JSON.parse(raw);
             if (Array.isArray(arr) && arr.length > 0) {
               totalCompletedRoadmapTopics += arr.length;
               completedRoadmapsCount++;
+              countedRoadmapKeys.add(key);
             }
           }
         }

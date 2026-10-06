@@ -133,28 +133,28 @@ export const PackageWisePage: React.FC<PackageWisePageProps> = ({ navigate }) =>
   const difficultyOptions = ['All', 'Easy', 'Medium', 'Hard'];
 
   return (
-    <div className="min-h-screen bg-[#07090e] text-zinc-100 p-4 sm:p-6 lg:p-8 font-lexend space-y-6 max-w-7xl mx-auto">
+    <div className="min-h-screen bg-[#fcfcfb] dark:bg-[#07090e] text-zinc-900 dark:text-zinc-100 p-4 sm:p-6 lg:p-8 font-lexend space-y-6 max-w-7xl mx-auto transition-colors duration-200">
       {/* Header Section matching screenshot */}
       <div className="space-y-3">
         <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-white">
           Package Wise DSA Sheet
         </h1>
 
-        <div className="text-xs sm:text-[13px] text-zinc-400 leading-relaxed max-w-4xl font-normal">
+        <div className="text-xs sm:text-[13px] text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-4xl font-normal">
           <p className={showFullDesc ? '' : 'line-clamp-2'}>
             Master data structures and algorithms curated specifically by target compensation packages. Practice targeted problem sets ranging from 3 LPA mass recruiter essentials to 60+ LPA FAANG and top-tier quant interview patterns.
           </p>
           <button
             onClick={() => setShowFullDesc(!showFullDesc)}
-            className="text-blue-400 hover:text-blue-300 font-semibold text-xs mt-1 inline-block cursor-pointer"
+            className="text-blue-500 dark:text-blue-400 hover:underline font-semibold text-xs mt-1 inline-block cursor-pointer"
           >
             {showFullDesc ? 'Read Less' : 'Read More'}
           </button>
         </div>
 
         {/* Metadata subline */}
-        <div className="flex items-center gap-2 text-xs text-zinc-400 font-medium">
-          <span className="font-bold text-zinc-200">200 Problems</span>
+        <div className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400 font-medium">
+          <span className="font-bold text-zinc-800 dark:text-zinc-200">200 Problems</span>
           <span>•</span>
           <span>6 Package Tiers (3 LPA – 60+ LPA)</span>
         </div>
@@ -167,7 +167,7 @@ export const PackageWisePage: React.FC<PackageWisePageProps> = ({ navigate }) =>
           <div className="relative w-10 h-10 flex items-center justify-center shrink-0">
             <svg className="w-10 h-10 transform -rotate-90" viewBox="0 0 36 36">
               <path
-                className="text-zinc-800"
+                className="text-zinc-200 dark:text-zinc-800"
                 strokeWidth="3.5"
                 stroke="currentColor"
                 fill="none"
@@ -183,16 +183,16 @@ export const PackageWisePage: React.FC<PackageWisePageProps> = ({ navigate }) =>
                 d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
               />
             </svg>
-            <span className="absolute font-bold text-[10px] text-white">
+            <span className="absolute font-bold text-[10px] text-zinc-900 dark:text-white">
               {progressPercent}%
             </span>
           </div>
 
           <div className="flex flex-col">
-            <span className="text-[11px] font-semibold text-zinc-400">
+            <span className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">
               Overall Progress
             </span>
-            <span className="text-xs font-bold text-white tracking-wide">
+            <span className="text-xs font-bold text-zinc-900 dark:text-white tracking-wide">
               {solvedCount}/{totalCount}
             </span>
           </div>
@@ -210,8 +210,8 @@ export const PackageWisePage: React.FC<PackageWisePageProps> = ({ navigate }) =>
             }}
             className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               selectedDifficulty === 'All' && selectedPackage === 'All' && !onlyBookmarks
-                ? 'bg-zinc-800 text-white shadow-xs'
-                : 'text-zinc-400 hover:text-white'
+                ? 'bg-zinc-900 text-white dark:bg-zinc-200 dark:text-zinc-900 shadow-xs'
+                : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
             }`}
           >
             All
@@ -226,8 +226,8 @@ export const PackageWisePage: React.FC<PackageWisePageProps> = ({ navigate }) =>
               }}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-colors cursor-pointer border ${
                 selectedDifficulty !== 'All'
-                  ? 'border-blue-500/50 text-blue-400 bg-blue-500/10'
-                  : 'border-transparent text-zinc-300 hover:text-white hover:bg-zinc-800/60'
+                  ? 'border-blue-500/50 text-blue-600 dark:text-blue-400 bg-blue-500/10'
+                  : 'border-transparent text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800/60'
               }`}
             >
               <span>{selectedDifficulty === 'All' ? 'Difficulty' : selectedDifficulty}</span>
@@ -235,7 +235,7 @@ export const PackageWisePage: React.FC<PackageWisePageProps> = ({ navigate }) =>
             </button>
 
             {isDiffOpen && (
-              <div className="absolute right-0 mt-2 w-36 rounded-xl bg-white dark:bg-[#0e121a] border border-zinc-200 dark:border-[#1e2433] shadow-xl py-1.5 z-30 divide-y divide-zinc-800/40">
+              <div className="absolute right-0 mt-2 w-36 rounded-xl bg-white dark:bg-[#0e121a] border border-zinc-200 dark:border-[#1e2433] shadow-xl py-1.5 z-30 divide-y divide-zinc-100 dark:divide-zinc-800/40">
                 {difficultyOptions.map((diff) => (
                   <button
                     key={diff}
@@ -245,8 +245,8 @@ export const PackageWisePage: React.FC<PackageWisePageProps> = ({ navigate }) =>
                     }}
                     className={`w-full text-left px-3.5 py-1.5 text-xs font-medium transition-colors cursor-pointer flex items-center justify-between ${
                       selectedDifficulty === diff
-                        ? 'text-blue-400 bg-blue-500/10'
-                        : 'text-zinc-300 hover:text-white hover:bg-zinc-800/60'
+                        ? 'text-blue-600 dark:text-blue-400 bg-blue-500/10'
+                        : 'text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800/60'
                     }`}
                   >
                     <span>{diff}</span>
@@ -266,8 +266,8 @@ export const PackageWisePage: React.FC<PackageWisePageProps> = ({ navigate }) =>
               }}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-colors cursor-pointer border ${
                 selectedPackage !== 'All'
-                  ? 'border-purple-500/50 text-purple-400 bg-purple-500/10'
-                  : 'border-transparent text-zinc-300 hover:text-white hover:bg-zinc-800/60'
+                  ? 'border-purple-500/50 text-purple-600 dark:text-purple-400 bg-purple-500/10'
+                  : 'border-transparent text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800/60'
               }`}
             >
               <span>
@@ -279,7 +279,7 @@ export const PackageWisePage: React.FC<PackageWisePageProps> = ({ navigate }) =>
             </button>
 
             {isPkgOpen && (
-              <div className="absolute right-0 mt-2 w-44 rounded-xl bg-white dark:bg-[#0e121a] border border-zinc-200 dark:border-[#1e2433] shadow-xl py-1.5 z-30 divide-y divide-zinc-800/40">
+              <div className="absolute right-0 mt-2 w-44 rounded-xl bg-white dark:bg-[#0e121a] border border-zinc-200 dark:border-[#1e2433] shadow-xl py-1.5 z-30 divide-y divide-zinc-100 dark:divide-zinc-800/40">
                 {packageOptions.map((pkg) => (
                   <button
                     key={pkg.value}
@@ -289,8 +289,8 @@ export const PackageWisePage: React.FC<PackageWisePageProps> = ({ navigate }) =>
                     }}
                     className={`w-full text-left px-3.5 py-1.5 text-xs font-medium transition-colors cursor-pointer flex items-center justify-between ${
                       selectedPackage === pkg.value
-                        ? 'text-purple-400 bg-purple-500/10'
-                        : 'text-zinc-300 hover:text-white hover:bg-zinc-800/60'
+                        ? 'text-purple-600 dark:text-purple-400 bg-purple-500/10'
+                        : 'text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800/60'
                     }`}
                   >
                     <span>{pkg.label}</span>
@@ -301,20 +301,20 @@ export const PackageWisePage: React.FC<PackageWisePageProps> = ({ navigate }) =>
             )}
           </div>
 
-          <div className="w-[1px] h-4 bg-zinc-700 mx-1" />
+          <div className="w-[1px] h-4 bg-zinc-300 dark:bg-zinc-700 mx-1" />
 
           {/* Bookmarked Filter */}
           <button
             onClick={() => setOnlyBookmarks(!onlyBookmarks)}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-colors cursor-pointer ${
               onlyBookmarks
-                ? 'text-amber-400 bg-amber-500/10'
-                : 'text-zinc-300 hover:text-white hover:bg-zinc-800/60'
+                ? 'text-amber-500 bg-amber-500/10'
+                : 'text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800/60'
             }`}
           >
             <Star
               className={`w-3.5 h-3.5 ${
-                onlyBookmarks ? 'fill-amber-400 text-amber-400' : 'text-zinc-400'
+                onlyBookmarks ? 'fill-amber-500 text-amber-500' : 'text-zinc-400'
               }`}
             />
             <span>Bookmarked</span>
@@ -327,7 +327,7 @@ export const PackageWisePage: React.FC<PackageWisePageProps> = ({ navigate }) =>
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-zinc-200 dark:border-[#1b2230] bg-zinc-50 dark:bg-[#0a0e16] text-[11px] font-bold text-zinc-400 uppercase tracking-wider">
+              <tr className="border-b border-zinc-200 dark:border-[#1b2230] bg-zinc-50 dark:bg-[#0a0e16] text-[11px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
                 <th className="py-3.5 pl-5 pr-3 w-14">STATUS</th>
                 <th className="py-3.5 px-4 min-w-[200px]">PROBLEM</th>
                 <th className="py-3.5 px-4 text-center w-28">TOPIC</th>
@@ -347,10 +347,10 @@ export const PackageWisePage: React.FC<PackageWisePageProps> = ({ navigate }) =>
                 const diff = q.difficulty || 'Easy';
                 const diffBadgeStyle =
                   diff.toLowerCase() === 'easy'
-                    ? 'text-emerald-400 bg-emerald-950/40 border border-emerald-800/40'
+                    ? 'text-emerald-700 bg-emerald-50 border border-emerald-200 dark:text-emerald-400 dark:bg-emerald-950/40 dark:border-emerald-800/40'
                     : diff.toLowerCase() === 'hard'
-                    ? 'text-rose-400 bg-rose-950/40 border border-rose-800/40'
-                    : 'text-amber-400 bg-amber-950/40 border border-amber-800/40';
+                    ? 'text-rose-700 bg-rose-50 border border-rose-200 dark:text-rose-400 dark:bg-rose-950/40 dark:border-rose-800/40'
+                    : 'text-amber-700 bg-amber-50 border border-amber-200 dark:text-amber-400 dark:bg-amber-950/40 dark:border-amber-800/40';
 
                 const pkgBadge = getPackageDisplay(q.package);
 
@@ -365,7 +365,7 @@ export const PackageWisePage: React.FC<PackageWisePageProps> = ({ navigate }) =>
                     className={`transition-colors group ${
                       isItemLocked
                         ? 'opacity-20 blur-[2px] select-none cursor-pointer'
-                        : 'hover:bg-[#111724]'
+                        : 'hover:bg-zinc-50 dark:hover:bg-[#111724]'
                     }`}
                   >
                     {/* Status Checkbox */}
@@ -378,7 +378,7 @@ export const PackageWisePage: React.FC<PackageWisePageProps> = ({ navigate }) =>
                         className={`w-4 h-4 rounded-md border flex items-center justify-center transition-all cursor-pointer ${
                           solved
                             ? 'bg-blue-600 border-blue-600 text-white'
-                            : 'border-zinc-600 bg-transparent hover:border-zinc-400'
+                            : 'border-zinc-300 dark:border-zinc-600 bg-white dark:bg-transparent hover:border-zinc-500'
                         }`}
                         title={solved ? 'Mark as Unsolved' : 'Mark as Solved'}
                       >
@@ -387,9 +387,9 @@ export const PackageWisePage: React.FC<PackageWisePageProps> = ({ navigate }) =>
                     </td>
 
                     {/* Problem Index & Title */}
-                    <td className="py-3.5 px-4 font-semibold text-zinc-100">
+                    <td className="py-3.5 px-4 font-semibold text-zinc-900 dark:text-zinc-100">
                       <div className="flex items-center gap-2">
-                        <span className="text-zinc-500 font-mono text-xs w-6 shrink-0">
+                        <span className="text-zinc-400 dark:text-zinc-500 font-mono text-xs w-6 shrink-0">
                           {q.id}.
                         </span>
                         <a
@@ -402,8 +402,8 @@ export const PackageWisePage: React.FC<PackageWisePageProps> = ({ navigate }) =>
                               openAuthModal();
                             }
                           }}
-                          className={`hover:text-blue-400 transition-colors ${
-                            solved ? 'line-through text-zinc-500' : 'text-zinc-100'
+                          className={`hover:text-blue-500 transition-colors ${
+                            solved ? 'line-through text-zinc-400 dark:text-zinc-500' : 'text-zinc-900 dark:text-zinc-100'
                           }`}
                         >
                           {q.title}
@@ -413,7 +413,7 @@ export const PackageWisePage: React.FC<PackageWisePageProps> = ({ navigate }) =>
 
                     {/* Topic Badge */}
                     <td className="py-3.5 px-4 text-center">
-                      <span className="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#131a26] text-zinc-300 border border-zinc-700/60">
+                      <span className="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-zinc-100 dark:bg-[#131a26] text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700/60">
                         {q.topic || 'DSA'}
                       </span>
                     </td>
