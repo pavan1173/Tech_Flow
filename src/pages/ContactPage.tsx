@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { Mail, Send, CheckCircle2, MessageSquare, Sparkles } from 'lucide-react';
+import { Mail, Send, CheckCircle2, MessageSquare, AlertCircle, Loader2 } from 'lucide-react';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from '../firebase';
 
 interface ContactPageProps {
   navigate: (to: string) => void;
@@ -11,12 +13,61 @@ export const ContactPage: React.FC<ContactPageProps> = () => {
     email: '',
     message: ''
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name || !formData.email || !formData.message) return;
-    setSubmitted(true);
+    setErrorMessage(null);
+
+    const trimmedName = formData.name.trim();
+    const trimmedEmail = formData.email.trim();
+    const trimmedMessage = formData.message.trim();
+
+    if (!trimmedName) {
+      setErrorMessage('Please enter your name.');
+      return;
+    }
+
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!trimmedEmail || !emailRegex.test(trimmedEmail)) {
+      setErrorMessage('Please enter a valid email address.');
+      return;
+    }
+
+    // Message length validation: 10 to 2000 characters
+    if (trimmedMessage.length < 10) {
+      setErrorMessage('Message must be at least 10 characters long.');
+      return;
+    }
+    if (trimmedMessage.length > 2000) {
+      setErrorMessage('Message cannot exceed 2000 characters.');
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // Save directly to Firestore collection "messages" with userAgent omitted
+      await addDoc(collection(db, 'messages'), {
+        name: trimmedName,
+        email: trimmedEmail,
+        message: trimmedMessage,
+        createdAt: serverTimestamp(),
+      });
+
+      // Only show success state after write succeeds
+      setSubmitted(true);
+    } catch (err: any) {
+      console.error('Error saving message to Firestore:', err);
+      setErrorMessage(
+        err?.message || 'Failed to send your message. Please check your network and try again.'
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -87,20 +138,28 @@ export const ContactPage: React.FC<ContactPageProps> = () => {
                 Message Received!
               </h2>
               <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 max-w-sm">
-                Thanks for reaching out, {formData.name}. Our technical team will review your message and reply via {formData.email} within 24-48 hours.
+                Thanks for reaching out, {formData.name}. Your message has been safely received and our team will get back to you at {formData.email}.
               </p>
               <button
                 onClick={() => {
                   setSubmitted(false);
+                  setErrorMessage(null);
                   setFormData({ name: '', email: '', message: '' });
                 }}
-                className="px-6 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-xs font-semibold text-zinc-800 dark:text-zinc-200 hover:bg-zinc-200"
+                className="px-6 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-xs font-semibold text-zinc-800 dark:text-zinc-200 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
               >
                 Send Another Message
               </button>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-5">
+              {errorMessage && (
+                <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-400 text-xs flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  <span>{errorMessage}</span>
+                </div>
+              )}
+
               <div>
                 <label className="block text-xs font-semibold uppercase text-zinc-600 dark:text-zinc-400 mb-1.5">
                   Your Name
@@ -110,8 +169,12 @@ export const ContactPage: React.FC<ContactPageProps> = () => {
                   required
                   placeholder="Rahul Verma"
                   value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 text-xs sm:text-sm text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-[#6C47FF]"
+                  onChange={(e) => {
+                    setFormData({ ...formData, name: e.target.value });
+                    if (errorMessage) setErrorMessage(null);
+                  }}
+                  disabled={isSubmitting}
+                  className="w-full px-4 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 text-xs sm:text-sm text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-[#6C47FF] disabled:opacity-60"
                 />
               </div>
 
@@ -124,8 +187,12 @@ export const ContactPage: React.FC<ContactPageProps> = () => {
                   required
                   placeholder="rahul@example.com"
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 text-xs sm:text-sm text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-[#6C47FF]"
+                  onChange={(e) => {
+                    setFormData({ ...formData, email: e.target.value });
+                    if (errorMessage) setErrorMessage(null);
+                  }}
+                  disabled={isSubmitting}
+                  className="w-full px-4 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 text-xs sm:text-sm text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-[#6C47FF] disabled:opacity-60"
                 />
               </div>
 
@@ -134,27 +201,49 @@ export const ContactPage: React.FC<ContactPageProps> = () => {
                   <label className="block text-xs font-semibold uppercase text-zinc-600 dark:text-zinc-400">
                     Message
                   </label>
-                  <span className="text-[11px] text-zinc-400">
-                    {formData.message.length} / 500
+                  <span
+                    className={`text-[11px] font-mono ${
+                      formData.message.trim().length > 0 && formData.message.trim().length < 10
+                        ? 'text-amber-500'
+                        : 'text-zinc-400'
+                    }`}
+                  >
+                    {formData.message.length} / 2000
+                    {formData.message.trim().length > 0 && formData.message.trim().length < 10 && ' (min 10)'}
                   </span>
                 </div>
                 <textarea
                   required
-                  maxLength={500}
+                  minLength={10}
+                  maxLength={2000}
                   rows={5}
-                  placeholder="Tell us about the issue, resource suggestion, or feedback..."
+                  placeholder="Tell us about the issue, resource suggestion, or feedback (10 to 2000 characters)..."
                   value={formData.message}
-                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 text-xs sm:text-sm text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-[#6C47FF]"
+                  onChange={(e) => {
+                    setFormData({ ...formData, message: e.target.value });
+                    if (errorMessage) setErrorMessage(null);
+                  }}
+                  disabled={isSubmitting}
+                  className="w-full px-4 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 text-xs sm:text-sm text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-[#6C47FF] disabled:opacity-60"
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full py-3 px-6 rounded-xl bg-[#6C47FF] hover:bg-[#5b37ea] text-white font-semibold text-xs sm:text-sm transition-all shadow-md shadow-indigo-500/20 flex items-center justify-center gap-2"
+                disabled={isSubmitting}
+                className="w-full py-3 px-6 rounded-xl bg-[#6C47FF] hover:bg-[#5b37ea] disabled:bg-[#6C47FF]/60 text-white font-semibold text-xs sm:text-sm transition-all shadow-md shadow-indigo-500/20 flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed"
               >
-                <span>Send Message</span>
-                <Send className="w-4 h-4" />
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Sending Message...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Send Message</span>
+                    <Send className="w-4 h-4" />
+                  </>
+                )}
               </button>
             </form>
           )}
