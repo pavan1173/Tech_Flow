@@ -43,56 +43,183 @@ const ProgressContext = createContext<ProgressContextType>({
   forceSyncToCloud: async () => {},
 });
 
+// Helper functions for namespaced storage keys
+const getStorageNamespace = (uid: string | null): string => {
+  return uid ? `hp:${uid}` : 'hp:guest';
+};
+
+const getStorageKey = (uid: string | null, type: 'solved' | 'bookmarks' | 'notes' | 'custom' | 'activity'): string => {
+  return `${getStorageNamespace(uid)}:${type}`;
+};
+
+const loadFromStorage = (uid: string | null) => {
+  try {
+    const solvedRaw = localStorage.getItem(getStorageKey(uid, 'solved'));
+    const bookmarksRaw = localStorage.getItem(getStorageKey(uid, 'bookmarks'));
+    const notesRaw = localStorage.getItem(getStorageKey(uid, 'notes'));
+    const customRaw = localStorage.getItem(getStorageKey(uid, 'custom'));
+    const activityRaw = localStorage.getItem(getStorageKey(uid, 'activity'));
+
+    return {
+      solvedMap: solvedRaw ? (JSON.parse(solvedRaw) as Record<string, boolean>) : {},
+      bookmarksMap: bookmarksRaw ? (JSON.parse(bookmarksRaw) as Record<string, boolean>) : {},
+      notesMap: notesRaw ? (JSON.parse(notesRaw) as Record<string, string>) : {},
+      customDataMap: customRaw ? (JSON.parse(customRaw) as Record<string, any>) : {},
+      activityDates: activityRaw ? (JSON.parse(activityRaw) as string[]) : ['2026-09-24', '2026-09-25', '2026-09-26'],
+    };
+  } catch (err) {
+    console.warn('loadFromStorage error:', err);
+    return {
+      solvedMap: {},
+      bookmarksMap: {},
+      notesMap: {},
+      customDataMap: {},
+      activityDates: ['2026-09-24', '2026-09-25', '2026-09-26'],
+    };
+  }
+};
+
+const saveToStorage = (
+  uid: string | null,
+  data: {
+    solvedMap: Record<string, boolean>;
+    bookmarksMap: Record<string, boolean>;
+    notesMap: Record<string, string>;
+    customDataMap: Record<string, any>;
+    activityDates: string[];
+  }
+) => {
+  try {
+    localStorage.setItem(getStorageKey(uid, 'solved'), JSON.stringify(data.solvedMap));
+    localStorage.setItem(getStorageKey(uid, 'bookmarks'), JSON.stringify(data.bookmarksMap));
+    localStorage.setItem(getStorageKey(uid, 'notes'), JSON.stringify(data.notesMap));
+    localStorage.setItem(getStorageKey(uid, 'custom'), JSON.stringify(data.customDataMap));
+    localStorage.setItem(getStorageKey(uid, 'activity'), JSON.stringify(data.activityDates));
+  } catch (err) {
+    console.warn('saveToStorage error:', err);
+  }
+};
+
+// Migrate legacy keys once, only into the first account that signs in on this browser, then delete them
+const migrateLegacyKeysOnce = (): {
+  solved: Record<string, boolean>;
+  bookmarks: Record<string, boolean>;
+  notes: Record<string, string>;
+  custom: Record<string, any>;
+  dates: string[];
+} | null => {
+  const MIGRATION_FLAG = 'hp:legacy_migrated';
+  if (localStorage.getItem(MIGRATION_FLAG) === 'true') {
+    return null;
+  }
+
+  const legacySolved: Record<string, boolean> = {};
+  const legacyBookmarks: Record<string, boolean> = {};
+  const legacyNotes: Record<string, string> = {};
+  const legacyCustom: Record<string, any> = {};
+  let legacyDates: string[] = [];
+
+  try {
+    const s = localStorage.getItem('teachflow_solved_problems');
+    if (s) Object.assign(legacySolved, JSON.parse(s));
+    const b = localStorage.getItem('teachflow_bookmarks');
+    if (b) Object.assign(legacyBookmarks, JSON.parse(b));
+    const n = localStorage.getItem('teachflow_notes');
+    if (n) Object.assign(legacyNotes, JSON.parse(n));
+    const c = localStorage.getItem('teachflow_custom_data');
+    if (c) Object.assign(legacyCustom, JSON.parse(c));
+    const a = localStorage.getItem('teachflow_activity_dates');
+    if (a) legacyDates = JSON.parse(a);
+
+    // HR questions bookmarks migration
+    const hrBookmarksRaw = localStorage.getItem('bookmarks_hr_questions');
+    if (hrBookmarksRaw) {
+      try {
+        const ids: number[] = JSON.parse(hrBookmarksRaw);
+        ids.forEach((id) => {
+          legacyBookmarks[`hr_q_${id}`] = true;
+        });
+      } catch {}
+    }
+
+    // Scan for role-wise bookmarks, roadmap completion, and lecture notes
+    const keysToRemove: string[] = [
+      'teachflow_solved_problems',
+      'teachflow_bookmarks',
+      'teachflow_notes',
+      'teachflow_custom_data',
+      'teachflow_activity_dates',
+      'bookmarks_hr_questions',
+    ];
+
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (!key) continue;
+
+      if (key.startsWith('bookmarks_role_')) {
+        keysToRemove.push(key);
+        const slug = key.replace('bookmarks_role_', '');
+        const raw = localStorage.getItem(key);
+        if (raw) {
+          try {
+            const indices: number[] = JSON.parse(raw);
+            indices.forEach((idx) => {
+              legacyBookmarks[`role_${slug}_${idx + 1}`] = true;
+            });
+          } catch {}
+        }
+      } else if (key.startsWith('teachflow_roadmap_completed_')) {
+        keysToRemove.push(key);
+        const raw = localStorage.getItem(key);
+        if (raw) {
+          try {
+            legacyCustom[key] = JSON.parse(raw);
+          } catch {
+            legacyCustom[key] = raw;
+          }
+        }
+      } else if (key.startsWith('lecture-note-')) {
+        keysToRemove.push(key);
+        const noteVal = localStorage.getItem(key);
+        if (noteVal) {
+          const probKey = key.replace('lecture-note-', 'lec-');
+          legacyNotes[probKey] = noteVal;
+        }
+      }
+    }
+
+    // Delete legacy keys immediately
+    keysToRemove.forEach((k) => localStorage.removeItem(k));
+  } catch (err) {
+    console.warn('Legacy migration reading notice:', err);
+  }
+
+  // Mark migration as completed so it never runs again
+  localStorage.setItem(MIGRATION_FLAG, 'true');
+
+  return {
+    solved: legacySolved,
+    bookmarks: legacyBookmarks,
+    notes: legacyNotes,
+    custom: legacyCustom,
+    dates: legacyDates,
+  };
+};
+
 export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentUid, setCurrentUid] = useState<string | null>(null);
   const [isSyncing, setIsSyncing] = useState<boolean>(false);
 
-  const [solvedMap, setSolvedMap] = useState<Record<string, boolean>>(() => {
-    try {
-      const saved = localStorage.getItem('teachflow_solved_problems');
-      return saved ? JSON.parse(saved) : {};
-    } catch {
-      return {};
-    }
-  });
+  // Initialize with guest namespace data
+  const initialGuestData = loadFromStorage(null);
 
-  const [bookmarksMap, setBookmarksMap] = useState<Record<string, boolean>>(() => {
-    try {
-      const saved = localStorage.getItem('teachflow_bookmarks');
-      return saved ? JSON.parse(saved) : {};
-    } catch {
-      return {};
-    }
-  });
+  const [solvedMap, setSolvedMap] = useState<Record<string, boolean>>(initialGuestData.solvedMap);
+  const [bookmarksMap, setBookmarksMap] = useState<Record<string, boolean>>(initialGuestData.bookmarksMap);
+  const [notesMap, setNotesMap] = useState<Record<string, string>>(initialGuestData.notesMap);
+  const [customDataMap, setCustomDataMap] = useState<Record<string, any>>(initialGuestData.customDataMap);
+  const [activityDates, setActivityDates] = useState<string[]>(initialGuestData.activityDates);
 
-  const [notesMap, setNotesMap] = useState<Record<string, string>>(() => {
-    try {
-      const saved = localStorage.getItem('teachflow_notes');
-      return saved ? JSON.parse(saved) : {};
-    } catch {
-      return {};
-    }
-  });
-
-  const [customDataMap, setCustomDataMap] = useState<Record<string, any>>(() => {
-    try {
-      const saved = localStorage.getItem('teachflow_custom_data');
-      return saved ? JSON.parse(saved) : {};
-    } catch {
-      return {};
-    }
-  });
-
-  const [activityDates, setActivityDates] = useState<string[]>(() => {
-    try {
-      const saved = localStorage.getItem('teachflow_activity_dates');
-      return saved ? JSON.parse(saved) : ['2026-09-24', '2026-09-25', '2026-09-26'];
-    } catch {
-      return ['2026-09-24', '2026-09-25', '2026-09-26'];
-    }
-  });
-
-  // Keep a synchronous in-memory ref to eliminate race conditions & stale closures
+  // Synchronous in-memory ref to prevent stale closures
   const progressRef = useRef({
     solvedMap,
     bookmarksMap,
@@ -101,7 +228,6 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     activityDates,
   });
 
-  // Keep ref up to date
   useEffect(() => {
     progressRef.current = {
       solvedMap,
@@ -114,14 +240,6 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   // Debounce timer ref for flushing to Firestore
   const syncTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  // Track Firebase Auth user
-  useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (fbUser) => {
-      setCurrentUid(fbUser ? fbUser.uid : null);
-    });
-    return () => unsub();
-  }, []);
 
   // Robust flush function to Firestore
   const flushToFirestore = useCallback(async (uid: string, dataToSave = progressRef.current) => {
@@ -136,24 +254,32 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       const userDocRef = doc(db, 'users', uid);
 
       await Promise.all([
-        setDoc(progressDocRef, {
-          uid,
-          solvedMap: dataToSave.solvedMap,
-          totalSolved: solvedCount,
-          bookmarksMap: dataToSave.bookmarksMap,
-          notesMap: dataToSave.notesMap,
-          customDataMap: dataToSave.customDataMap,
-          activityDates: dataToSave.activityDates,
-          streakDays: Math.max(1, dataToSave.activityDates.length),
-          lastActiveAt: now,
-          lastSyncedAt: now,
-        }, { merge: true }),
-        setDoc(userDocRef, {
-          totalSolved: solvedCount,
-          totalBookmarks: bookmarksCount,
-          lastActiveAt: now,
-          updatedAt: now,
-        }, { merge: true }),
+        setDoc(
+          progressDocRef,
+          {
+            uid,
+            solvedMap: dataToSave.solvedMap,
+            totalSolved: solvedCount,
+            bookmarksMap: dataToSave.bookmarksMap,
+            notesMap: dataToSave.notesMap,
+            customDataMap: dataToSave.customDataMap,
+            activityDates: dataToSave.activityDates,
+            streakDays: Math.max(1, dataToSave.activityDates.length),
+            lastActiveAt: now,
+            lastSyncedAt: now,
+          },
+          { merge: true }
+        ),
+        setDoc(
+          userDocRef,
+          {
+            totalSolved: solvedCount,
+            totalBookmarks: bookmarksCount,
+            lastActiveAt: now,
+            updatedAt: now,
+          },
+          { merge: true }
+        ),
       ]);
     } catch (err) {
       console.warn('Firestore progress sync error:', err);
@@ -162,184 +288,205 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   }, []);
 
-  // Schedule a debounced flush (300ms) or immediate
-  const scheduleSync = useCallback((immediate = false) => {
-    if (!currentUid) return;
-    if (syncTimeoutRef.current) {
-      clearTimeout(syncTimeoutRef.current);
-      syncTimeoutRef.current = null;
-    }
+  // Schedule a debounced flush (300ms) or immediate flush
+  const scheduleSync = useCallback(
+    (immediate = false) => {
+      if (!currentUid) return;
+      if (syncTimeoutRef.current) {
+        clearTimeout(syncTimeoutRef.current);
+        syncTimeoutRef.current = null;
+      }
 
-    if (immediate) {
-      flushToFirestore(currentUid, progressRef.current);
-    } else {
-      syncTimeoutRef.current = setTimeout(() => {
+      if (immediate) {
         flushToFirestore(currentUid, progressRef.current);
-      }, 300);
-    }
-  }, [currentUid, flushToFirestore]);
+      } else {
+        syncTimeoutRef.current = setTimeout(() => {
+          flushToFirestore(currentUid, progressRef.current);
+        }, 300);
+      }
+    },
+    [currentUid, flushToFirestore]
+  );
 
-  // Real-time Firestore sync & migration of past data when authenticated
+  // Track Firebase Auth user & handle clean state transitions
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (fbUser) => {
+      const nextUid = fbUser ? fbUser.uid : null;
+
+      // When switching users or signing out: cancel any pending sync timeout immediately
+      if (syncTimeoutRef.current) {
+        clearTimeout(syncTimeoutRef.current);
+        syncTimeoutRef.current = null;
+      }
+
+      if (!nextUid) {
+        // When currentUid becomes null, reset all state to prevent cross-account leakage
+        setCurrentUid(null);
+        const guestData = loadFromStorage(null);
+
+        progressRef.current = guestData;
+        setSolvedMap(guestData.solvedMap);
+        setBookmarksMap(guestData.bookmarksMap);
+        setNotesMap(guestData.notesMap);
+        setCustomDataMap(guestData.customDataMap);
+        setActivityDates(guestData.activityDates);
+        setIsSyncing(false);
+      } else {
+        setCurrentUid(nextUid);
+      }
+    });
+
+    return () => unsub();
+  }, []);
+
+  // When signed in: load user's namespaced local data & synchronize with Firestore
   useEffect(() => {
     if (!currentUid) return;
 
+    let isCancelled = false;
     const progressDocRef = doc(db, 'progress', currentUid);
 
     // Initial safe migration & reconciliation of past data
-    const syncAndReconcilePastData = async () => {
+    const syncAndReconcileUserData = async () => {
       try {
+        // Run legacy migration once, only into the first account that signs in
+        const legacyData = migrateLegacyKeysOnce();
+
+        // Load existing namespaced data for this user
+        const localUserData = loadFromStorage(currentUid);
+
         const snap = await getDoc(progressDocRef);
 
-        // Retrieve any past data currently in localStorage
-        let localSolved: Record<string, boolean> = {};
-        let localBookmarks: Record<string, boolean> = {};
-        let localNotes: Record<string, string> = {};
-        let localCustom: Record<string, any> = {};
-        let localDates: string[] = [];
-
-        try {
-          const s = localStorage.getItem('teachflow_solved_problems');
-          if (s) localSolved = JSON.parse(s);
-          const b = localStorage.getItem('teachflow_bookmarks');
-          if (b) localBookmarks = JSON.parse(b);
-          const n = localStorage.getItem('teachflow_notes');
-          if (n) localNotes = JSON.parse(n);
-          const c = localStorage.getItem('teachflow_custom_data');
-          if (c) localCustom = JSON.parse(c);
-          const a = localStorage.getItem('teachflow_activity_dates');
-          if (a) localDates = JSON.parse(a);
-
-          // Also scan localStorage for any roadmap keys or lecture notes
-          for (let i = 0; i < localStorage.length; i++) {
-            const key = localStorage.key(i);
-            if (key) {
-              if (key.startsWith('teachflow_roadmap_completed_')) {
-                const raw = localStorage.getItem(key);
-                if (raw) {
-                  try {
-                    localCustom[key] = JSON.parse(raw);
-                  } catch {
-                    localCustom[key] = raw;
-                  }
-                }
-              } else if (key.startsWith('lecture-note-')) {
-                const noteVal = localStorage.getItem(key);
-                if (noteVal) {
-                  const probKey = key.replace('lecture-note-', 'lec-');
-                  localNotes[probKey] = noteVal;
-                }
-              }
-            }
-          }
-        } catch (e) {
-          console.warn('Past data localStorage read notice:', e);
-        }
+        let remoteSolved: Record<string, boolean> = {};
+        let remoteBookmarks: Record<string, boolean> = {};
+        let remoteNotes: Record<string, string> = {};
+        let remoteCustom: Record<string, any> = {};
+        let remoteDates: string[] = ['2026-09-24', '2026-09-25', '2026-09-26'];
 
         if (snap.exists()) {
           const dbData = snap.data();
-          // Merge past local data with remote data (combining all solved problems, bookmarks & notes)
-          const mergedSolved = { ...(dbData.solvedMap || {}), ...localSolved };
-          const mergedBookmarks = { ...(dbData.bookmarksMap || {}), ...localBookmarks };
-          const mergedNotes = { ...(dbData.notesMap || {}), ...localNotes };
-          const mergedCustom = { ...(dbData.customDataMap || {}), ...localCustom };
-          const mergedDates = Array.from(
-            new Set([...(dbData.activityDates || []), ...(localDates || [])])
-          );
+          remoteSolved = dbData.solvedMap || {};
+          remoteBookmarks = dbData.bookmarksMap || {};
+          remoteNotes = dbData.notesMap || {};
+          remoteCustom = dbData.customDataMap || {};
+          remoteDates = dbData.activityDates || remoteDates;
+        }
 
-          progressRef.current = {
-            solvedMap: mergedSolved,
-            bookmarksMap: mergedBookmarks,
-            notesMap: mergedNotes,
-            customDataMap: mergedCustom,
-            activityDates: mergedDates,
-          };
+        // Merge remote data with local user data and any one-time legacy data
+        const mergedSolved = {
+          ...localUserData.solvedMap,
+          ...remoteSolved,
+          ...(legacyData?.solved || {}),
+        };
+        const mergedBookmarks = {
+          ...localUserData.bookmarksMap,
+          ...remoteBookmarks,
+          ...(legacyData?.bookmarks || {}),
+        };
+        const mergedNotes = {
+          ...localUserData.notesMap,
+          ...remoteNotes,
+          ...(legacyData?.notes || {}),
+        };
+        const mergedCustom = {
+          ...localUserData.customDataMap,
+          ...remoteCustom,
+          ...(legacyData?.custom || {}),
+        };
+        const mergedDates = Array.from(
+          new Set([
+            ...localUserData.activityDates,
+            ...remoteDates,
+            ...(legacyData?.dates || []),
+          ])
+        );
 
-          setSolvedMap(mergedSolved);
-          setBookmarksMap(mergedBookmarks);
-          setNotesMap(mergedNotes);
-          setCustomDataMap(mergedCustom);
-          setActivityDates(mergedDates);
+        if (isCancelled) return;
 
-          // Write safely back to Firestore progress record
-          await flushToFirestore(currentUid, progressRef.current);
-        } else {
-          // Document does not exist yet: save all past local data into DB!
-          progressRef.current = {
-            solvedMap: localSolved,
-            bookmarksMap: localBookmarks,
-            notesMap: localNotes,
-            customDataMap: localCustom,
-            activityDates: localDates,
-          };
+        const mergedData = {
+          solvedMap: mergedSolved,
+          bookmarksMap: mergedBookmarks,
+          notesMap: mergedNotes,
+          customDataMap: mergedCustom,
+          activityDates: mergedDates,
+        };
 
-          setSolvedMap(localSolved);
-          setBookmarksMap(localBookmarks);
-          setNotesMap(localNotes);
-          setCustomDataMap(localCustom);
-          setActivityDates(localDates);
+        progressRef.current = mergedData;
+        setSolvedMap(mergedSolved);
+        setBookmarksMap(mergedBookmarks);
+        setNotesMap(mergedNotes);
+        setCustomDataMap(mergedCustom);
+        setActivityDates(mergedDates);
 
-          await flushToFirestore(currentUid, progressRef.current);
+        // Save into user's namespaced localStorage
+        saveToStorage(currentUid, mergedData);
+
+        // If legacy data was migrated or new merged keys exist, flush to Firestore
+        if (legacyData || !snap.exists()) {
+          await flushToFirestore(currentUid, mergedData);
         }
       } catch (err) {
-        console.warn('Reconcile past data notice:', err);
+        console.warn('Reconcile user data notice:', err);
       }
     };
 
-    syncAndReconcilePastData();
+    syncAndReconcileUserData();
 
-    // Subscribe to real-time snapshot
-    const unsubSnapshot = onSnapshot(progressDocRef, (snap) => {
-      // Don't overwrite local UI if we have our own pending writes in flight
-      if (snap.metadata.hasPendingWrites) return;
+    // Subscribe to real-time snapshot for this user's progress document
+    const unsubSnapshot = onSnapshot(
+      progressDocRef,
+      (snap) => {
+        if (isCancelled) return;
+        // Don't overwrite local UI if we have our own pending writes in flight
+        if (snap.metadata.hasPendingWrites) return;
 
-      if (snap.exists()) {
-        const data = snap.data();
-        if (data.solvedMap) {
-          progressRef.current.solvedMap = data.solvedMap;
-          setSolvedMap(data.solvedMap);
+        if (snap.exists()) {
+          const data = snap.data();
+          const updated = {
+            solvedMap: data.solvedMap || {},
+            bookmarksMap: data.bookmarksMap || {},
+            notesMap: data.notesMap || {},
+            customDataMap: data.customDataMap || {},
+            activityDates: data.activityDates || ['2026-09-24', '2026-09-25', '2026-09-26'],
+          };
+
+          progressRef.current = updated;
+          setSolvedMap(updated.solvedMap);
+          setBookmarksMap(updated.bookmarksMap);
+          setNotesMap(updated.notesMap);
+          setCustomDataMap(updated.customDataMap);
+          setActivityDates(updated.activityDates);
+
+          saveToStorage(currentUid, updated);
         }
-        if (data.bookmarksMap) {
-          progressRef.current.bookmarksMap = data.bookmarksMap;
-          setBookmarksMap(data.bookmarksMap);
-        }
-        if (data.notesMap) {
-          progressRef.current.notesMap = data.notesMap;
-          setNotesMap(data.notesMap);
-        }
-        if (data.customDataMap) {
-          progressRef.current.customDataMap = data.customDataMap;
-          setCustomDataMap(data.customDataMap);
-        }
-        if (data.activityDates) {
-          progressRef.current.activityDates = data.activityDates;
-          setActivityDates(data.activityDates);
-        }
+      },
+      (err) => {
+        console.warn('Firestore progress sync warning:', err);
       }
-    }, (err) => {
-      console.warn('Firestore progress sync warning:', err);
-    });
+    );
 
-    return () => unsubSnapshot();
+    return () => {
+      isCancelled = true;
+      unsubSnapshot();
+    };
   }, [currentUid, flushToFirestore]);
 
-  // Sync to local storage backup
+  // Sync to namespaced local storage backup whenever state changes
   useEffect(() => {
-    try {
-      localStorage.setItem('teachflow_solved_problems', JSON.stringify(solvedMap));
-      localStorage.setItem('teachflow_bookmarks', JSON.stringify(bookmarksMap));
-      localStorage.setItem('teachflow_notes', JSON.stringify(notesMap));
-      localStorage.setItem('teachflow_custom_data', JSON.stringify(customDataMap));
-      localStorage.setItem('teachflow_activity_dates', JSON.stringify(activityDates));
-    } catch (e) {
-      console.error(e);
-    }
-  }, [solvedMap, bookmarksMap, notesMap, customDataMap, activityDates]);
+    saveToStorage(currentUid, {
+      solvedMap,
+      bookmarksMap,
+      notesMap,
+      customDataMap,
+      activityDates,
+    });
+  }, [currentUid, solvedMap, bookmarksMap, notesMap, customDataMap, activityDates]);
 
   const toggleSolved = (id: string) => {
     const prev = progressRef.current.solvedMap;
     const isNowSolved = !prev[id];
     const nextSolved = { ...prev, [id]: isNowSolved };
-    
+
     const today = new Date().toISOString().split('T')[0];
     let nextDates = progressRef.current.activityDates;
     if (isNowSolved && !nextDates.includes(today)) {
@@ -369,7 +516,7 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     };
 
     setBookmarksMap(nextBookmarks);
-    scheduleSync(true);
+    scheduleSync(true); // Immediate sync on bookmark toggle
   };
 
   const isBookmarked = (id: string) => !!bookmarksMap[id];
@@ -443,4 +590,3 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 };
 
 export const useProgress = () => useContext(ProgressContext);
-

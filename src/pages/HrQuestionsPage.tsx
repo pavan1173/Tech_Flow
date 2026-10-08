@@ -18,7 +18,7 @@ interface HrQuestionsPageProps {
 }
 
 export const HrQuestionsPage: React.FC<HrQuestionsPageProps> = ({ navigate }) => {
-  const { isSolved, toggleSolved } = useProgress();
+  const { isSolved, toggleSolved, isBookmarked, toggleBookmark } = useProgress();
   const { isAuthenticated } = useAuth();
   const rawQuestions = hrData?.questions || [];
 
@@ -49,23 +49,9 @@ export const HrQuestionsPage: React.FC<HrQuestionsPageProps> = ({ navigate }) =>
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedIndices, setExpandedIndices] = useState<Record<number, boolean>>({});
 
-  // Persistent bookmarks
-  const [bookmarkedIds, setBookmarkedIds] = useState<number[]>(() => {
-    try {
-      const saved = localStorage.getItem('bookmarks_hr_questions');
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
-
-  const toggleBookmark = (id: number, e: React.SyntheticEvent) => {
+  const toggleQuestionBookmark = (id: number, e: React.SyntheticEvent) => {
     e.stopPropagation();
-    setBookmarkedIds((prev) => {
-      const next = prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id];
-      localStorage.setItem('bookmarks_hr_questions', JSON.stringify(next));
-      return next;
-    });
+    toggleBookmark(`hr_q_${id}`);
   };
 
   const toggleExpand = (id: number) => {
@@ -112,18 +98,18 @@ export const HrQuestionsPage: React.FC<HrQuestionsPageProps> = ({ navigate }) =>
 
       const matchesFilter =
         activeFilter === 'All' ||
-        (activeFilter === 'Bookmarked' && bookmarkedIds.includes(q.id)) ||
+        (activeFilter === 'Bookmarked' && isBookmarked(`hr_q_${q.id}`)) ||
         q.level === activeFilter;
 
       return matchesSearch && matchesFilter;
     });
-  }, [questions, searchQuery, activeFilter, bookmarkedIds]);
+  }, [questions, searchQuery, activeFilter, isBookmarked]);
 
   const renderQuestions = (list: typeof filteredQuestions) => (
     list.map((q) => {
       const probId = `hr_q_${q.id}`;
       const isDone = isSolved(probId);
-      const isBookmarked = bookmarkedIds.includes(q.id);
+      const isItemBookmarked = isBookmarked(probId);
       const isOpen = !!expandedIndices[q.id];
 
       return (
@@ -161,10 +147,10 @@ export const HrQuestionsPage: React.FC<HrQuestionsPageProps> = ({ navigate }) =>
             <div className="col-span-2 sm:col-span-2 flex items-center justify-center">
               <button
                 type="button"
-                onClick={(e) => toggleBookmark(q.id, e)}
+                onClick={(e) => toggleQuestionBookmark(q.id, e)}
                 className="p-1 rounded-md transition-colors cursor-pointer"
               >
-                <Star className={`w-4 h-4 ${isBookmarked ? 'fill-yellow-400 text-yellow-400' : 'text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300'}`} />
+                <Star className={`w-4 h-4 ${isItemBookmarked ? 'fill-yellow-400 text-yellow-400' : 'text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300'}`} />
               </button>
             </div>
 

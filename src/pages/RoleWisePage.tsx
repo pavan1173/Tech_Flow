@@ -23,7 +23,7 @@ interface RoleWisePageProps {
 }
 
 export const RoleWisePage: React.FC<RoleWisePageProps> = ({ roleSlug, navigate }) => {
-  const { isSolved, toggleSolved } = useProgress();
+  const { isSolved, toggleSolved, isBookmarked, toggleBookmark: toggleGlobalBookmark } = useProgress();
   const { isAuthenticated, loginWithGoogle, openAuthModal, authReady } = useAuth();
   const categories = roleWiseData?.categories || [];
 
@@ -51,25 +51,9 @@ export const RoleWisePage: React.FC<RoleWisePageProps> = ({ roleSlug, navigate }
   const [activeFilter, setActiveFilter] = useState<'All' | 'Easy' | 'Medium' | 'Hard' | 'Bookmarked'>('All');
   const [expandedQuestions, setExpandedQuestions] = useState<Record<number, boolean>>({});
 
-  // Bookmarks for current role
-  const [bookmarkedIndices, setBookmarkedIndices] = useState<number[]>(() => {
-    if (!selectedRole) return [];
-    try {
-      const saved = localStorage.getItem(`bookmarks_role_${selectedRole.slug}`);
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
-
-  const toggleBookmark = (idx: number, e: React.SyntheticEvent) => {
+  const toggleBookmark = (probId: string, e: React.SyntheticEvent) => {
     e.stopPropagation();
-    if (!selectedRole) return;
-    setBookmarkedIndices((prev) => {
-      const next = prev.includes(idx) ? prev.filter((i) => i !== idx) : [...prev, idx];
-      localStorage.setItem(`bookmarks_role_${selectedRole.slug}`, JSON.stringify(next));
-      return next;
-    });
+    toggleGlobalBookmark(probId);
   };
 
   const toggleExpand = (idx: number) => {
@@ -118,13 +102,16 @@ export const RoleWisePage: React.FC<RoleWisePageProps> = ({ roleSlug, navigate }
 
   // Filtered questions in detail view
   const filteredQuestions = useMemo(() => {
+    if (!selectedRole) return [];
     return roleQuestions.filter((q: any, idx: number) => {
+      const qNum = q.index || idx + 1;
+      const probId = `role_${selectedRole.slug}_${qNum}`;
       const diff = (q.difficulty || 'Intermediate').toLowerCase();
 
       if (activeFilter === 'Easy' && !diff.includes('beginner') && !diff.includes('easy')) return false;
       if (activeFilter === 'Medium' && !diff.includes('intermediate') && !diff.includes('medium')) return false;
       if (activeFilter === 'Hard' && !diff.includes('advanced') && !diff.includes('hard')) return false;
-      if (activeFilter === 'Bookmarked' && !bookmarkedIndices.includes(idx)) return false;
+      if (activeFilter === 'Bookmarked' && !isBookmarked(probId)) return false;
 
       if (detailSearchQuery.trim()) {
         const query = detailSearchQuery.toLowerCase();
@@ -136,7 +123,16 @@ export const RoleWisePage: React.FC<RoleWisePageProps> = ({ roleSlug, navigate }
 
       return true;
     });
-  }, [roleQuestions, activeFilter, bookmarkedIndices, detailSearchQuery]);
+  }, [selectedRole, roleQuestions, activeFilter, isBookmarked, detailSearchQuery]);
+
+  // Bookmarked count
+  const bookmarkedCount = useMemo(() => {
+    if (!selectedRole) return 0;
+    return roleQuestions.filter((q: any, idx: number) => {
+      const qNum = q.index || idx + 1;
+      return isBookmarked(`role_${selectedRole.slug}_${qNum}`);
+    }).length;
+  }, [selectedRole, roleQuestions, isBookmarked]);
 
   // Difficulty counts for detail view
   const counts = useMemo(() => {
@@ -318,7 +314,7 @@ export const RoleWisePage: React.FC<RoleWisePageProps> = ({ roleSlug, navigate }
               <Star className="w-3 h-3 text-amber-500 fill-amber-500" />
               <span>Saved</span>
               <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300">
-                {bookmarkedIndices.length}
+                {bookmarkedCount}
               </span>
             </button>
           </div>
@@ -364,7 +360,7 @@ export const RoleWisePage: React.FC<RoleWisePageProps> = ({ roleSlug, navigate }
                   const qNum = q.index || idx + 1;
                   const probId = `role_${selectedRole.slug}_${qNum}`;
                   const isDone = isSolved(probId);
-                  const isBookmarked = bookmarkedIndices.includes(idx);
+                  const isItemBookmarked = isBookmarked(probId);
                   const isOpen = !!expandedQuestions[idx];
 
                   return (
@@ -402,10 +398,10 @@ export const RoleWisePage: React.FC<RoleWisePageProps> = ({ roleSlug, navigate }
                         <div className="col-span-1 flex items-center justify-end">
                           <button
                             type="button"
-                            onClick={(e) => toggleBookmark(idx, e)}
+                            onClick={(e) => toggleBookmark(probId, e)}
                             className="p-1 rounded-md text-zinc-400 hover:text-amber-500 transition-colors cursor-pointer"
                           >
-                            <Star className={`w-4 h-4 ${isBookmarked ? 'fill-amber-400 text-amber-400' : 'text-zinc-400'}`} />
+                            <Star className={`w-4 h-4 ${isItemBookmarked ? 'fill-amber-400 text-amber-400' : 'text-zinc-400'}`} />
                           </button>
                         </div>
                       </div>
@@ -475,7 +471,7 @@ export const RoleWisePage: React.FC<RoleWisePageProps> = ({ roleSlug, navigate }
                   const qNum = q.index || idx + 1;
                   const probId = `role_${selectedRole.slug}_${qNum}`;
                   const isDone = isSolved(probId);
-                  const isBookmarked = bookmarkedIndices.includes(idx);
+                  const isItemBookmarked = isBookmarked(probId);
                   const isOpen = !!expandedQuestions[idx];
                   const diff = q.difficulty || 'Intermediate';
 
@@ -514,10 +510,10 @@ export const RoleWisePage: React.FC<RoleWisePageProps> = ({ roleSlug, navigate }
                         <div className="col-span-1 flex items-center justify-end">
                           <button
                             type="button"
-                            onClick={(e) => toggleBookmark(idx, e)}
+                            onClick={(e) => toggleBookmark(probId, e)}
                             className="p-1 rounded-md text-zinc-400 hover:text-amber-500 transition-colors cursor-pointer"
                           >
-                            <Star className={`w-4 h-4 ${isBookmarked ? 'fill-amber-400 text-amber-400' : 'text-zinc-400'}`} />
+                            <Star className={`w-4 h-4 ${isItemBookmarked ? 'fill-amber-400 text-amber-400' : 'text-zinc-400'}`} />
                           </button>
                         </div>
                       </div>

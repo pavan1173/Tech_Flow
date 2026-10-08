@@ -41,6 +41,7 @@ import { HomePage } from './pages/HomePage';
 import { AboutPage } from './pages/AboutPage';
 import { ContactPage } from './pages/ContactPage';
 import { LegalPage } from './pages/LegalPage';
+import { NotFoundPage } from './pages/NotFoundPage';
 
 export default function App() {
   const { currentPath, navigate } = useRouter();
@@ -223,7 +224,12 @@ export default function App() {
       return <ProfilePage navigate={navigate} />;
     }
 
-    return <PreparationDashboardPage navigate={navigate} />;
+    if (currentPath === '/preparation' || currentPath === '/preparation/') {
+      return <PreparationDashboardPage navigate={navigate} />;
+    }
+
+    // Unmatched /preparation/* route
+    return <NotFoundPage navigate={navigate} />;
   };
 
   const renderContent = () => {
@@ -297,6 +303,17 @@ export default function App() {
         </>
       );
     }
+    if (currentPath === '/refund-policy') {
+      return (
+        <>
+          <Navbar currentPath={currentPath} navigate={navigate} />
+          <main className="flex-1">
+            <LegalPage type="refund-policy" navigate={navigate} />
+          </main>
+          <Footer navigate={navigate} />
+        </>
+      );
+    }
     if (currentPath.startsWith('/roadmaps/')) {
       const slug = currentPath.replace('/roadmaps/', '');
       return (
@@ -345,12 +362,25 @@ export default function App() {
       );
     }
 
-    // Default: Home Landing Page
+    // Home Landing Page
+    if (currentPath === '/' || currentPath === '') {
+      return (
+        <>
+          <Navbar currentPath={currentPath} navigate={navigate} />
+          <main className="flex-1">
+            <HomePage navigate={navigate} />
+          </main>
+          <Footer navigate={navigate} />
+        </>
+      );
+    }
+
+    // Unmatched Route: 404 Not Found Page
     return (
       <>
         <Navbar currentPath={currentPath} navigate={navigate} />
         <main className="flex-1">
-          <HomePage navigate={navigate} />
+          <NotFoundPage navigate={navigate} />
         </main>
         <Footer navigate={navigate} />
       </>

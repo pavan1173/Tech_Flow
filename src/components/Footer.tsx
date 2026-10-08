@@ -1,6 +1,9 @@
 import React from 'react';
 import { TeachFlowLogo } from './TeachFlowLogo';
 
+const INSTAGRAM_URL = 'https://www.instagram.com/tech_by.pavan/';
+const HACKPATH_X_HANDLE_URL = 'https://x.com/HackPath_in';
+
 interface FooterProps {
   navigate: (to: string) => void;
 }
@@ -70,11 +73,11 @@ export const Footer: React.FC<FooterProps> = ({ navigate }) => {
           {/* Social Icons */}
           <div className="flex items-center gap-4">
             <a
-              href="https://x.com/TeachFlow_in"
+              href={INSTAGRAM_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="text-zinc-400 hover:text-white transition-colors"
-              aria-label="Instagram / Social"
+              aria-label="Instagram (@tech_by.pavan)"
             >
               <svg className="w-5 h-5 stroke-current fill-none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
@@ -83,7 +86,7 @@ export const Footer: React.FC<FooterProps> = ({ navigate }) => {
               </svg>
             </a>
             <a
-              href="https://x.com/TeachFlow_in"
+              href={HACKPATH_X_HANDLE_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="text-zinc-400 hover:text-white transition-colors"

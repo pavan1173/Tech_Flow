@@ -406,13 +406,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setFirebaseUser(null);
     setIsAuthModalOpen(false);
     setIsProfileModalOpen(false);
-    localStorage.removeItem('hackpath_user');
-    localStorage.removeItem('teachflow_user');
-    localStorage.removeItem('teachflow_auth_unlocked');
-    localStorage.removeItem('teachflow_solved_problems');
-    localStorage.removeItem('teachflow_bookmarks');
-    localStorage.removeItem('teachflow_notes');
-    localStorage.removeItem('teachflow_custom_data');
+
+    // Remove every key with the hp: and legacy teachflow_/hackpath_ prefixes
+    // plus bookmarks_hr_questions and bookmarks_role_*
+    try {
+      const keysToRemove: string[] = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key) {
+          if (
+            key.startsWith('hp:') ||
+            key.startsWith('teachflow_') ||
+            key.startsWith('hackpath_') ||
+            key === 'bookmarks_hr_questions' ||
+            key.startsWith('bookmarks_role_')
+          ) {
+            keysToRemove.push(key);
+          }
+        }
+      }
+      keysToRemove.forEach((k) => localStorage.removeItem(k));
+    } catch (err) {
+      console.warn('Logout localStorage cleanup error:', err);
+    }
   };
 
   const openAuthModal = () => setIsAuthModalOpen(true);
