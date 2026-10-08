@@ -31,7 +31,12 @@ export const DsaPlaylistsPage: React.FC<DsaPlaylistsPageProps> = ({ navigate }) 
           >
             {/* Thumbnail Container */}
             <div className="relative aspect-video w-full overflow-hidden bg-zinc-900 border-b border-zinc-200 dark:border-[#1b2230]">
-              <PlaylistThumbnail type={playlist.thumbnailType} subject="DSA" />
+              <PlaylistThumbnail
+                type={playlist.thumbnailType}
+                subject="DSA"
+                slug={playlist.slug}
+                alt={playlist.title}
+              />
 
               {/* Badge top-left */}
               <div className="absolute top-3 left-3 z-10">

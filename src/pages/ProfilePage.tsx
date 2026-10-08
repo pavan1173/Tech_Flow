@@ -37,7 +37,7 @@ interface ProfilePageProps {
 }
 
 export const ProfilePage: React.FC<ProfilePageProps> = ({ navigate }) => {
-  const { user, updateProfile, logout, openAuthModal, isAuthenticated } = useAuth();
+  const { user, updateProfile, logout, openAuthModal, isAuthenticated, authReady } = useAuth();
   const { totalSolved, streakDays, bookmarksMap, notesMap } = useProgress();
 
   const [activeTab, setActiveTab] = useState<'overview' | 'platforms' | 'edit' | 'bookmarks'>('overview');
@@ -114,6 +114,20 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ navigate }) => {
       setActiveTab('overview');
     }, 1500);
   };
+
+  if (!authReady) {
+    return (
+      <div className="p-4 sm:p-6 lg:p-10 max-w-6xl mx-auto space-y-8 font-lexend animate-pulse">
+        <div className="h-10 w-64 bg-zinc-200 dark:bg-zinc-800 rounded-2xl" />
+        <div className="h-48 bg-zinc-100 dark:bg-zinc-900 rounded-3xl" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="h-32 bg-zinc-100 dark:bg-zinc-900 rounded-2xl" />
+          <div className="h-32 bg-zinc-100 dark:bg-zinc-900 rounded-2xl" />
+          <div className="h-32 bg-zinc-100 dark:bg-zinc-900 rounded-2xl" />
+        </div>
+      </div>
+    );
+  }
 
   if (!isAuthenticated || !user) {
     return (
@@ -508,7 +522,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ navigate }) => {
                         <span>CodeChef</span>
                       </div>
                       <span className="text-[11px] text-zinc-400 group-hover:text-amber-600 font-mono truncate max-w-[120px]">
-                        {codechefStats?.rating || 1640} pts ({codechefStats?.stars || '3★'})
+                        {codechefStats?.rating ? `${codechefStats.rating} pts (${codechefStats.stars || '1★'})` : 'Profile linked'}
                       </span>
                     </a>
                   ) : null}

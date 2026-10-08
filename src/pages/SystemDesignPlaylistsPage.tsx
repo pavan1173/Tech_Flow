@@ -9,8 +9,25 @@ interface SystemDesignPlaylistsPageProps {
 }
 
 export const SystemDesignPlaylistsPage: React.FC<SystemDesignPlaylistsPageProps> = ({ navigate }) => {
+  const desiredOrder = [
+    'gaurav-sen-system-design-playlist',
+    'exponent-system-design-playlist',
+    'hello-interview-system-design-playlist',
+    'code-with-aryan-system-design-playlist',
+    'coder-army-system-design-playlist',
+    'engineering-digest-system-design-playlist',
+  ];
+
   const hyntsSd = hyntsPlaylists.filter((p) => p.category === 'system-design');
-  const sdList = hyntsSd.length > 0 ? hyntsSd : systemDesignPlaylistsList;
+  const rawList = hyntsSd.length > 0 ? hyntsSd : systemDesignPlaylistsList;
+  const sdList = [...rawList].sort((a, b) => {
+    const idxA = desiredOrder.indexOf(a.slug);
+    const idxB = desiredOrder.indexOf(b.slug);
+    if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+    if (idxA !== -1) return -1;
+    if (idxB !== -1) return 1;
+    return 0;
+  });
 
   const handleNav = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
@@ -29,25 +46,21 @@ export const SystemDesignPlaylistsPage: React.FC<SystemDesignPlaylistsPageProps>
           Preparation
         </a>
         <ChevronRight className="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-600" />
-        <span className="text-zinc-900 dark:text-white font-medium">System Design Playlists</span>
+        <span className="text-zinc-900 dark:text-white font-medium">System Design</span>
       </div>
 
-      {/* Header Section */}
-      <div className="space-y-2">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-semibold">
-          <Award className="w-3.5 h-3.5" />
-          <span>High Level & Low Level Design</span>
-        </div>
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-zinc-900 dark:text-white">
+      {/* Header Section matching screenshot */}
+      <div className="space-y-1.5">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-white">
           System Design Playlists
         </h1>
         <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 font-normal max-w-3xl">
-          Master system design concepts with comprehensive video tutorials covering HLD, LLD, distributed systems, caching, message queues, and real interview mock walkthroughs.
+          Master system design concepts with comprehensive video tutorials covering HLD and LLD
         </p>
       </div>
 
-      {/* Playlists Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
+      {/* Playlists Grid matching screenshot */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-2">
         {sdList.map((playlist: any) => {
           const detailUrl = `/preparation/system-design-playlists/${playlist.slug}`;
 
@@ -56,54 +69,23 @@ export const SystemDesignPlaylistsPage: React.FC<SystemDesignPlaylistsPageProps>
               key={playlist.slug}
               href={detailUrl}
               onClick={(e) => handleNav(e, detailUrl)}
-              className="group flex flex-col bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-[#1b2230] hover:border-emerald-500/50 rounded-2xl overflow-hidden transition-all duration-300 shadow-md hover:shadow-2xl hover:-translate-y-1 cursor-pointer select-none"
+              className="group flex flex-col bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-[#1a2333] hover:border-zinc-300 dark:hover:border-zinc-700/80 rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1 shadow-sm hover:shadow-xl cursor-pointer select-none"
             >
-              <div className="relative aspect-video w-full overflow-hidden bg-zinc-900 border-b border-zinc-200 dark:border-[#1b2230]">
+              {/* Thumbnail Container */}
+              <div className="relative aspect-[16/9] w-full overflow-hidden bg-zinc-950">
                 <PlaylistThumbnail
                   type={playlist.thumbnailType || 'system-design'}
                   subject="SYSTEM DESIGN"
+                  slug={playlist.slug}
+                  alt={playlist.title}
                 />
-
-                <div className="absolute top-3 right-3 z-10">
-                  <span className="px-2 py-0.5 rounded-md bg-black/80 backdrop-blur-md text-zinc-300 text-[11px] font-mono font-semibold flex items-center gap-1">
-                    <Clock className="w-3 h-3 text-zinc-400" />
-                    {playlist.totalDuration}
-                  </span>
-                </div>
-
-                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 backdrop-blur-[2px] transition-all flex items-center justify-center">
-                  <div className="w-14 h-14 rounded-full bg-emerald-600 text-white flex items-center justify-center shadow-xl transform scale-75 group-hover:scale-100 transition-all duration-300">
-                    <Play className="w-6 h-6 fill-current ml-0.5" />
-                  </div>
-                </div>
               </div>
 
-              <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400">
-                    <span className="font-semibold text-emerald-600 dark:text-emerald-400">{playlist.instructor}</span>
-                    <span className="text-amber-500 dark:text-amber-400 font-bold">★ {playlist.rating}</span>
-                  </div>
-
-                  <h2 className="font-bold text-sm sm:text-base text-zinc-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-300 transition-colors leading-snug line-clamp-2">
-                    {playlist.title}
-                  </h2>
-
-                  <p className="text-xs text-zinc-600 dark:text-zinc-400 line-clamp-2 leading-relaxed">
-                    {playlist.description}
-                  </p>
-                </div>
-
-                <div className="pt-3 border-t border-zinc-200 dark:border-[#18202d] flex items-center justify-between text-xs">
-                  <span className="font-mono text-zinc-500 dark:text-zinc-400 font-semibold">
-                    {playlist.totalVideos} Lectures
-                  </span>
-
-                  <span className="text-emerald-600 dark:text-emerald-400 group-hover:translate-x-1 transition-transform font-bold inline-flex items-center gap-1 text-xs">
-                    Watch Playlist
-                    <ChevronRight className="w-3.5 h-3.5" />
-                  </span>
-                </div>
+              {/* Title Info matching screenshot */}
+              <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between">
+                <h2 className="font-bold text-sm sm:text-base text-zinc-900 dark:text-white group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors leading-snug line-clamp-2">
+                  {playlist.title}
+                </h2>
               </div>
             </a>
           );

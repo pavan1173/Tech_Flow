@@ -2,7 +2,6 @@ import React, { useState, useMemo } from 'react';
 import { useProgress } from '../context/ProgressContext';
 import { useAuth } from '../context/AuthContext';
 import { CodingPlatformsCard } from '../components/CodingPlatformsCard';
-import { DeveloperProfileCard } from '../components/DeveloperProfileCard';
 import {
   Flame,
   ChevronLeft,
@@ -35,7 +34,7 @@ interface PrepDashboardProps {
 
 export const PreparationDashboardPage: React.FC<PrepDashboardProps> = ({ navigate }) => {
   const { solvedMap, streakDays, bookmarksMap, activityDates } = useProgress();
-  const { user, isAuthenticated, openAuthModal, openProfileModal } = useAuth();
+  const { user, isAuthenticated, openAuthModal, openProfileModal, authReady } = useAuth();
 
   const [timeRange, setTimeRange] = useState<'6m' | '3m' | '30d' | '7d'>('30d');
   const [calendarMonth, setCalendarMonth] = useState<number>(9); // 0-indexed: 9 = October
@@ -286,7 +285,15 @@ export const PreparationDashboardPage: React.FC<PrepDashboardProps> = ({ navigat
     <div className="min-h-screen bg-white dark:bg-[#07090e] text-zinc-900 dark:text-zinc-100 p-4 sm:p-6 lg:p-10 font-lexend space-y-8 max-w-7xl mx-auto transition-colors">
       
       {/* ── PERSONALIZED USER BANNER / DB STATUS ── */}
-      {isAuthenticated && user ? (
+      {!authReady ? (
+        <div className="h-36 sm:h-40 rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-zinc-100/60 dark:bg-[#0c1017]/60 animate-pulse flex items-center p-6 sm:p-8 gap-5">
+          <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-zinc-200 dark:bg-zinc-800 shrink-0" />
+          <div className="space-y-3 flex-1">
+            <div className="h-6 w-48 bg-zinc-200 dark:bg-zinc-800 rounded-lg" />
+            <div className="h-4 w-72 bg-zinc-200/60 dark:bg-zinc-800/60 rounded-lg" />
+          </div>
+        </div>
+      ) : isAuthenticated && user ? (
         <div className="relative rounded-3xl overflow-hidden border border-zinc-200 dark:border-zinc-800 bg-gradient-to-br from-zinc-50 via-white to-blue-50/20 dark:from-[#0c1017] dark:via-[#090d13] dark:to-[#070b10] p-6 sm:p-8 shadow-lg">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div className="flex items-center gap-5">
@@ -360,7 +367,7 @@ export const PreparationDashboardPage: React.FC<PrepDashboardProps> = ({ navigat
               )}
               {user.codechefUrl && (
                 <a
-                  href={user.codechefUrl}
+                  href={user.codechefUrl.startsWith('http') ? user.codechefUrl : `https://www.codechef.com/users/${user.codechefUrl}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="p-2 rounded-xl bg-amber-700/10 hover:bg-amber-700/20 text-amber-600 transition-colors font-bold text-xs font-mono"
@@ -421,89 +428,6 @@ export const PreparationDashboardPage: React.FC<PrepDashboardProps> = ({ navigat
 
       {/* ── COMPETITIVE CODING PLATFORMS COMPONENT (LeetCode + CodeChef + GitHub) ── */}
       <CodingPlatformsCard navigate={navigate} />
-
-      {/* ── DEVELOPER OF THE APP SPOTLIGHT ── */}
-      <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse" />
-            <span className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 font-mono">
-              PLATFORM DEVELOPER &amp; CREATOR
-            </span>
-          </div>
-          <a
-            href="https://www.instagram.com/tech_by.pavan/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-xs text-rose-500 hover:text-rose-600 dark:text-rose-400 font-bold flex items-center gap-1 font-mono transition-colors"
-          >
-            <Instagram className="w-3.5 h-3.5" />
-            <span>@tech_by.pavan</span>
-          </a>
-        </div>
-        <DeveloperProfileCard navigate={navigate} />
-      </div>
-
-      {/* ── TOP STATS ROW ── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#0c1017] shadow-xs">
-          <div className="flex items-center justify-between text-xs text-zinc-500 font-mono uppercase mb-2">
-            <span>Combined Solved</span>
-            <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-          </div>
-          <div className="text-3xl font-extrabold text-zinc-900 dark:text-white">
-            {totalCombinedSolved}
-          </div>
-          <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium mt-1 block">
-            HackPath ({totalHackPathSolved}) + LC ({leetcodeStats?.totalSolved || 0}) + CC ({codechefStats?.fullySolved || 0})
-          </span>
-        </div>
-
-        <div className="p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#0c1017] shadow-xs">
-          <div className="flex items-center justify-between text-xs text-zinc-500 font-mono uppercase mb-2">
-            <span>LeetCode Solved</span>
-            <Flame className="w-4 h-4 text-amber-500 fill-amber-500" />
-          </div>
-          <div className="text-3xl font-extrabold text-amber-500">
-            {leetcodeStats?.totalSolved || 0}
-          </div>
-          <span className="text-[11px] text-zinc-400 font-medium mt-1 block font-mono">
-            {leetcodeStats?.easySolved || 0}E • {leetcodeStats?.mediumSolved || 0}M • {leetcodeStats?.hardSolved || 0}H
-          </span>
-        </div>
-
-        <div className="p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#0c1017] shadow-xs">
-          <div className="flex items-center justify-between text-xs text-zinc-500 font-mono uppercase mb-2">
-            <span>CodeChef Rating</span>
-            <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-          </div>
-          <div className="text-3xl font-extrabold text-zinc-900 dark:text-white">
-            {codechefStats?.rating ? (
-              <>
-                {codechefStats.rating} <span className="text-base text-amber-500">{codechefStats.stars}</span>
-              </>
-            ) : (
-              <span className="text-xl text-zinc-400 font-normal">Not Linked</span>
-            )}
-          </div>
-          <span className="text-[11px] text-zinc-400 font-medium mt-1 block font-mono">
-            {codechefStats?.fullySolved ? `${codechefStats.fullySolved} fully solved` : 'Link handle in settings'}
-          </span>
-        </div>
-
-        <div className="p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#0c1017] shadow-xs">
-          <div className="flex items-center justify-between text-xs text-zinc-500 font-mono uppercase mb-2">
-            <span>GitHub Repos &amp; Stars</span>
-            <Zap className="w-4 h-4 text-blue-500 fill-blue-500" />
-          </div>
-          <div className="text-3xl font-extrabold text-blue-600 dark:text-blue-400">
-            {githubStats?.publicRepos || 0} <span className="text-base text-zinc-400 font-normal">repos</span>
-          </div>
-          <span className="text-[11px] text-blue-500 font-medium mt-1 block font-mono">
-            ★ {githubStats?.totalStars || 0} stars • {githubStats?.followers || 0} followers
-          </span>
-        </div>
-      </div>
 
       {/* ── ACTIVITY CHART & STREAK CALENDAR ── */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">

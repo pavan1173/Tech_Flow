@@ -40,7 +40,18 @@ export const AuthGate: React.FC<AuthGateProps> = ({
   className = '',
   minHeight = 'min-h-[380px]',
 }) => {
-  const { isAuthenticated, loginWithGoogle, openAuthModal } = useAuth();
+  const { isAuthenticated, loginWithGoogle, openAuthModal, authReady } = useAuth();
+
+  // Show a clean skeleton until auth state is determined
+  if (!authReady) {
+    return (
+      <div className={`relative overflow-hidden rounded-2xl ${minHeight} ${className} bg-zinc-100/70 dark:bg-[#0c1017]/70 border border-zinc-200/70 dark:border-zinc-800/70 animate-pulse flex flex-col items-center justify-center p-8 space-y-4`}>
+        <div className="w-12 h-12 rounded-2xl bg-zinc-200 dark:bg-zinc-800" />
+        <div className="w-48 h-4 rounded-lg bg-zinc-200 dark:bg-zinc-800" />
+        <div className="w-64 h-3 rounded-lg bg-zinc-200/60 dark:bg-zinc-800/60" />
+      </div>
+    );
+  }
 
   if (isAuthenticated) {
     return <>{children}</>;

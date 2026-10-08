@@ -335,25 +335,25 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate }) => {
 
             <div className="grid gap-3 mb-6">
               <a
-                href="https://chat.whatsapp.com/KBIk0COfdZSDenWJN9xWmN?mode=wwt"
+                href="https://www.instagram.com/channel/E1ynCd7tzuRxPBIm/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-between p-4 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 transition-all group"
+                className="flex items-center justify-between p-4 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/30 transition-all group"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-emerald-500 text-white flex items-center justify-center font-bold text-lg">
-                    WA
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 text-white flex items-center justify-center font-bold text-lg">
+                    IG
                   </div>
                   <div>
-                    <h4 className="font-semibold text-sm text-zinc-900 dark:text-white group-hover:text-emerald-500 transition-colors">
-                      HackPath Placement Alerts WhatsApp
+                    <h4 className="font-semibold text-sm text-zinc-900 dark:text-white group-hover:text-purple-500 transition-colors">
+                      HackPath Community Channel
                     </h4>
                     <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                      Real-time off-campus hiring alerts & OA questions
+                      Real-time hiring alerts, prep tips &amp; discussions
                     </p>
                   </div>
                 </div>
-                <ArrowUpRight className="w-5 h-5 text-emerald-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                <ArrowUpRight className="w-5 h-5 text-purple-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
               </a>
 
               <a

@@ -147,13 +147,13 @@ export const HomePage: React.FC<HomePageProps> = ({ navigate }) => {
             </a>
 
             <a
-              href="https://chat.whatsapp.com/KBIk0COfdZSDenWJN9xWmN?mode=wwt"
+              href="https://www.instagram.com/channel/E1ynCd7tzuRxPBIm/"
               target="_blank"
               rel="noopener noreferrer"
               className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-900 dark:hover:bg-zinc-800 text-zinc-800 dark:text-zinc-200 font-semibold text-base border border-zinc-200 dark:border-zinc-800 transition-all flex items-center justify-center gap-2"
             >
-              <span>Join WhatsApp Community</span>
-              <ExternalLink className="w-4 h-4 text-emerald-500" />
+              <span>Join Community</span>
+              <ExternalLink className="w-4 h-4 text-purple-500" />
             </a>
           </div>
         </div>
@@ -421,12 +421,12 @@ export const HomePage: React.FC<HomePageProps> = ({ navigate }) => {
               Go To Preparation Hub
             </a>
             <a
-              href="https://chat.whatsapp.com/KBIk0COfdZSDenWJN9xWmN?mode=wwt"
+              href="https://www.instagram.com/channel/E1ynCd7tzuRxPBIm/"
               target="_blank"
               rel="noopener noreferrer"
               className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-indigo-900/60 hover:bg-indigo-900 text-white font-semibold text-sm border border-indigo-400/30 transition-all flex items-center justify-center gap-2"
             >
-              <span>Join WhatsApp Community</span>
+              <span>Join Community</span>
               <ExternalLink className="w-4 h-4" />
             </a>
           </div>

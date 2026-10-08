@@ -22,7 +22,7 @@ interface PackageWisePageProps {
 
 export const PackageWisePage: React.FC<PackageWisePageProps> = ({ navigate }) => {
   const { isSolved, toggleSolved, isBookmarked, toggleBookmark } = useProgress();
-  const { isAuthenticated, user, loginWithGoogle, openAuthModal, logout } = useAuth();
+  const { isAuthenticated, user, loginWithGoogle, openAuthModal, logout, authReady } = useAuth();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('All');
@@ -504,8 +504,15 @@ export const PackageWisePage: React.FC<PackageWisePageProps> = ({ navigate }) =>
           </table>
         </div>
 
-        {/* Exact Google Sign-in Unlock Overlay matching screenshot */}
-        {!isAuthenticated && (
+        {/* Exact Google Sign-in Unlock Overlay or Skeleton while loading */}
+        {!authReady ? (
+          <div className="absolute inset-x-0 bottom-0 top-[170px] bg-white/80 dark:bg-[#07090e]/80 backdrop-blur-xs flex items-center justify-center p-6 z-20 animate-pulse">
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-zinc-200 dark:bg-zinc-800" />
+              <div className="h-4 w-40 bg-zinc-200 dark:bg-zinc-800 rounded-lg" />
+            </div>
+          </div>
+        ) : !isAuthenticated ? (
           <div className="absolute inset-x-0 bottom-0 top-[170px] bg-gradient-to-t from-white via-white/95 to-transparent dark:from-[#07090e] dark:via-[#07090e]/95 backdrop-blur-xs flex items-center justify-center p-6 z-20">
             <div className="max-w-lg w-full text-center space-y-5 py-4">
               <div className="space-y-1.5">
@@ -547,7 +554,7 @@ export const PackageWisePage: React.FC<PackageWisePageProps> = ({ navigate }) =>
               </div>
             </div>
           </div>
-        )}
+        ) : null}
       </div>
 
       {/* Unlocked banner if logged in */}

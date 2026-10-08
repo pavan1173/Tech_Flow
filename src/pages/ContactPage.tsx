@@ -106,16 +106,16 @@ export const ContactPage: React.FC<ContactPageProps> = () => {
               Community Channels
             </span>
             <p className="text-xs text-zinc-500 mt-1 leading-relaxed">
-              For real-time queries, job discussions, or quick feedback, join our WhatsApp and Twitter community groups.
+              For real-time queries, job discussions, or quick feedback, join our community broadcast channel and Twitter group.
             </p>
             <div className="mt-3 space-y-2">
               <a
-                href="https://chat.whatsapp.com/KBIk0COfdZSDenWJN9xWmN?mode=wwt"
+                href="https://www.instagram.com/channel/E1ynCd7tzuRxPBIm/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block text-xs font-semibold text-emerald-500 hover:underline"
+                className="block text-xs font-semibold text-purple-500 hover:underline"
               >
-                → Join WhatsApp Community
+                → Join Community
               </a>
               <a
                 href="https://x.com/TeachFlow_in"

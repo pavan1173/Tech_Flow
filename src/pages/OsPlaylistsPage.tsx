@@ -59,7 +59,12 @@ export const OsPlaylistsPage: React.FC<OsPlaylistsPageProps> = ({ navigate }) =>
               className="group flex flex-col bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-[#1b2230] hover:border-indigo-500/50 rounded-2xl overflow-hidden transition-all duration-300 shadow-md hover:shadow-2xl hover:-translate-y-1 cursor-pointer select-none"
             >
               <div className="relative aspect-video w-full overflow-hidden bg-zinc-900 border-b border-zinc-200 dark:border-[#1b2230]">
-                <PlaylistThumbnail type={playlist.thumbnailType} subject="OS" />
+                <PlaylistThumbnail
+                type={playlist.thumbnailType}
+                subject="OS"
+                slug={playlist.slug}
+                alt={playlist.title}
+              />
                 
                 <div className="absolute top-3 right-3 z-10">
                   <span className="px-2 py-0.5 rounded-md bg-black/80 backdrop-blur-md text-zinc-300 text-[11px] font-mono font-semibold flex items-center gap-1">

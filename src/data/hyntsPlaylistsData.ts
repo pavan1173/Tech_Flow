@@ -22593,10 +22593,1947 @@ export const hyntsPlaylists: HyntsPlaylist[] = [
       }
     ]
   }
+,
+  {
+    "slug": "gaurav-sen-system-design-playlist",
+    "title": "Gaurav Sen HLD System Design Interview Preparation",
+    "category": "system-design",
+    "instructor": "Gaurav Sen",
+    "channel": "Gaurav Sen",
+    "totalVideos": 26,
+    "totalDuration": "20+ hrs",
+    "rating": 4.9,
+    "badge": "High-Level Design • Distributed Systems",
+    "description": "Complete System Design course covering distributed systems fundamentals, scalability patterns, microservices architecture, and real-world system design case studies for technical interviews.",
+    "playlistUrl": "https://www.youtube.com/playlist?list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX",
+    "thumbnailType": "gaurav-sen",
+    "sections": [
+      {
+        "title": "System Design Fundamentals",
+        "videosCount": 14,
+        "videos": [
+          {
+            "id": 1,
+            "index": 1,
+            "title": "System Design Primer ⭐️: How to start with distributed systems?",
+            "duration": "9:22",
+            "youtubeId": "SqcXvc3ZmRU",
+            "videoUrl": "https://www.youtube.com/watch?v=SqcXvc3ZmRU&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=1",
+            "sectionTitle": "System Design Fundamentals"
+          },
+          {
+            "id": 2,
+            "index": 2,
+            "title": "System Design BASICS: Horizontal vs. Vertical Scaling",
+            "duration": "7:56",
+            "youtubeId": "xpDnVSmNFX0",
+            "videoUrl": "https://www.youtube.com/watch?v=xpDnVSmNFX0&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=2",
+            "sectionTitle": "System Design Fundamentals"
+          },
+          {
+            "id": 3,
+            "index": 3,
+            "title": "What is LOAD BALANCING? ⚖️",
+            "duration": "13:50",
+            "youtubeId": "K0Ta65OqQkY",
+            "videoUrl": "https://www.youtube.com/watch?v=K0Ta65OqQkY&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=3",
+            "sectionTitle": "System Design Fundamentals"
+          },
+          {
+            "id": 4,
+            "index": 4,
+            "title": "What is CONSISTENT HASHING and Where is it used?",
+            "duration": "10:50",
+            "youtubeId": "zaRkONvyGr8",
+            "videoUrl": "https://www.youtube.com/watch?v=zaRkONvyGr8&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=4",
+            "sectionTitle": "System Design Fundamentals"
+          },
+          {
+            "id": 5,
+            "index": 5,
+            "title": "What is a MESSAGE QUEUE and Where is it used?",
+            "duration": "9:59",
+            "youtubeId": "oUJbuFMyBDk",
+            "videoUrl": "https://www.youtube.com/watch?v=oUJbuFMyBDk&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=5",
+            "sectionTitle": "System Design Fundamentals"
+          },
+          {
+            "id": 6,
+            "index": 6,
+            "title": "What is a MICROSERVICE ARCHITECTURE and what are its advantages?",
+            "duration": "8:19",
+            "youtubeId": "qYhRvH9tJKw",
+            "videoUrl": "https://www.youtube.com/watch?v=qYhRvH9tJKw&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=6",
+            "sectionTitle": "System Design Fundamentals"
+          },
+          {
+            "id": 7,
+            "index": 7,
+            "title": "What is DATABASE SHARDING?",
+            "duration": "8:56",
+            "youtubeId": "5faMjKuB9bc",
+            "videoUrl": "https://www.youtube.com/watch?v=5faMjKuB9bc&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=7",
+            "sectionTitle": "System Design Fundamentals"
+          },
+          {
+            "id": 8,
+            "index": 8,
+            "title": "Caching in distributed systems: A friendly introduction",
+            "duration": "11:25",
+            "youtubeId": "zw7VwIlkPPc",
+            "videoUrl": "https://www.youtube.com/watch?v=zw7VwIlkPPc&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=8",
+            "sectionTitle": "System Design Fundamentals"
+          },
+          {
+            "id": 9,
+            "index": 9,
+            "title": "How to avoid a single point of failure in distributed systems ✅",
+            "duration": "6:34",
+            "youtubeId": "-BOysyYErLY",
+            "videoUrl": "https://www.youtube.com/watch?v=-BOysyYErLY&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=9",
+            "sectionTitle": "System Design Fundamentals"
+          },
+          {
+            "id": 10,
+            "index": 10,
+            "title": "What is a CDN (Content Delivery Network)?",
+            "duration": "5:43",
+            "youtubeId": "b4_6thkYZXs",
+            "videoUrl": "https://www.youtube.com/watch?v=b4_6thkYZXs&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=10",
+            "sectionTitle": "System Design Fundamentals"
+          },
+          {
+            "id": 11,
+            "index": 11,
+            "title": "What is the Publisher Subscriber Model?",
+            "duration": "11:25",
+            "youtubeId": "FMhbR_kQeHw",
+            "videoUrl": "https://www.youtube.com/watch?v=FMhbR_kQeHw&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=11",
+            "sectionTitle": "System Design Fundamentals"
+          },
+          {
+            "id": 12,
+            "index": 12,
+            "title": "What&#39;s an Event Driven System?",
+            "duration": "14:59",
+            "youtubeId": "rJHTK2TfZ1I",
+            "videoUrl": "https://www.youtube.com/watch?v=rJHTK2TfZ1I&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=12",
+            "sectionTitle": "System Design Fundamentals"
+          },
+          {
+            "id": 13,
+            "index": 13,
+            "title": "Introduction to NoSQL databases",
+            "duration": "26:18",
+            "youtubeId": "xQnIN9bW0og",
+            "videoUrl": "https://www.youtube.com/watch?v=xQnIN9bW0og&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=13",
+            "sectionTitle": "System Design Fundamentals"
+          },
+          {
+            "id": 14,
+            "index": 14,
+            "title": "What is an API and how do you design it? 🗒️✅",
+            "duration": "15:26",
+            "youtubeId": "_YlYuNMTCc8",
+            "videoUrl": "https://www.youtube.com/watch?v=_YlYuNMTCc8&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=14",
+            "sectionTitle": "System Design Fundamentals"
+          }
+        ]
+      },
+      {
+        "title": "System Design Case Studies",
+        "videosCount": 10,
+        "videos": [
+          {
+            "id": 15,
+            "index": 15,
+            "title": "System Design: TINDER as a microservice architecture",
+            "duration": "36:41",
+            "youtubeId": "tndzLznxq40",
+            "videoUrl": "https://www.youtube.com/watch?v=tndzLznxq40&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=15",
+            "sectionTitle": "System Design Case Studies"
+          },
+          {
+            "id": 16,
+            "index": 16,
+            "title": "Designing INSTAGRAM: System Design of News Feed",
+            "duration": "24:29",
+            "youtubeId": "QmX2NPkJTKg",
+            "videoUrl": "https://www.youtube.com/watch?v=QmX2NPkJTKg&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=16",
+            "sectionTitle": "System Design Case Studies"
+          },
+          {
+            "id": 17,
+            "index": 17,
+            "title": "WHATSAPP System Design: Chat Messaging Systems for Interviews",
+            "duration": "25:15",
+            "youtubeId": "vvhC64hQZMk",
+            "videoUrl": "https://www.youtube.com/watch?v=vvhC64hQZMk&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=17",
+            "sectionTitle": "System Design Case Studies"
+          },
+          {
+            "id": 18,
+            "index": 18,
+            "title": "How NETFLIX onboards new content: Video Processing at scale 🎥",
+            "duration": "10:44",
+            "youtubeId": "x9Hrn0oNmJM",
+            "videoUrl": "https://www.youtube.com/watch?v=x9Hrn0oNmJM&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=18",
+            "sectionTitle": "System Design Case Studies"
+          },
+          {
+            "id": 19,
+            "index": 19,
+            "title": "Capacity Planning and Estimation: How much data does YouTube store daily?",
+            "duration": "13:12",
+            "youtubeId": "0myM0k1mjZw",
+            "videoUrl": "https://www.youtube.com/watch?v=0myM0k1mjZw&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=19",
+            "sectionTitle": "System Design Case Studies"
+          },
+          {
+            "id": 20,
+            "index": 20,
+            "title": "How databases scale writes: The power of the log ✍️🗒️",
+            "duration": "17:22",
+            "youtubeId": "_5vrfuwhvlQ",
+            "videoUrl": "https://www.youtube.com/watch?v=_5vrfuwhvlQ&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=20",
+            "sectionTitle": "System Design Case Studies"
+          },
+          {
+            "id": 21,
+            "index": 21,
+            "title": "Distributed Consensus and Data Replication strategies on the server",
+            "duration": "15:48",
+            "youtubeId": "GeGxgmPTe4c",
+            "videoUrl": "https://www.youtube.com/watch?v=GeGxgmPTe4c&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=21",
+            "sectionTitle": "System Design Case Studies"
+          },
+          {
+            "id": 22,
+            "index": 22,
+            "title": "Designing a location database: QuadTrees and Hilbert Curves",
+            "duration": "22:22",
+            "youtubeId": "OcUKFIjhKu0",
+            "videoUrl": "https://www.youtube.com/watch?v=OcUKFIjhKu0&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=22",
+            "sectionTitle": "System Design Case Studies"
+          },
+          {
+            "id": 23,
+            "index": 23,
+            "title": "Data Consistency and Tradeoffs in Distributed Systems",
+            "duration": "25:42",
+            "youtubeId": "m4q7VkgDWrM",
+            "videoUrl": "https://www.youtube.com/watch?v=m4q7VkgDWrM&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=23",
+            "sectionTitle": "System Design Case Studies"
+          },
+          {
+            "id": 24,
+            "index": 24,
+            "title": "System Design Interview: TikTok architecture with @sudoCODE",
+            "duration": "45:35",
+            "youtubeId": "07BVxmVFDGY",
+            "videoUrl": "https://www.youtube.com/watch?v=07BVxmVFDGY&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=24",
+            "sectionTitle": "System Design Case Studies"
+          }
+        ]
+      },
+      {
+        "title": "Interview Preparation",
+        "videosCount": 2,
+        "videos": [
+          {
+            "id": 25,
+            "index": 25,
+            "title": "5 Tips for System Design Interviews",
+            "duration": "8:19",
+            "youtubeId": "CtmBGH8MkX4",
+            "videoUrl": "https://www.youtube.com/watch?v=CtmBGH8MkX4&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=25",
+            "sectionTitle": "Interview Preparation"
+          },
+          {
+            "id": 26,
+            "index": 26,
+            "title": "System Design Walkthrough at InterviewReady - Designed for SDE 1 to SDE 3 Interview Preparation",
+            "duration": "4:55",
+            "youtubeId": "CC-AxHIgBSM",
+            "videoUrl": "https://www.youtube.com/watch?v=CC-AxHIgBSM&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=26",
+            "sectionTitle": "Interview Preparation"
+          }
+        ]
+      }
+    ],
+    "lectures": [
+      {
+        "id": 1,
+        "index": 1,
+        "title": "System Design Primer ⭐️: How to start with distributed systems?",
+        "duration": "9:22",
+        "youtubeId": "SqcXvc3ZmRU",
+        "videoUrl": "https://www.youtube.com/watch?v=SqcXvc3ZmRU&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=1",
+        "sectionTitle": "System Design Fundamentals"
+      },
+      {
+        "id": 2,
+        "index": 2,
+        "title": "System Design BASICS: Horizontal vs. Vertical Scaling",
+        "duration": "7:56",
+        "youtubeId": "xpDnVSmNFX0",
+        "videoUrl": "https://www.youtube.com/watch?v=xpDnVSmNFX0&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=2",
+        "sectionTitle": "System Design Fundamentals"
+      },
+      {
+        "id": 3,
+        "index": 3,
+        "title": "What is LOAD BALANCING? ⚖️",
+        "duration": "13:50",
+        "youtubeId": "K0Ta65OqQkY",
+        "videoUrl": "https://www.youtube.com/watch?v=K0Ta65OqQkY&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=3",
+        "sectionTitle": "System Design Fundamentals"
+      },
+      {
+        "id": 4,
+        "index": 4,
+        "title": "What is CONSISTENT HASHING and Where is it used?",
+        "duration": "10:50",
+        "youtubeId": "zaRkONvyGr8",
+        "videoUrl": "https://www.youtube.com/watch?v=zaRkONvyGr8&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=4",
+        "sectionTitle": "System Design Fundamentals"
+      },
+      {
+        "id": 5,
+        "index": 5,
+        "title": "What is a MESSAGE QUEUE and Where is it used?",
+        "duration": "9:59",
+        "youtubeId": "oUJbuFMyBDk",
+        "videoUrl": "https://www.youtube.com/watch?v=oUJbuFMyBDk&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=5",
+        "sectionTitle": "System Design Fundamentals"
+      },
+      {
+        "id": 6,
+        "index": 6,
+        "title": "What is a MICROSERVICE ARCHITECTURE and what are its advantages?",
+        "duration": "8:19",
+        "youtubeId": "qYhRvH9tJKw",
+        "videoUrl": "https://www.youtube.com/watch?v=qYhRvH9tJKw&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=6",
+        "sectionTitle": "System Design Fundamentals"
+      },
+      {
+        "id": 7,
+        "index": 7,
+        "title": "What is DATABASE SHARDING?",
+        "duration": "8:56",
+        "youtubeId": "5faMjKuB9bc",
+        "videoUrl": "https://www.youtube.com/watch?v=5faMjKuB9bc&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=7",
+        "sectionTitle": "System Design Fundamentals"
+      },
+      {
+        "id": 8,
+        "index": 8,
+        "title": "Caching in distributed systems: A friendly introduction",
+        "duration": "11:25",
+        "youtubeId": "zw7VwIlkPPc",
+        "videoUrl": "https://www.youtube.com/watch?v=zw7VwIlkPPc&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=8",
+        "sectionTitle": "System Design Fundamentals"
+      },
+      {
+        "id": 9,
+        "index": 9,
+        "title": "How to avoid a single point of failure in distributed systems ✅",
+        "duration": "6:34",
+        "youtubeId": "-BOysyYErLY",
+        "videoUrl": "https://www.youtube.com/watch?v=-BOysyYErLY&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=9",
+        "sectionTitle": "System Design Fundamentals"
+      },
+      {
+        "id": 10,
+        "index": 10,
+        "title": "What is a CDN (Content Delivery Network)?",
+        "duration": "5:43",
+        "youtubeId": "b4_6thkYZXs",
+        "videoUrl": "https://www.youtube.com/watch?v=b4_6thkYZXs&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=10",
+        "sectionTitle": "System Design Fundamentals"
+      },
+      {
+        "id": 11,
+        "index": 11,
+        "title": "What is the Publisher Subscriber Model?",
+        "duration": "11:25",
+        "youtubeId": "FMhbR_kQeHw",
+        "videoUrl": "https://www.youtube.com/watch?v=FMhbR_kQeHw&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=11",
+        "sectionTitle": "System Design Fundamentals"
+      },
+      {
+        "id": 12,
+        "index": 12,
+        "title": "What&#39;s an Event Driven System?",
+        "duration": "14:59",
+        "youtubeId": "rJHTK2TfZ1I",
+        "videoUrl": "https://www.youtube.com/watch?v=rJHTK2TfZ1I&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=12",
+        "sectionTitle": "System Design Fundamentals"
+      },
+      {
+        "id": 13,
+        "index": 13,
+        "title": "Introduction to NoSQL databases",
+        "duration": "26:18",
+        "youtubeId": "xQnIN9bW0og",
+        "videoUrl": "https://www.youtube.com/watch?v=xQnIN9bW0og&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=13",
+        "sectionTitle": "System Design Fundamentals"
+      },
+      {
+        "id": 14,
+        "index": 14,
+        "title": "What is an API and how do you design it? 🗒️✅",
+        "duration": "15:26",
+        "youtubeId": "_YlYuNMTCc8",
+        "videoUrl": "https://www.youtube.com/watch?v=_YlYuNMTCc8&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=14",
+        "sectionTitle": "System Design Fundamentals"
+      },
+      {
+        "id": 15,
+        "index": 15,
+        "title": "System Design: TINDER as a microservice architecture",
+        "duration": "36:41",
+        "youtubeId": "tndzLznxq40",
+        "videoUrl": "https://www.youtube.com/watch?v=tndzLznxq40&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=15",
+        "sectionTitle": "System Design Case Studies"
+      },
+      {
+        "id": 16,
+        "index": 16,
+        "title": "Designing INSTAGRAM: System Design of News Feed",
+        "duration": "24:29",
+        "youtubeId": "QmX2NPkJTKg",
+        "videoUrl": "https://www.youtube.com/watch?v=QmX2NPkJTKg&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=16",
+        "sectionTitle": "System Design Case Studies"
+      },
+      {
+        "id": 17,
+        "index": 17,
+        "title": "WHATSAPP System Design: Chat Messaging Systems for Interviews",
+        "duration": "25:15",
+        "youtubeId": "vvhC64hQZMk",
+        "videoUrl": "https://www.youtube.com/watch?v=vvhC64hQZMk&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=17",
+        "sectionTitle": "System Design Case Studies"
+      },
+      {
+        "id": 18,
+        "index": 18,
+        "title": "How NETFLIX onboards new content: Video Processing at scale 🎥",
+        "duration": "10:44",
+        "youtubeId": "x9Hrn0oNmJM",
+        "videoUrl": "https://www.youtube.com/watch?v=x9Hrn0oNmJM&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=18",
+        "sectionTitle": "System Design Case Studies"
+      },
+      {
+        "id": 19,
+        "index": 19,
+        "title": "Capacity Planning and Estimation: How much data does YouTube store daily?",
+        "duration": "13:12",
+        "youtubeId": "0myM0k1mjZw",
+        "videoUrl": "https://www.youtube.com/watch?v=0myM0k1mjZw&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=19",
+        "sectionTitle": "System Design Case Studies"
+      },
+      {
+        "id": 20,
+        "index": 20,
+        "title": "How databases scale writes: The power of the log ✍️🗒️",
+        "duration": "17:22",
+        "youtubeId": "_5vrfuwhvlQ",
+        "videoUrl": "https://www.youtube.com/watch?v=_5vrfuwhvlQ&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=20",
+        "sectionTitle": "System Design Case Studies"
+      },
+      {
+        "id": 21,
+        "index": 21,
+        "title": "Distributed Consensus and Data Replication strategies on the server",
+        "duration": "15:48",
+        "youtubeId": "GeGxgmPTe4c",
+        "videoUrl": "https://www.youtube.com/watch?v=GeGxgmPTe4c&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=21",
+        "sectionTitle": "System Design Case Studies"
+      },
+      {
+        "id": 22,
+        "index": 22,
+        "title": "Designing a location database: QuadTrees and Hilbert Curves",
+        "duration": "22:22",
+        "youtubeId": "OcUKFIjhKu0",
+        "videoUrl": "https://www.youtube.com/watch?v=OcUKFIjhKu0&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=22",
+        "sectionTitle": "System Design Case Studies"
+      },
+      {
+        "id": 23,
+        "index": 23,
+        "title": "Data Consistency and Tradeoffs in Distributed Systems",
+        "duration": "25:42",
+        "youtubeId": "m4q7VkgDWrM",
+        "videoUrl": "https://www.youtube.com/watch?v=m4q7VkgDWrM&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=23",
+        "sectionTitle": "System Design Case Studies"
+      },
+      {
+        "id": 24,
+        "index": 24,
+        "title": "System Design Interview: TikTok architecture with @sudoCODE",
+        "duration": "45:35",
+        "youtubeId": "07BVxmVFDGY",
+        "videoUrl": "https://www.youtube.com/watch?v=07BVxmVFDGY&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=24",
+        "sectionTitle": "System Design Case Studies"
+      },
+      {
+        "id": 25,
+        "index": 25,
+        "title": "5 Tips for System Design Interviews",
+        "duration": "8:19",
+        "youtubeId": "CtmBGH8MkX4",
+        "videoUrl": "https://www.youtube.com/watch?v=CtmBGH8MkX4&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=25",
+        "sectionTitle": "Interview Preparation"
+      },
+      {
+        "id": 26,
+        "index": 26,
+        "title": "System Design Walkthrough at InterviewReady - Designed for SDE 1 to SDE 3 Interview Preparation",
+        "duration": "4:55",
+        "youtubeId": "CC-AxHIgBSM",
+        "videoUrl": "https://www.youtube.com/watch?v=CC-AxHIgBSM&list=PLMCXHnjXnTnvo6alSjVkgxV-VH6EPyvoX&index=26",
+        "sectionTitle": "Interview Preparation"
+      }
+    ]
+  },
+  {
+    "slug": "coder-army-system-design-playlist",
+    "title": "Code Army LLD System Design Interview Preparation",
+    "category": "system-design",
+    "instructor": "Coder Army (Rohit Negi)",
+    "channel": "Coder Army",
+    "totalVideos": 39,
+    "totalDuration": "29+ hrs",
+    "rating": 4.9,
+    "badge": "LLD • Object-Oriented Design",
+    "description": "Comprehensive System Design and Low-Level Design (LLD) series covering OOPs, SOLID principles, design patterns, and real-world projects.",
+    "playlistUrl": "https://www.youtube.com/playlist?list=PLQEaRBV9gAFvY4u5G6a7Z3-4x0m4v9h5",
+    "thumbnailType": "coder-army",
+    "sections": [
+      {
+        "title": "OOPs & Fundamentals",
+        "videosCount": 6,
+        "videos": [
+          {
+            "id": 1,
+            "index": 1,
+            "title": "Introduction To System Design",
+            "duration": "25 min",
+            "youtubeId": "AK0hu0Zxua4",
+            "videoUrl": "https://www.youtube.com/watch?v=AK0hu0Zxua4",
+            "sectionTitle": "OOPs & Fundamentals"
+          },
+          {
+            "id": 2,
+            "index": 2,
+            "title": "OOPs Real-World Examples | OOPs Pillars | Abstraction | Encapsulation",
+            "duration": "25 min",
+            "youtubeId": "QbGoqAgP_zg",
+            "videoUrl": "https://www.youtube.com/watch?v=QbGoqAgP_zg",
+            "sectionTitle": "OOPs & Fundamentals"
+          },
+          {
+            "id": 3,
+            "index": 3,
+            "title": "Inheritance & Polymorphism in OOPs",
+            "duration": "25 min",
+            "youtubeId": "KGOEK0-XBIg",
+            "videoUrl": "https://www.youtube.com/watch?v=KGOEK0-XBIg",
+            "sectionTitle": "OOPs & Fundamentals"
+          },
+          {
+            "id": 4,
+            "index": 4,
+            "title": "What is UML Diagrams | Class & Sequence Diagrams with Real Examples",
+            "duration": "25 min",
+            "youtubeId": "nPJyyO9pb5s",
+            "videoUrl": "https://www.youtube.com/watch?v=nPJyyO9pb5s",
+            "sectionTitle": "OOPs & Fundamentals"
+          },
+          {
+            "id": 5,
+            "index": 5,
+            "title": "SOLID Design Principles | Complete Guide with Code Examples",
+            "duration": "25 min",
+            "youtubeId": "UsNl8kcU4UA",
+            "videoUrl": "https://www.youtube.com/watch?v=UsNl8kcU4UA",
+            "sectionTitle": "OOPs & Fundamentals"
+          },
+          {
+            "id": 6,
+            "index": 6,
+            "title": "SOLID Design Principles | part 2",
+            "duration": "25 min",
+            "youtubeId": "hU9koy6A2I0",
+            "videoUrl": "https://www.youtube.com/watch?v=hU9koy6A2I0",
+            "sectionTitle": "OOPs & Fundamentals"
+          }
+        ]
+      },
+      {
+        "title": "Design Patterns in LLD",
+        "videosCount": 22,
+        "videos": [
+          {
+            "id": 7,
+            "index": 7,
+            "title": "Strategy Design Pattern Explained with Real-World Example | Design Patterns in LLD",
+            "duration": "25 min",
+            "youtubeId": "PpKvPrl_gRg",
+            "videoUrl": "https://www.youtube.com/watch?v=PpKvPrl_gRg",
+            "sectionTitle": "Design Patterns in LLD"
+          },
+          {
+            "id": 8,
+            "index": 8,
+            "title": "Factory Design Pattern | Simple, Factory Method & Abstract Factory with Real-Life Examples",
+            "duration": "25 min",
+            "youtubeId": "dMK4TbG29fk",
+            "videoUrl": "https://www.youtube.com/watch?v=dMK4TbG29fk",
+            "sectionTitle": "Design Patterns in LLD"
+          },
+          {
+            "id": 9,
+            "index": 9,
+            "title": "Singleton Design Pattern | Thread-Safe, Lazy & Eager Initialization + Real Use Cases",
+            "duration": "25 min",
+            "youtubeId": "CD3meit-WDc",
+            "videoUrl": "https://www.youtube.com/watch?v=CD3meit-WDc",
+            "sectionTitle": "Design Patterns in LLD"
+          },
+          {
+            "id": 10,
+            "index": 10,
+            "title": "Observer Design Pattern Explained | Real-Life Use Case + Code Example",
+            "duration": "25 min",
+            "youtubeId": "Jpmp4GY8r3Q",
+            "videoUrl": "https://www.youtube.com/watch?v=Jpmp4GY8r3Q",
+            "sectionTitle": "Design Patterns in LLD"
+          },
+          {
+            "id": 11,
+            "index": 11,
+            "title": "Decorator Pattern Explained | Real-world use case + Code | Design patterns in LLD",
+            "duration": "25 min",
+            "youtubeId": "Z9rFlZClYNI",
+            "videoUrl": "https://www.youtube.com/watch?v=Z9rFlZClYNI",
+            "sectionTitle": "Design Patterns in LLD"
+          },
+          {
+            "id": 12,
+            "index": 12,
+            "title": "Command Design Pattern | Real-world use case + Code | Design patterns in LLD",
+            "duration": "25 min",
+            "youtubeId": "cnQZsN0jxEY",
+            "videoUrl": "https://www.youtube.com/watch?v=cnQZsN0jxEY",
+            "sectionTitle": "Design Patterns in LLD"
+          },
+          {
+            "id": 13,
+            "index": 13,
+            "title": "Adapter Design Pattern | Real-world use case + Code | Design patterns in LLD",
+            "duration": "25 min",
+            "youtubeId": "FV3x69rpwm0",
+            "videoUrl": "https://www.youtube.com/watch?v=FV3x69rpwm0",
+            "sectionTitle": "Design Patterns in LLD"
+          },
+          {
+            "id": 14,
+            "index": 14,
+            "title": "Facade Design Pattern | Real-world use case + Code | Design patterns in LLD",
+            "duration": "25 min",
+            "youtubeId": "0KlnSdvsojc",
+            "videoUrl": "https://www.youtube.com/watch?v=0KlnSdvsojc",
+            "sectionTitle": "Design Patterns in LLD"
+          },
+          {
+            "id": 15,
+            "index": 15,
+            "title": "Composite Design Pattern | Build File System (UML & Code) | System Design",
+            "duration": "25 min",
+            "youtubeId": "xaaiMGmyDJk",
+            "videoUrl": "https://www.youtube.com/watch?v=xaaiMGmyDJk",
+            "sectionTitle": "Design Patterns in LLD"
+          },
+          {
+            "id": 16,
+            "index": 16,
+            "title": "Template Method Pattern | Step-by-Step Example (UML + Code)",
+            "duration": "25 min",
+            "youtubeId": "8-vE_bmEt18",
+            "videoUrl": "https://www.youtube.com/watch?v=8-vE_bmEt18",
+            "sectionTitle": "Design Patterns in LLD"
+          },
+          {
+            "id": 17,
+            "index": 17,
+            "title": "Proxy Design Pattern | Virtual Proxy | Protection Proxy | Remote Proxy",
+            "duration": "25 min",
+            "youtubeId": "xuT6OOYVJTQ",
+            "videoUrl": "https://www.youtube.com/watch?v=xuT6OOYVJTQ",
+            "sectionTitle": "Design Patterns in LLD"
+          },
+          {
+            "id": 18,
+            "index": 18,
+            "title": "Chain of Responsibility Pattern | Build Cash Dispenser(UML & Code) | System Design",
+            "duration": "25 min",
+            "youtubeId": "LXVKB6deQMo",
+            "videoUrl": "https://www.youtube.com/watch?v=LXVKB6deQMo",
+            "sectionTitle": "Design Patterns in LLD"
+          },
+          {
+            "id": 19,
+            "index": 19,
+            "title": "Bridge Pattern | Real-world use case + Code | System Design",
+            "duration": "25 min",
+            "youtubeId": "KVf8dwgTbiM",
+            "videoUrl": "https://www.youtube.com/watch?v=KVf8dwgTbiM",
+            "sectionTitle": "Design Patterns in LLD"
+          },
+          {
+            "id": 20,
+            "index": 20,
+            "title": "Builder Design Pattern | Classic Builder | Step Builder | UML + Code | System Design",
+            "duration": "25 min",
+            "youtubeId": "G4Ntl9KzIxY",
+            "videoUrl": "https://www.youtube.com/watch?v=G4Ntl9KzIxY",
+            "sectionTitle": "Design Patterns in LLD"
+          },
+          {
+            "id": 21,
+            "index": 21,
+            "title": "Iterator Design Pattern | UML + Code | System Design",
+            "duration": "25 min",
+            "youtubeId": "30fveBRLqMw",
+            "videoUrl": "https://www.youtube.com/watch?v=30fveBRLqMw",
+            "sectionTitle": "Design Patterns in LLD"
+          },
+          {
+            "id": 22,
+            "index": 22,
+            "title": "Flyweight Design Pattern | UML + Code | System Design",
+            "duration": "25 min",
+            "youtubeId": "vNSRcegCO8E",
+            "videoUrl": "https://www.youtube.com/watch?v=vNSRcegCO8E",
+            "sectionTitle": "Design Patterns in LLD"
+          },
+          {
+            "id": 23,
+            "index": 23,
+            "title": "State Design Pattern | Build Vending Machine (UML & Code) | System Design",
+            "duration": "25 min",
+            "youtubeId": "bJPmvie_p4w",
+            "videoUrl": "https://www.youtube.com/watch?v=bJPmvie_p4w",
+            "sectionTitle": "Design Patterns in LLD"
+          },
+          {
+            "id": 24,
+            "index": 24,
+            "title": "Mediator Design Pattern | Build Chat Room | UML + Code | System Design",
+            "duration": "25 min",
+            "youtubeId": "3lGIICzgyQQ",
+            "videoUrl": "https://www.youtube.com/watch?v=3lGIICzgyQQ",
+            "sectionTitle": "Design Patterns in LLD"
+          },
+          {
+            "id": 25,
+            "index": 25,
+            "title": "Prototype Design Pattern | UML + Code | System Design",
+            "duration": "25 min",
+            "youtubeId": "KMQFNV8LFec",
+            "videoUrl": "https://www.youtube.com/watch?v=KMQFNV8LFec",
+            "sectionTitle": "Design Patterns in LLD"
+          },
+          {
+            "id": 26,
+            "index": 26,
+            "title": "Visitor Design Pattern | UML + Code | System Design",
+            "duration": "25 min",
+            "youtubeId": "DnmsxnlCyl0",
+            "videoUrl": "https://www.youtube.com/watch?v=DnmsxnlCyl0",
+            "sectionTitle": "Design Patterns in LLD"
+          },
+          {
+            "id": 27,
+            "index": 27,
+            "title": "Memento Design Pattern | UML + Code | System Design",
+            "duration": "25 min",
+            "youtubeId": "p8-ile_nWnY",
+            "videoUrl": "https://www.youtube.com/watch?v=p8-ile_nWnY",
+            "sectionTitle": "Design Patterns in LLD"
+          },
+          {
+            "id": 28,
+            "index": 28,
+            "title": "Null Object Pattern | Anti-Patterns in System Design",
+            "duration": "25 min",
+            "youtubeId": "iXHlc_S3Ae4",
+            "videoUrl": "https://www.youtube.com/watch?v=iXHlc_S3Ae4",
+            "sectionTitle": "Design Patterns in LLD"
+          }
+        ]
+      },
+      {
+        "title": "Real-World LLD Projects",
+        "videosCount": 11,
+        "videos": [
+          {
+            "id": 29,
+            "index": 29,
+            "title": "Build Google Docs | A Real-World LLD Project | Document Editor LLD |",
+            "duration": "25 min",
+            "youtubeId": "MT9qZFGQXOU",
+            "videoUrl": "https://www.youtube.com/watch?v=MT9qZFGQXOU",
+            "sectionTitle": "Real-World LLD Projects"
+          },
+          {
+            "id": 30,
+            "index": 30,
+            "title": "Build Zomato Food Delivery App | System Design",
+            "duration": "25 min",
+            "youtubeId": "2SAUqTn3TrU",
+            "videoUrl": "https://www.youtube.com/watch?v=2SAUqTn3TrU",
+            "sectionTitle": "Real-World LLD Projects"
+          },
+          {
+            "id": 31,
+            "index": 31,
+            "title": "Build Your Own Notification Engine | System Design",
+            "duration": "25 min",
+            "youtubeId": "t-4r2AsJz_Q",
+            "videoUrl": "https://www.youtube.com/watch?v=t-4r2AsJz_Q",
+            "sectionTitle": "Real-World LLD Projects"
+          },
+          {
+            "id": 32,
+            "index": 32,
+            "title": "Build Spotify, Music Player App | System Design",
+            "duration": "25 min",
+            "youtubeId": "DkLwFqbCsu8",
+            "videoUrl": "https://www.youtube.com/watch?v=DkLwFqbCsu8",
+            "sectionTitle": "Real-World LLD Projects"
+          },
+          {
+            "id": 33,
+            "index": 33,
+            "title": "Build Payment Gateway System | System Design",
+            "duration": "25 min",
+            "youtubeId": "36FDqIRBGRg",
+            "videoUrl": "https://www.youtube.com/watch?v=36FDqIRBGRg",
+            "sectionTitle": "Real-World LLD Projects"
+          },
+          {
+            "id": 34,
+            "index": 34,
+            "title": "Build Discount Coupon Engine | System Design",
+            "duration": "25 min",
+            "youtubeId": "jbVevoGN_pM",
+            "videoUrl": "https://www.youtube.com/watch?v=jbVevoGN_pM",
+            "sectionTitle": "Real-World LLD Projects"
+          },
+          {
+            "id": 35,
+            "index": 35,
+            "title": "Build Zepto | 10-Mins Quick Commerce | Inventory Management | System Design",
+            "duration": "25 min",
+            "youtubeId": "FcbsppIX0bg",
+            "videoUrl": "https://www.youtube.com/watch?v=FcbsppIX0bg",
+            "sectionTitle": "Real-World LLD Projects"
+          },
+          {
+            "id": 36,
+            "index": 36,
+            "title": "Build Tinder | Dating Site | System Design",
+            "duration": "25 min",
+            "youtubeId": "IcgLSo6--ok",
+            "videoUrl": "https://www.youtube.com/watch?v=IcgLSo6--ok",
+            "sectionTitle": "Real-World LLD Projects"
+          },
+          {
+            "id": 37,
+            "index": 37,
+            "title": "Build Tic Tac Toe Game | UML + Code | System Design",
+            "duration": "25 min",
+            "youtubeId": "BGFzYjGtRP4",
+            "videoUrl": "https://www.youtube.com/watch?v=BGFzYjGtRP4",
+            "sectionTitle": "Real-World LLD Projects"
+          },
+          {
+            "id": 38,
+            "index": 38,
+            "title": "Build Snake and Ladder Game | UML + Code | System Design",
+            "duration": "25 min",
+            "youtubeId": "1NJB54UB8nE",
+            "videoUrl": "https://www.youtube.com/watch?v=1NJB54UB8nE",
+            "sectionTitle": "Real-World LLD Projects"
+          },
+          {
+            "id": 39,
+            "index": 39,
+            "title": "Build Chess Game | UML + Code | System Design",
+            "duration": "25 min",
+            "youtubeId": "eULHvaMZUks",
+            "videoUrl": "https://www.youtube.com/watch?v=eULHvaMZUks",
+            "sectionTitle": "Real-World LLD Projects"
+          }
+        ]
+      }
+    ],
+    "lectures": [
+      {
+        "id": 1,
+        "index": 1,
+        "title": "Introduction To System Design",
+        "duration": "25 min",
+        "youtubeId": "AK0hu0Zxua4",
+        "videoUrl": "https://www.youtube.com/watch?v=AK0hu0Zxua4",
+        "sectionTitle": "OOPs & Fundamentals"
+      },
+      {
+        "id": 2,
+        "index": 2,
+        "title": "OOPs Real-World Examples | OOPs Pillars | Abstraction | Encapsulation",
+        "duration": "25 min",
+        "youtubeId": "QbGoqAgP_zg",
+        "videoUrl": "https://www.youtube.com/watch?v=QbGoqAgP_zg",
+        "sectionTitle": "OOPs & Fundamentals"
+      },
+      {
+        "id": 3,
+        "index": 3,
+        "title": "Inheritance & Polymorphism in OOPs",
+        "duration": "25 min",
+        "youtubeId": "KGOEK0-XBIg",
+        "videoUrl": "https://www.youtube.com/watch?v=KGOEK0-XBIg",
+        "sectionTitle": "OOPs & Fundamentals"
+      },
+      {
+        "id": 4,
+        "index": 4,
+        "title": "What is UML Diagrams | Class & Sequence Diagrams with Real Examples",
+        "duration": "25 min",
+        "youtubeId": "nPJyyO9pb5s",
+        "videoUrl": "https://www.youtube.com/watch?v=nPJyyO9pb5s",
+        "sectionTitle": "OOPs & Fundamentals"
+      },
+      {
+        "id": 5,
+        "index": 5,
+        "title": "SOLID Design Principles | Complete Guide with Code Examples",
+        "duration": "25 min",
+        "youtubeId": "UsNl8kcU4UA",
+        "videoUrl": "https://www.youtube.com/watch?v=UsNl8kcU4UA",
+        "sectionTitle": "OOPs & Fundamentals"
+      },
+      {
+        "id": 6,
+        "index": 6,
+        "title": "SOLID Design Principles | part 2",
+        "duration": "25 min",
+        "youtubeId": "hU9koy6A2I0",
+        "videoUrl": "https://www.youtube.com/watch?v=hU9koy6A2I0",
+        "sectionTitle": "OOPs & Fundamentals"
+      },
+      {
+        "id": 7,
+        "index": 7,
+        "title": "Strategy Design Pattern Explained with Real-World Example | Design Patterns in LLD",
+        "duration": "25 min",
+        "youtubeId": "PpKvPrl_gRg",
+        "videoUrl": "https://www.youtube.com/watch?v=PpKvPrl_gRg",
+        "sectionTitle": "Design Patterns in LLD"
+      },
+      {
+        "id": 8,
+        "index": 8,
+        "title": "Factory Design Pattern | Simple, Factory Method & Abstract Factory with Real-Life Examples",
+        "duration": "25 min",
+        "youtubeId": "dMK4TbG29fk",
+        "videoUrl": "https://www.youtube.com/watch?v=dMK4TbG29fk",
+        "sectionTitle": "Design Patterns in LLD"
+      },
+      {
+        "id": 9,
+        "index": 9,
+        "title": "Singleton Design Pattern | Thread-Safe, Lazy & Eager Initialization + Real Use Cases",
+        "duration": "25 min",
+        "youtubeId": "CD3meit-WDc",
+        "videoUrl": "https://www.youtube.com/watch?v=CD3meit-WDc",
+        "sectionTitle": "Design Patterns in LLD"
+      },
+      {
+        "id": 10,
+        "index": 10,
+        "title": "Observer Design Pattern Explained | Real-Life Use Case + Code Example",
+        "duration": "25 min",
+        "youtubeId": "Jpmp4GY8r3Q",
+        "videoUrl": "https://www.youtube.com/watch?v=Jpmp4GY8r3Q",
+        "sectionTitle": "Design Patterns in LLD"
+      },
+      {
+        "id": 11,
+        "index": 11,
+        "title": "Decorator Pattern Explained | Real-world use case + Code | Design patterns in LLD",
+        "duration": "25 min",
+        "youtubeId": "Z9rFlZClYNI",
+        "videoUrl": "https://www.youtube.com/watch?v=Z9rFlZClYNI",
+        "sectionTitle": "Design Patterns in LLD"
+      },
+      {
+        "id": 12,
+        "index": 12,
+        "title": "Command Design Pattern | Real-world use case + Code | Design patterns in LLD",
+        "duration": "25 min",
+        "youtubeId": "cnQZsN0jxEY",
+        "videoUrl": "https://www.youtube.com/watch?v=cnQZsN0jxEY",
+        "sectionTitle": "Design Patterns in LLD"
+      },
+      {
+        "id": 13,
+        "index": 13,
+        "title": "Adapter Design Pattern | Real-world use case + Code | Design patterns in LLD",
+        "duration": "25 min",
+        "youtubeId": "FV3x69rpwm0",
+        "videoUrl": "https://www.youtube.com/watch?v=FV3x69rpwm0",
+        "sectionTitle": "Design Patterns in LLD"
+      },
+      {
+        "id": 14,
+        "index": 14,
+        "title": "Facade Design Pattern | Real-world use case + Code | Design patterns in LLD",
+        "duration": "25 min",
+        "youtubeId": "0KlnSdvsojc",
+        "videoUrl": "https://www.youtube.com/watch?v=0KlnSdvsojc",
+        "sectionTitle": "Design Patterns in LLD"
+      },
+      {
+        "id": 15,
+        "index": 15,
+        "title": "Composite Design Pattern | Build File System (UML & Code) | System Design",
+        "duration": "25 min",
+        "youtubeId": "xaaiMGmyDJk",
+        "videoUrl": "https://www.youtube.com/watch?v=xaaiMGmyDJk",
+        "sectionTitle": "Design Patterns in LLD"
+      },
+      {
+        "id": 16,
+        "index": 16,
+        "title": "Template Method Pattern | Step-by-Step Example (UML + Code)",
+        "duration": "25 min",
+        "youtubeId": "8-vE_bmEt18",
+        "videoUrl": "https://www.youtube.com/watch?v=8-vE_bmEt18",
+        "sectionTitle": "Design Patterns in LLD"
+      },
+      {
+        "id": 17,
+        "index": 17,
+        "title": "Proxy Design Pattern | Virtual Proxy | Protection Proxy | Remote Proxy",
+        "duration": "25 min",
+        "youtubeId": "xuT6OOYVJTQ",
+        "videoUrl": "https://www.youtube.com/watch?v=xuT6OOYVJTQ",
+        "sectionTitle": "Design Patterns in LLD"
+      },
+      {
+        "id": 18,
+        "index": 18,
+        "title": "Chain of Responsibility Pattern | Build Cash Dispenser(UML & Code) | System Design",
+        "duration": "25 min",
+        "youtubeId": "LXVKB6deQMo",
+        "videoUrl": "https://www.youtube.com/watch?v=LXVKB6deQMo",
+        "sectionTitle": "Design Patterns in LLD"
+      },
+      {
+        "id": 19,
+        "index": 19,
+        "title": "Bridge Pattern | Real-world use case + Code | System Design",
+        "duration": "25 min",
+        "youtubeId": "KVf8dwgTbiM",
+        "videoUrl": "https://www.youtube.com/watch?v=KVf8dwgTbiM",
+        "sectionTitle": "Design Patterns in LLD"
+      },
+      {
+        "id": 20,
+        "index": 20,
+        "title": "Builder Design Pattern | Classic Builder | Step Builder | UML + Code | System Design",
+        "duration": "25 min",
+        "youtubeId": "G4Ntl9KzIxY",
+        "videoUrl": "https://www.youtube.com/watch?v=G4Ntl9KzIxY",
+        "sectionTitle": "Design Patterns in LLD"
+      },
+      {
+        "id": 21,
+        "index": 21,
+        "title": "Iterator Design Pattern | UML + Code | System Design",
+        "duration": "25 min",
+        "youtubeId": "30fveBRLqMw",
+        "videoUrl": "https://www.youtube.com/watch?v=30fveBRLqMw",
+        "sectionTitle": "Design Patterns in LLD"
+      },
+      {
+        "id": 22,
+        "index": 22,
+        "title": "Flyweight Design Pattern | UML + Code | System Design",
+        "duration": "25 min",
+        "youtubeId": "vNSRcegCO8E",
+        "videoUrl": "https://www.youtube.com/watch?v=vNSRcegCO8E",
+        "sectionTitle": "Design Patterns in LLD"
+      },
+      {
+        "id": 23,
+        "index": 23,
+        "title": "State Design Pattern | Build Vending Machine (UML & Code) | System Design",
+        "duration": "25 min",
+        "youtubeId": "bJPmvie_p4w",
+        "videoUrl": "https://www.youtube.com/watch?v=bJPmvie_p4w",
+        "sectionTitle": "Design Patterns in LLD"
+      },
+      {
+        "id": 24,
+        "index": 24,
+        "title": "Mediator Design Pattern | Build Chat Room | UML + Code | System Design",
+        "duration": "25 min",
+        "youtubeId": "3lGIICzgyQQ",
+        "videoUrl": "https://www.youtube.com/watch?v=3lGIICzgyQQ",
+        "sectionTitle": "Design Patterns in LLD"
+      },
+      {
+        "id": 25,
+        "index": 25,
+        "title": "Prototype Design Pattern | UML + Code | System Design",
+        "duration": "25 min",
+        "youtubeId": "KMQFNV8LFec",
+        "videoUrl": "https://www.youtube.com/watch?v=KMQFNV8LFec",
+        "sectionTitle": "Design Patterns in LLD"
+      },
+      {
+        "id": 26,
+        "index": 26,
+        "title": "Visitor Design Pattern | UML + Code | System Design",
+        "duration": "25 min",
+        "youtubeId": "DnmsxnlCyl0",
+        "videoUrl": "https://www.youtube.com/watch?v=DnmsxnlCyl0",
+        "sectionTitle": "Design Patterns in LLD"
+      },
+      {
+        "id": 27,
+        "index": 27,
+        "title": "Memento Design Pattern | UML + Code | System Design",
+        "duration": "25 min",
+        "youtubeId": "p8-ile_nWnY",
+        "videoUrl": "https://www.youtube.com/watch?v=p8-ile_nWnY",
+        "sectionTitle": "Design Patterns in LLD"
+      },
+      {
+        "id": 28,
+        "index": 28,
+        "title": "Null Object Pattern | Anti-Patterns in System Design",
+        "duration": "25 min",
+        "youtubeId": "iXHlc_S3Ae4",
+        "videoUrl": "https://www.youtube.com/watch?v=iXHlc_S3Ae4",
+        "sectionTitle": "Design Patterns in LLD"
+      },
+      {
+        "id": 29,
+        "index": 29,
+        "title": "Build Google Docs | A Real-World LLD Project | Document Editor LLD |",
+        "duration": "25 min",
+        "youtubeId": "MT9qZFGQXOU",
+        "videoUrl": "https://www.youtube.com/watch?v=MT9qZFGQXOU",
+        "sectionTitle": "Real-World LLD Projects"
+      },
+      {
+        "id": 30,
+        "index": 30,
+        "title": "Build Zomato Food Delivery App | System Design",
+        "duration": "25 min",
+        "youtubeId": "2SAUqTn3TrU",
+        "videoUrl": "https://www.youtube.com/watch?v=2SAUqTn3TrU",
+        "sectionTitle": "Real-World LLD Projects"
+      },
+      {
+        "id": 31,
+        "index": 31,
+        "title": "Build Your Own Notification Engine | System Design",
+        "duration": "25 min",
+        "youtubeId": "t-4r2AsJz_Q",
+        "videoUrl": "https://www.youtube.com/watch?v=t-4r2AsJz_Q",
+        "sectionTitle": "Real-World LLD Projects"
+      },
+      {
+        "id": 32,
+        "index": 32,
+        "title": "Build Spotify, Music Player App | System Design",
+        "duration": "25 min",
+        "youtubeId": "DkLwFqbCsu8",
+        "videoUrl": "https://www.youtube.com/watch?v=DkLwFqbCsu8",
+        "sectionTitle": "Real-World LLD Projects"
+      },
+      {
+        "id": 33,
+        "index": 33,
+        "title": "Build Payment Gateway System | System Design",
+        "duration": "25 min",
+        "youtubeId": "36FDqIRBGRg",
+        "videoUrl": "https://www.youtube.com/watch?v=36FDqIRBGRg",
+        "sectionTitle": "Real-World LLD Projects"
+      },
+      {
+        "id": 34,
+        "index": 34,
+        "title": "Build Discount Coupon Engine | System Design",
+        "duration": "25 min",
+        "youtubeId": "jbVevoGN_pM",
+        "videoUrl": "https://www.youtube.com/watch?v=jbVevoGN_pM",
+        "sectionTitle": "Real-World LLD Projects"
+      },
+      {
+        "id": 35,
+        "index": 35,
+        "title": "Build Zepto | 10-Mins Quick Commerce | Inventory Management | System Design",
+        "duration": "25 min",
+        "youtubeId": "FcbsppIX0bg",
+        "videoUrl": "https://www.youtube.com/watch?v=FcbsppIX0bg",
+        "sectionTitle": "Real-World LLD Projects"
+      },
+      {
+        "id": 36,
+        "index": 36,
+        "title": "Build Tinder | Dating Site | System Design",
+        "duration": "25 min",
+        "youtubeId": "IcgLSo6--ok",
+        "videoUrl": "https://www.youtube.com/watch?v=IcgLSo6--ok",
+        "sectionTitle": "Real-World LLD Projects"
+      },
+      {
+        "id": 37,
+        "index": 37,
+        "title": "Build Tic Tac Toe Game | UML + Code | System Design",
+        "duration": "25 min",
+        "youtubeId": "BGFzYjGtRP4",
+        "videoUrl": "https://www.youtube.com/watch?v=BGFzYjGtRP4",
+        "sectionTitle": "Real-World LLD Projects"
+      },
+      {
+        "id": 38,
+        "index": 38,
+        "title": "Build Snake and Ladder Game | UML + Code | System Design",
+        "duration": "25 min",
+        "youtubeId": "1NJB54UB8nE",
+        "videoUrl": "https://www.youtube.com/watch?v=1NJB54UB8nE",
+        "sectionTitle": "Real-World LLD Projects"
+      },
+      {
+        "id": 39,
+        "index": 39,
+        "title": "Build Chess Game | UML + Code | System Design",
+        "duration": "25 min",
+        "youtubeId": "eULHvaMZUks",
+        "videoUrl": "https://www.youtube.com/watch?v=eULHvaMZUks",
+        "sectionTitle": "Real-World LLD Projects"
+      }
+    ]
+  },
+  {
+    "slug": "engineering-digest-system-design-playlist",
+    "title": "Engineering Digest HLD System Design Interview Preparation",
+    "category": "system-design",
+    "instructor": "Engineering Digest",
+    "channel": "Engineering Digest",
+    "totalVideos": 34,
+    "totalDuration": "26+ hrs",
+    "rating": 4.9,
+    "badge": "HLD • System Architecture",
+    "description": "Complete System Design course in Hindi covering distributed systems fundamentals, scalability patterns, microservices architecture, database concepts, caching strategies, and real-world system design case studies.",
+    "playlistUrl": "https://www.youtube.com/playlist?list=PL9Xvve3j8tXW9W1rG9I6Y_c7_oGv3",
+    "thumbnailType": "engineering-digest",
+    "sections": [
+      {
+        "title": "System Design Fundamentals",
+        "videosCount": 3,
+        "videos": [
+          {
+            "id": 1,
+            "index": 1,
+            "title": "What is system design process in software engineering ?",
+            "duration": "2:21",
+            "youtubeId": "43-X22tdxiI",
+            "videoUrl": "https://www.youtube.com/watch?v=43-X22tdxiI&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=1",
+            "sectionTitle": "System Design Fundamentals"
+          },
+          {
+            "id": 2,
+            "index": 2,
+            "title": "Monolithic Architecture In Hindi ( Complete Explanation )",
+            "duration": "8:50",
+            "youtubeId": "z4AUhxIWKSM",
+            "videoUrl": "https://www.youtube.com/watch?v=z4AUhxIWKSM&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=2",
+            "sectionTitle": "System Design Fundamentals"
+          },
+          {
+            "id": 3,
+            "index": 3,
+            "title": "Difference between monolithic and microservices architecture in Hindi",
+            "duration": "5:17",
+            "youtubeId": "MPxr1q8ORuA",
+            "videoUrl": "https://www.youtube.com/watch?v=MPxr1q8ORuA&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=3",
+            "sectionTitle": "System Design Fundamentals"
+          }
+        ]
+      },
+      {
+        "title": "Performance and Optimization",
+        "videosCount": 3,
+        "videos": [
+          {
+            "id": 4,
+            "index": 4,
+            "title": "What is latency in networking in Hindi | How to reduce latency in network | CDN vs Caching",
+            "duration": "5:20",
+            "youtubeId": "cG3LMd2hIXY",
+            "videoUrl": "https://www.youtube.com/watch?v=cG3LMd2hIXY&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=4",
+            "sectionTitle": "Performance and Optimization"
+          },
+          {
+            "id": 5,
+            "index": 5,
+            "title": "What is throughput in Hindi ? ( How to improve throughput ? )",
+            "duration": "3:19",
+            "youtubeId": "IhemzDuCwgU",
+            "videoUrl": "https://www.youtube.com/watch?v=IhemzDuCwgU&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=5",
+            "sectionTitle": "Performance and Optimization"
+          },
+          {
+            "id": 6,
+            "index": 6,
+            "title": "What is availability ? ( replication vs redundancy)",
+            "duration": "5:35",
+            "youtubeId": "Cdh9qAwFNNk",
+            "videoUrl": "https://www.youtube.com/watch?v=Cdh9qAwFNNk&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=6",
+            "sectionTitle": "Performance and Optimization"
+          }
+        ]
+      },
+      {
+        "title": "Consistency and CAP Theorem",
+        "videosCount": 3,
+        "videos": [
+          {
+            "id": 7,
+            "index": 7,
+            "title": "What is Consistency in System Design in Hindi ( Strong vs Eventual Consistency )",
+            "duration": "6:22",
+            "youtubeId": "2GKay0Mwk4U",
+            "videoUrl": "https://www.youtube.com/watch?v=2GKay0Mwk4U&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=7",
+            "sectionTitle": "Consistency and CAP Theorem"
+          },
+          {
+            "id": 8,
+            "index": 8,
+            "title": "What is CAP theorem in Hindi ?",
+            "duration": "10:12",
+            "youtubeId": "rb2R5I9S5d8",
+            "videoUrl": "https://www.youtube.com/watch?v=rb2R5I9S5d8&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=8",
+            "sectionTitle": "Consistency and CAP Theorem"
+          },
+          {
+            "id": 9,
+            "index": 9,
+            "title": "What is Lamport Logical Clock ?",
+            "duration": "3:08",
+            "youtubeId": "27wYlcIYAO8",
+            "videoUrl": "https://www.youtube.com/watch?v=27wYlcIYAO8&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=9",
+            "sectionTitle": "Consistency and CAP Theorem"
+          }
+        ]
+      },
+      {
+        "title": "Scaling and Load Balancing",
+        "videosCount": 3,
+        "videos": [
+          {
+            "id": 10,
+            "index": 10,
+            "title": "Difference between horizontal and vertical scaling in Hindi",
+            "duration": "4:19",
+            "youtubeId": "dHjHXis1r24",
+            "videoUrl": "https://www.youtube.com/watch?v=dHjHXis1r24&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=10",
+            "sectionTitle": "Scaling and Load Balancing"
+          },
+          {
+            "id": 11,
+            "index": 11,
+            "title": "Difference between Redundancy and Replication in Hindi ( Master - Slave Replication )",
+            "duration": "7:56",
+            "youtubeId": "d9kA8CW8Cns",
+            "videoUrl": "https://www.youtube.com/watch?v=d9kA8CW8Cns&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=11",
+            "sectionTitle": "Scaling and Load Balancing"
+          },
+          {
+            "id": 12,
+            "index": 12,
+            "title": "What is load balancer and How it works in Hindi ( Load Balancing Algorithms in Hindi)",
+            "duration": "10:18",
+            "youtubeId": "bIBC_RQtS2E",
+            "videoUrl": "https://www.youtube.com/watch?v=bIBC_RQtS2E&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=12",
+            "sectionTitle": "Scaling and Load Balancing"
+          }
+        ]
+      },
+      {
+        "title": "Caching Strategies",
+        "videosCount": 2,
+        "videos": [
+          {
+            "id": 13,
+            "index": 13,
+            "title": "What is Caching in Hindi (Complete Explanation)",
+            "duration": "7:36",
+            "youtubeId": "xBTGln828Ps",
+            "videoUrl": "https://www.youtube.com/watch?v=xBTGln828Ps&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=13",
+            "sectionTitle": "Caching Strategies"
+          },
+          {
+            "id": 14,
+            "index": 14,
+            "title": "Cache Eviction Techniques in Hindi ( LRU, LFU, MRU, LIFO, FIFO & RR )",
+            "duration": "3:57",
+            "youtubeId": "IaDU8_KjrpY",
+            "videoUrl": "https://www.youtube.com/watch?v=IaDU8_KjrpY&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=14",
+            "sectionTitle": "Caching Strategies"
+          }
+        ]
+      },
+      {
+        "title": "Database Design",
+        "videosCount": 6,
+        "videos": [
+          {
+            "id": 15,
+            "index": 15,
+            "title": "File based storage system in Hindi ( File Based Database Management System in Hindi )",
+            "duration": "1:58",
+            "youtubeId": "ZtpIzSZbuh0",
+            "videoUrl": "https://www.youtube.com/watch?v=ZtpIzSZbuh0&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=15",
+            "sectionTitle": "Database Design"
+          },
+          {
+            "id": 16,
+            "index": 16,
+            "title": "Can RDBMS scale horizontally in Hindi ? ( Why is it hard to scale relational database ? )",
+            "duration": "7:23",
+            "youtubeId": "VOrpRnE24KI",
+            "videoUrl": "https://www.youtube.com/watch?v=VOrpRnE24KI&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=16",
+            "sectionTitle": "Database Design"
+          },
+          {
+            "id": 17,
+            "index": 17,
+            "title": "Types of NoSQL Databases in Hindi ( Which one to use and where ? )",
+            "duration": "6:45",
+            "youtubeId": "qxFj8X8n6CE",
+            "videoUrl": "https://www.youtube.com/watch?v=qxFj8X8n6CE&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=17",
+            "sectionTitle": "Database Design"
+          },
+          {
+            "id": 18,
+            "index": 18,
+            "title": "What is Polyglot Persistence in Hindi ?",
+            "duration": "1:59",
+            "youtubeId": "z7wB95TXB8M",
+            "videoUrl": "https://www.youtube.com/watch?v=z7wB95TXB8M&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=18",
+            "sectionTitle": "Database Design"
+          },
+          {
+            "id": 19,
+            "index": 19,
+            "title": "What is denormalization in RDBMS in Hindi",
+            "duration": "4:43",
+            "youtubeId": "o8HgXxqsYBc",
+            "videoUrl": "https://www.youtube.com/watch?v=o8HgXxqsYBc&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=19",
+            "sectionTitle": "Database Design"
+          },
+          {
+            "id": 20,
+            "index": 20,
+            "title": "How does indexing work in Databases in Hindi ( How to optimize SQL Queries in Hindi )",
+            "duration": "7:32",
+            "youtubeId": "xXtig5uLQS4",
+            "videoUrl": "https://www.youtube.com/watch?v=xXtig5uLQS4&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=20",
+            "sectionTitle": "Database Design"
+          }
+        ]
+      },
+      {
+        "title": "Communication Patterns",
+        "videosCount": 3,
+        "videos": [
+          {
+            "id": 21,
+            "index": 21,
+            "title": "What is Synchronous communication in Hindi",
+            "duration": "4:43",
+            "youtubeId": "W7ppbYgrhwg",
+            "videoUrl": "https://www.youtube.com/watch?v=W7ppbYgrhwg&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=21",
+            "sectionTitle": "Communication Patterns"
+          },
+          {
+            "id": 22,
+            "index": 22,
+            "title": "What is synchronous and asynchronous communication in Hindi",
+            "duration": "6:35",
+            "youtubeId": "MyiLxH8St0U",
+            "videoUrl": "https://www.youtube.com/watch?v=MyiLxH8St0U&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=22",
+            "sectionTitle": "Communication Patterns"
+          },
+          {
+            "id": 23,
+            "index": 23,
+            "title": "What is message based communication in Hindi ?",
+            "duration": "2:15",
+            "youtubeId": "6HKwwJOFHOY",
+            "videoUrl": "https://www.youtube.com/watch?v=6HKwwJOFHOY&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=23",
+            "sectionTitle": "Communication Patterns"
+          }
+        ]
+      },
+      {
+        "title": "Web Architecture",
+        "videosCount": 3,
+        "videos": [
+          {
+            "id": 24,
+            "index": 24,
+            "title": "What is web server in Hindi",
+            "duration": "5:17",
+            "youtubeId": "1_8a8-__6ts",
+            "videoUrl": "https://www.youtube.com/watch?v=1_8a8-__6ts&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=24",
+            "sectionTitle": "Web Architecture"
+          },
+          {
+            "id": 25,
+            "index": 25,
+            "title": "What is communication protocol in computer network in Hindi",
+            "duration": "5:16",
+            "youtubeId": "zaArcSrLPa8",
+            "videoUrl": "https://www.youtube.com/watch?v=zaArcSrLPa8&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=25",
+            "sectionTitle": "Web Architecture"
+          },
+          {
+            "id": 26,
+            "index": 26,
+            "title": "REST API | SOA | Microservices architecture | Tier architecture",
+            "duration": "11:13",
+            "youtubeId": "SvBnrJKzH8k",
+            "videoUrl": "https://www.youtube.com/watch?v=SvBnrJKzH8k&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=26",
+            "sectionTitle": "Web Architecture"
+          }
+        ]
+      },
+      {
+        "title": "Security and Authentication",
+        "videosCount": 4,
+        "videos": [
+          {
+            "id": 27,
+            "index": 27,
+            "title": "Difference between Authentication and Authorization in Hindi",
+            "duration": "2:03",
+            "youtubeId": "B76BhEq1FN8",
+            "videoUrl": "https://www.youtube.com/watch?v=B76BhEq1FN8&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=27",
+            "sectionTitle": "Security and Authentication"
+          },
+          {
+            "id": 28,
+            "index": 28,
+            "title": "Basic Authentication in Hindi",
+            "duration": "1:05",
+            "youtubeId": "2x1L563nTlU",
+            "videoUrl": "https://www.youtube.com/watch?v=2x1L563nTlU&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=28",
+            "sectionTitle": "Security and Authentication"
+          },
+          {
+            "id": 29,
+            "index": 29,
+            "title": "Token Based Authentication in Hindi",
+            "duration": "1:16",
+            "youtubeId": "VPnYuwwg0rU",
+            "videoUrl": "https://www.youtube.com/watch?v=VPnYuwwg0rU&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=29",
+            "sectionTitle": "Security and Authentication"
+          },
+          {
+            "id": 30,
+            "index": 30,
+            "title": "OAuth Authentication in Hindi",
+            "duration": "1:59",
+            "youtubeId": "EYQijvnyYp0",
+            "videoUrl": "https://www.youtube.com/watch?v=EYQijvnyYp0&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=30",
+            "sectionTitle": "Security and Authentication"
+          }
+        ]
+      },
+      {
+        "title": "Proxy and Network Concepts",
+        "videosCount": 2,
+        "videos": [
+          {
+            "id": 31,
+            "index": 31,
+            "title": "Forward proxy and reverse proxy Explained in Hindi",
+            "duration": "3:21",
+            "youtubeId": "dBtpV7aN_20",
+            "videoUrl": "https://www.youtube.com/watch?v=dBtpV7aN_20&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=31",
+            "sectionTitle": "Proxy and Network Concepts"
+          },
+          {
+            "id": 32,
+            "index": 32,
+            "title": "Reverse proxy server in Hindi",
+            "duration": "4:16",
+            "youtubeId": "Q5jPD2ECEgM",
+            "videoUrl": "https://www.youtube.com/watch?v=Q5jPD2ECEgM&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=32",
+            "sectionTitle": "Proxy and Network Concepts"
+          }
+        ]
+      },
+      {
+        "title": "System Design Case Studies",
+        "videosCount": 2,
+        "videos": [
+          {
+            "id": 33,
+            "index": 33,
+            "title": "URL shortener system design in Hindi | Tinyurl system design in Hindi | Bitly system design in Hindi",
+            "duration": "17:06",
+            "youtubeId": "9csfoQK2T8g",
+            "videoUrl": "https://www.youtube.com/watch?v=9csfoQK2T8g&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=33",
+            "sectionTitle": "System Design Case Studies"
+          },
+          {
+            "id": 34,
+            "index": 34,
+            "title": "Dropbox system design in Hindi | Google drive system design in Hindi",
+            "duration": "11:49",
+            "youtubeId": "k8AObcX8azM",
+            "videoUrl": "https://www.youtube.com/watch?v=k8AObcX8azM&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=34",
+            "sectionTitle": "System Design Case Studies"
+          }
+        ]
+      }
+    ],
+    "lectures": [
+      {
+        "id": 1,
+        "index": 1,
+        "title": "What is system design process in software engineering ?",
+        "duration": "2:21",
+        "youtubeId": "43-X22tdxiI",
+        "videoUrl": "https://www.youtube.com/watch?v=43-X22tdxiI&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=1",
+        "sectionTitle": "System Design Fundamentals"
+      },
+      {
+        "id": 2,
+        "index": 2,
+        "title": "Monolithic Architecture In Hindi ( Complete Explanation )",
+        "duration": "8:50",
+        "youtubeId": "z4AUhxIWKSM",
+        "videoUrl": "https://www.youtube.com/watch?v=z4AUhxIWKSM&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=2",
+        "sectionTitle": "System Design Fundamentals"
+      },
+      {
+        "id": 3,
+        "index": 3,
+        "title": "Difference between monolithic and microservices architecture in Hindi",
+        "duration": "5:17",
+        "youtubeId": "MPxr1q8ORuA",
+        "videoUrl": "https://www.youtube.com/watch?v=MPxr1q8ORuA&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=3",
+        "sectionTitle": "System Design Fundamentals"
+      },
+      {
+        "id": 4,
+        "index": 4,
+        "title": "What is latency in networking in Hindi | How to reduce latency in network | CDN vs Caching",
+        "duration": "5:20",
+        "youtubeId": "cG3LMd2hIXY",
+        "videoUrl": "https://www.youtube.com/watch?v=cG3LMd2hIXY&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=4",
+        "sectionTitle": "Performance and Optimization"
+      },
+      {
+        "id": 5,
+        "index": 5,
+        "title": "What is throughput in Hindi ? ( How to improve throughput ? )",
+        "duration": "3:19",
+        "youtubeId": "IhemzDuCwgU",
+        "videoUrl": "https://www.youtube.com/watch?v=IhemzDuCwgU&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=5",
+        "sectionTitle": "Performance and Optimization"
+      },
+      {
+        "id": 6,
+        "index": 6,
+        "title": "What is availability ? ( replication vs redundancy)",
+        "duration": "5:35",
+        "youtubeId": "Cdh9qAwFNNk",
+        "videoUrl": "https://www.youtube.com/watch?v=Cdh9qAwFNNk&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=6",
+        "sectionTitle": "Performance and Optimization"
+      },
+      {
+        "id": 7,
+        "index": 7,
+        "title": "What is Consistency in System Design in Hindi ( Strong vs Eventual Consistency )",
+        "duration": "6:22",
+        "youtubeId": "2GKay0Mwk4U",
+        "videoUrl": "https://www.youtube.com/watch?v=2GKay0Mwk4U&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=7",
+        "sectionTitle": "Consistency and CAP Theorem"
+      },
+      {
+        "id": 8,
+        "index": 8,
+        "title": "What is CAP theorem in Hindi ?",
+        "duration": "10:12",
+        "youtubeId": "rb2R5I9S5d8",
+        "videoUrl": "https://www.youtube.com/watch?v=rb2R5I9S5d8&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=8",
+        "sectionTitle": "Consistency and CAP Theorem"
+      },
+      {
+        "id": 9,
+        "index": 9,
+        "title": "What is Lamport Logical Clock ?",
+        "duration": "3:08",
+        "youtubeId": "27wYlcIYAO8",
+        "videoUrl": "https://www.youtube.com/watch?v=27wYlcIYAO8&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=9",
+        "sectionTitle": "Consistency and CAP Theorem"
+      },
+      {
+        "id": 10,
+        "index": 10,
+        "title": "Difference between horizontal and vertical scaling in Hindi",
+        "duration": "4:19",
+        "youtubeId": "dHjHXis1r24",
+        "videoUrl": "https://www.youtube.com/watch?v=dHjHXis1r24&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=10",
+        "sectionTitle": "Scaling and Load Balancing"
+      },
+      {
+        "id": 11,
+        "index": 11,
+        "title": "Difference between Redundancy and Replication in Hindi ( Master - Slave Replication )",
+        "duration": "7:56",
+        "youtubeId": "d9kA8CW8Cns",
+        "videoUrl": "https://www.youtube.com/watch?v=d9kA8CW8Cns&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=11",
+        "sectionTitle": "Scaling and Load Balancing"
+      },
+      {
+        "id": 12,
+        "index": 12,
+        "title": "What is load balancer and How it works in Hindi ( Load Balancing Algorithms in Hindi)",
+        "duration": "10:18",
+        "youtubeId": "bIBC_RQtS2E",
+        "videoUrl": "https://www.youtube.com/watch?v=bIBC_RQtS2E&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=12",
+        "sectionTitle": "Scaling and Load Balancing"
+      },
+      {
+        "id": 13,
+        "index": 13,
+        "title": "What is Caching in Hindi (Complete Explanation)",
+        "duration": "7:36",
+        "youtubeId": "xBTGln828Ps",
+        "videoUrl": "https://www.youtube.com/watch?v=xBTGln828Ps&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=13",
+        "sectionTitle": "Caching Strategies"
+      },
+      {
+        "id": 14,
+        "index": 14,
+        "title": "Cache Eviction Techniques in Hindi ( LRU, LFU, MRU, LIFO, FIFO & RR )",
+        "duration": "3:57",
+        "youtubeId": "IaDU8_KjrpY",
+        "videoUrl": "https://www.youtube.com/watch?v=IaDU8_KjrpY&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=14",
+        "sectionTitle": "Caching Strategies"
+      },
+      {
+        "id": 15,
+        "index": 15,
+        "title": "File based storage system in Hindi ( File Based Database Management System in Hindi )",
+        "duration": "1:58",
+        "youtubeId": "ZtpIzSZbuh0",
+        "videoUrl": "https://www.youtube.com/watch?v=ZtpIzSZbuh0&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=15",
+        "sectionTitle": "Database Design"
+      },
+      {
+        "id": 16,
+        "index": 16,
+        "title": "Can RDBMS scale horizontally in Hindi ? ( Why is it hard to scale relational database ? )",
+        "duration": "7:23",
+        "youtubeId": "VOrpRnE24KI",
+        "videoUrl": "https://www.youtube.com/watch?v=VOrpRnE24KI&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=16",
+        "sectionTitle": "Database Design"
+      },
+      {
+        "id": 17,
+        "index": 17,
+        "title": "Types of NoSQL Databases in Hindi ( Which one to use and where ? )",
+        "duration": "6:45",
+        "youtubeId": "qxFj8X8n6CE",
+        "videoUrl": "https://www.youtube.com/watch?v=qxFj8X8n6CE&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=17",
+        "sectionTitle": "Database Design"
+      },
+      {
+        "id": 18,
+        "index": 18,
+        "title": "What is Polyglot Persistence in Hindi ?",
+        "duration": "1:59",
+        "youtubeId": "z7wB95TXB8M",
+        "videoUrl": "https://www.youtube.com/watch?v=z7wB95TXB8M&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=18",
+        "sectionTitle": "Database Design"
+      },
+      {
+        "id": 19,
+        "index": 19,
+        "title": "What is denormalization in RDBMS in Hindi",
+        "duration": "4:43",
+        "youtubeId": "o8HgXxqsYBc",
+        "videoUrl": "https://www.youtube.com/watch?v=o8HgXxqsYBc&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=19",
+        "sectionTitle": "Database Design"
+      },
+      {
+        "id": 20,
+        "index": 20,
+        "title": "How does indexing work in Databases in Hindi ( How to optimize SQL Queries in Hindi )",
+        "duration": "7:32",
+        "youtubeId": "xXtig5uLQS4",
+        "videoUrl": "https://www.youtube.com/watch?v=xXtig5uLQS4&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=20",
+        "sectionTitle": "Database Design"
+      },
+      {
+        "id": 21,
+        "index": 21,
+        "title": "What is Synchronous communication in Hindi",
+        "duration": "4:43",
+        "youtubeId": "W7ppbYgrhwg",
+        "videoUrl": "https://www.youtube.com/watch?v=W7ppbYgrhwg&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=21",
+        "sectionTitle": "Communication Patterns"
+      },
+      {
+        "id": 22,
+        "index": 22,
+        "title": "What is synchronous and asynchronous communication in Hindi",
+        "duration": "6:35",
+        "youtubeId": "MyiLxH8St0U",
+        "videoUrl": "https://www.youtube.com/watch?v=MyiLxH8St0U&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=22",
+        "sectionTitle": "Communication Patterns"
+      },
+      {
+        "id": 23,
+        "index": 23,
+        "title": "What is message based communication in Hindi ?",
+        "duration": "2:15",
+        "youtubeId": "6HKwwJOFHOY",
+        "videoUrl": "https://www.youtube.com/watch?v=6HKwwJOFHOY&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=23",
+        "sectionTitle": "Communication Patterns"
+      },
+      {
+        "id": 24,
+        "index": 24,
+        "title": "What is web server in Hindi",
+        "duration": "5:17",
+        "youtubeId": "1_8a8-__6ts",
+        "videoUrl": "https://www.youtube.com/watch?v=1_8a8-__6ts&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=24",
+        "sectionTitle": "Web Architecture"
+      },
+      {
+        "id": 25,
+        "index": 25,
+        "title": "What is communication protocol in computer network in Hindi",
+        "duration": "5:16",
+        "youtubeId": "zaArcSrLPa8",
+        "videoUrl": "https://www.youtube.com/watch?v=zaArcSrLPa8&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=25",
+        "sectionTitle": "Web Architecture"
+      },
+      {
+        "id": 26,
+        "index": 26,
+        "title": "REST API | SOA | Microservices architecture | Tier architecture",
+        "duration": "11:13",
+        "youtubeId": "SvBnrJKzH8k",
+        "videoUrl": "https://www.youtube.com/watch?v=SvBnrJKzH8k&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=26",
+        "sectionTitle": "Web Architecture"
+      },
+      {
+        "id": 27,
+        "index": 27,
+        "title": "Difference between Authentication and Authorization in Hindi",
+        "duration": "2:03",
+        "youtubeId": "B76BhEq1FN8",
+        "videoUrl": "https://www.youtube.com/watch?v=B76BhEq1FN8&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=27",
+        "sectionTitle": "Security and Authentication"
+      },
+      {
+        "id": 28,
+        "index": 28,
+        "title": "Basic Authentication in Hindi",
+        "duration": "1:05",
+        "youtubeId": "2x1L563nTlU",
+        "videoUrl": "https://www.youtube.com/watch?v=2x1L563nTlU&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=28",
+        "sectionTitle": "Security and Authentication"
+      },
+      {
+        "id": 29,
+        "index": 29,
+        "title": "Token Based Authentication in Hindi",
+        "duration": "1:16",
+        "youtubeId": "VPnYuwwg0rU",
+        "videoUrl": "https://www.youtube.com/watch?v=VPnYuwwg0rU&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=29",
+        "sectionTitle": "Security and Authentication"
+      },
+      {
+        "id": 30,
+        "index": 30,
+        "title": "OAuth Authentication in Hindi",
+        "duration": "1:59",
+        "youtubeId": "EYQijvnyYp0",
+        "videoUrl": "https://www.youtube.com/watch?v=EYQijvnyYp0&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=30",
+        "sectionTitle": "Security and Authentication"
+      },
+      {
+        "id": 31,
+        "index": 31,
+        "title": "Forward proxy and reverse proxy Explained in Hindi",
+        "duration": "3:21",
+        "youtubeId": "dBtpV7aN_20",
+        "videoUrl": "https://www.youtube.com/watch?v=dBtpV7aN_20&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=31",
+        "sectionTitle": "Proxy and Network Concepts"
+      },
+      {
+        "id": 32,
+        "index": 32,
+        "title": "Reverse proxy server in Hindi",
+        "duration": "4:16",
+        "youtubeId": "Q5jPD2ECEgM",
+        "videoUrl": "https://www.youtube.com/watch?v=Q5jPD2ECEgM&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=32",
+        "sectionTitle": "Proxy and Network Concepts"
+      },
+      {
+        "id": 33,
+        "index": 33,
+        "title": "URL shortener system design in Hindi | Tinyurl system design in Hindi | Bitly system design in Hindi",
+        "duration": "17:06",
+        "youtubeId": "9csfoQK2T8g",
+        "videoUrl": "https://www.youtube.com/watch?v=9csfoQK2T8g&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=33",
+        "sectionTitle": "System Design Case Studies"
+      },
+      {
+        "id": 34,
+        "index": 34,
+        "title": "Dropbox system design in Hindi | Google drive system design in Hindi",
+        "duration": "11:49",
+        "youtubeId": "k8AObcX8azM",
+        "videoUrl": "https://www.youtube.com/watch?v=k8AObcX8azM&list=PLA3GkZPtsafZdyC5iucNM_uhqGJ5yFNUM&index=34",
+        "sectionTitle": "System Design Case Studies"
+      }
+    ]
+  }
 ];
 
-
-// Helper to find a playlist by slug (supporting both with or without -playlist, -oop, -oops suffix)
 export const findHyntsPlaylist = (slug: string): HyntsPlaylist | undefined => {
   if (!slug) return undefined;
   const normalized = slug.toLowerCase().trim().replace(/[/]/g, '');

@@ -24,7 +24,7 @@ interface RoleWisePageProps {
 
 export const RoleWisePage: React.FC<RoleWisePageProps> = ({ roleSlug, navigate }) => {
   const { isSolved, toggleSolved } = useProgress();
-  const { isAuthenticated, loginWithGoogle, openAuthModal } = useAuth();
+  const { isAuthenticated, loginWithGoogle, openAuthModal, authReady } = useAuth();
   const categories = roleWiseData?.categories || [];
 
   // Flatten all roles across categories
@@ -350,6 +350,12 @@ export const RoleWisePage: React.FC<RoleWisePageProps> = ({ roleSlug, navigate }
             {filteredQuestions.length === 0 ? (
               <div className="p-12 text-center text-xs text-zinc-500">
                 No questions found matching your filter or search.
+              </div>
+            ) : !authReady ? (
+              <div className="p-8 space-y-4 animate-pulse">
+                <div className="h-12 bg-zinc-100 dark:bg-zinc-800/40 rounded-xl" />
+                <div className="h-12 bg-zinc-100 dark:bg-zinc-800/40 rounded-xl" />
+                <div className="h-12 bg-zinc-100 dark:bg-zinc-800/40 rounded-xl" />
               </div>
             ) : !isAuthenticated ? (
               <>

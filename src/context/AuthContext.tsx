@@ -100,13 +100,14 @@ interface AuthContextType {
   user: User | null;
   firebaseUser: FirebaseUser | null;
   isAuthenticated: boolean;
+  authReady: boolean;
   isAuthModalOpen: boolean;
   isProfileModalOpen: boolean;
   openAuthModal: () => void;
   closeAuthModal: () => void;
   openProfileModal: () => void;
   closeProfileModal: () => void;
-  loginWithGoogle: (email?: string, name?: string, avatar?: string) => Promise<void>;
+  loginWithGoogle: () => Promise<void>;
   loginWithEmail: (email: string, password: string) => Promise<void>;
   signupWithEmail: (email: string, password: string, name: string) => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
@@ -119,6 +120,8 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [firebaseUser, setFirebaseUser] = useState<FirebaseUser | null>(null);
+  const [authReady, setAuthReady] = useState(false);
+  // localStorage user is kept ONLY as an optimistic cache for first paint
   const [user, setUser] = useState<User | null>(() => {
     try {
       const saved = localStorage.getItem('hackpath_user') || localStorage.getItem('teachflow_user');
@@ -134,7 +137,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
-  // Helper to record user login session, audit history, and sync profile metrics in Firestore
+  // Helper to record user login session, audit history, and sync profile metrics in Firestore.
+  // Runs ONLY inside explicit sign-in calls (loginWithGoogle, loginWithEmail, signupWithEmail).
   const recordUserLoginInFirestore = async (
     fbUser: FirebaseUser,
     customName?: string,
@@ -205,7 +209,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return updatedUser;
     } else {
       const initialUser = createDefaultUserForEmail(
-        fbUser.email || 'user@example.com',
+        fbUser.email || 'developer@example.com',
         fbUser.displayName || customName,
         fbUser.photoURL || customAvatar,
         fbUser.uid
@@ -229,54 +233,58 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  // Synchronize Firebase Auth state
+  // Synchronize Firebase Auth state: only loads user document and sets user.
+  // Does NOT perform login audit writes on page refresh / auth restoration.
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (fbUser) => {
       setFirebaseUser(fbUser);
       if (fbUser) {
         try {
-          const recordedUser = await recordUserLoginInFirestore(fbUser);
-          setUser(recordedUser);
+          const userDocRef = doc(db, 'users', fbUser.uid);
+          const snap = await getDoc(userDocRef);
+          if (snap.exists()) {
+            setUser(snap.data() as User);
+          } else {
+            // Document does not exist yet: provide default user representation without audit writes
+            const fallbackUser = createDefaultUserForEmail(
+              fbUser.email || 'developer@example.com',
+              fbUser.displayName || undefined,
+              fbUser.photoURL || undefined,
+              fbUser.uid
+            );
+            setUser(fallbackUser);
+          }
         } catch (err) {
-          console.warn('Firestore user login record notice:', err);
+          console.warn('Firestore user load notice:', err);
         }
+      } else {
+        setUser(null);
       }
+      setAuthReady(true);
     });
 
     return () => unsubscribe();
   }, []);
 
-  // Save user profile to local storage backup
+  // Sync user profile to optimistic localStorage cache
   useEffect(() => {
-    if (user) {
+    if (firebaseUser && user) {
       localStorage.setItem('hackpath_user', JSON.stringify(user));
       localStorage.setItem('teachflow_user', JSON.stringify(user));
       localStorage.setItem('teachflow_auth_unlocked', 'true');
-    } else {
+    } else if (authReady && !firebaseUser) {
       localStorage.removeItem('hackpath_user');
       localStorage.removeItem('teachflow_user');
       localStorage.removeItem('teachflow_auth_unlocked');
     }
-  }, [user]);
+  }, [user, firebaseUser, authReady]);
 
-  const loginWithGoogle = async (customEmail?: string, customName?: string, customAvatar?: string) => {
-    try {
-      const result = await signInWithPopup(auth, googleProvider);
-      const fbUser = result.user;
-      const recorded = await recordUserLoginInFirestore(fbUser, customName, customAvatar);
-      setUser(recorded);
-      setIsAuthModalOpen(false);
-    } catch (popupError: any) {
-      console.warn('Firebase Popup sign-in error:', popupError);
-      if (customEmail) {
-        const userObj = createDefaultUserForEmail(customEmail, customName, customAvatar, 'demo-uid');
-        setUser(userObj);
-        setIsAuthModalOpen(false);
-      } else {
-        // Re-throw so modal can present user-friendly error message without logging them in as Pavan
-        throw popupError;
-      }
-    }
+  const loginWithGoogle = async () => {
+    const result = await signInWithPopup(auth, googleProvider);
+    const fbUser = result.user;
+    const recorded = await recordUserLoginInFirestore(fbUser);
+    setUser(recorded);
+    setIsAuthModalOpen(false);
   };
 
   const loginWithEmail = async (email: string, password: string) => {
@@ -305,22 +313,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const updateProfile = async (updatedData: Partial<User>) => {
-    const current = user || createDefaultUserForEmail('user@example.com');
+    if (!firebaseUser) {
+      throw new Error('User must be authenticated to update profile.');
+    }
+
+    const current = user || createDefaultUserForEmail(firebaseUser.email || 'developer@example.com', undefined, undefined, firebaseUser.uid);
     const updated: User = {
       ...current,
       ...updatedData,
+      uid: firebaseUser.uid,
       updatedAt: new Date().toISOString(),
     };
     setUser(updated);
 
-    if (firebaseUser) {
-      try {
-        const userDocRef = doc(db, 'users', firebaseUser.uid);
-        await setDoc(userDocRef, updated, { merge: true });
-      } catch (err) {
-        console.warn('Could not sync profile to Firestore:', err);
-      }
-    }
+    const userDocRef = doc(db, 'users', firebaseUser.uid);
+    await setDoc(userDocRef, updated, { merge: true });
   };
 
   const syncCodingPlatforms = async (handles: { leetcode?: string; codechef?: string; github?: string }): Promise<CodingProfiles> => {
@@ -355,8 +362,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     await Promise.all(promises);
 
+    const email = firebaseUser?.email || user?.email || 'developer@example.com';
+    const baseUser = user || createDefaultUserForEmail(email, firebaseUser?.displayName || undefined, firebaseUser?.photoURL || undefined, firebaseUser?.uid);
+
     const updatedUser: User = {
-      ...(user || createDefaultUserForEmail('user@example.com')),
+      ...baseUser,
       codingProfiles: updatedProfiles,
       ...(handles.leetcode ? { leetcodeUrl: handles.leetcode } : {}),
       ...(handles.codechef ? { codechefUrl: handles.codechef } : {}),
@@ -365,6 +375,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     setUser(updatedUser);
+    localStorage.setItem('hackpath_user', JSON.stringify(updatedUser));
+    localStorage.setItem('teachflow_user', JSON.stringify(updatedUser));
 
     if (firebaseUser) {
       try {
@@ -377,7 +389,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           lastActiveAt: new Date().toISOString(),
         }, { merge: true });
       } catch (err) {
-        console.warn('Could not save coding profiles to Firestore:', err);
+        console.warn('Firestore sync coding platforms write notice:', err);
       }
     }
 
@@ -413,7 +425,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       value={{
         user,
         firebaseUser,
-        isAuthenticated: !!user,
+        isAuthenticated: !!firebaseUser,
+        authReady,
         isAuthModalOpen,
         isProfileModalOpen,
         openAuthModal,

@@ -34,7 +34,12 @@ export const DbmsPlaylistsPage: React.FC<DbmsPlaylistsPageProps> = ({ navigate }
           >
             {/* Thumbnail Container */}
             <div className="relative aspect-video w-full overflow-hidden bg-zinc-900 border-b border-zinc-200 dark:border-[#1b2230]">
-              <PlaylistThumbnail type={playlist.thumbnailType} subject="DBMS" />
+              <PlaylistThumbnail
+                type={playlist.thumbnailType}
+                subject="DBMS"
+                slug={playlist.slug}
+                alt={playlist.title}
+              />
               
               {/* Duration pill */}
               <div className="absolute top-3 right-3 z-10">

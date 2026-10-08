@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { getCodeChefStarClass } from '../services/codingProfilesService';
 import {
   Code2,
   Github,
@@ -14,7 +15,8 @@ import {
   Sliders,
   ChevronRight,
   Database,
-  ShieldCheck
+  ShieldCheck,
+  Edit3
 } from 'lucide-react';
 
 interface CodingPlatformsCardProps {
@@ -31,6 +33,8 @@ export const CodingPlatformsCard: React.FC<CodingPlatformsCardProps> = ({
   const [isSyncing, setIsSyncing] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [syncSuccess, setSyncSuccess] = useState(false);
+  const [inlineCodechefInput, setInlineCodechefInput] = useState('');
+  const [isLinkingCodechef, setIsLinkingCodechef] = useState(false);
 
   const [leetcodeInput, setLeetcodeInput] = useState(
     user?.leetcodeUrl || user?.codingProfiles?.leetcode?.username || ''
@@ -56,6 +60,32 @@ export const CodingPlatformsCard: React.FC<CodingPlatformsCardProps> = ({
   const codechefStats = user?.codingProfiles?.codechef;
   const githubStats = user?.codingProfiles?.github;
 
+  const isCodeChefLinked = Boolean(
+    (codechefStats?.username && codechefStats.username.trim() !== '') ||
+    (user?.codechefUrl && user.codechefUrl.trim() !== '')
+  );
+
+  const handleLinkCodeChef = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    const handle = inlineCodechefInput.trim();
+    if (!handle) return;
+    setIsLinkingCodechef(true);
+    setSyncSuccess(false);
+
+    try {
+      await syncCodingPlatforms({
+        codechef: handle,
+      });
+      setInlineCodechefInput('');
+      setSyncSuccess(true);
+      setTimeout(() => setSyncSuccess(false), 3500);
+    } catch (err) {
+      console.error('Failed to link CodeChef handle:', err);
+    } finally {
+      setIsLinkingCodechef(false);
+    }
+  };
+
   const handleSync = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     setIsSyncing(true);
@@ -77,10 +107,20 @@ export const CodingPlatformsCard: React.FC<CodingPlatformsCardProps> = ({
     }
   };
 
+  const isLeetCodeLinked = Boolean(
+    (leetcodeStats?.username && leetcodeStats.username.trim() !== '') ||
+    (user?.leetcodeUrl && user.leetcodeUrl.trim() !== '')
+  );
+
+  const isGitHubLinked = Boolean(
+    (githubStats?.username && githubStats.username.trim() !== '') ||
+    (user?.githubUrl && user.githubUrl.trim() !== '')
+  );
+
   const totalPlatformProblems =
-    (leetcodeStats?.totalSolved || 0) +
-    (codechefStats?.fullySolved || 0) +
-    (githubStats?.publicRepos || 0);
+    (isLeetCodeLinked ? (leetcodeStats?.totalSolved || 0) : 0) +
+    (isCodeChefLinked ? (codechefStats?.fullySolved || 0) : 0) +
+    (isGitHubLinked ? (githubStats?.publicRepos || 0) : 0);
 
   return (
     <div className="rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#0c1017] p-5 sm:p-7 shadow-xl space-y-6 font-lexend transition-all">
@@ -313,55 +353,101 @@ export const CodingPlatformsCard: React.FC<CodingPlatformsCardProps> = ({
                     CodeChef
                   </h3>
                   <p className="text-[10px] text-zinc-400 font-mono">
-                    {codechefStats?.username ? `@${codechefStats.username}` : 'Not linked'}
+                    {codechefStats?.username
+                      ? `@${codechefStats.username}`
+                      : user?.codechefUrl
+                      ? `@${user.codechefUrl.replace(/https?:\/\/(www\.)?codechef\.com\/users\//, '')}`
+                      : 'Not linked'}
                   </p>
                 </div>
               </div>
 
-              {codechefStats?.username && (
-                <a
-                  href={`https://www.codechef.com/users/${codechefStats.username}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-1.5 rounded-lg bg-zinc-200/80 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-amber-600 transition-colors"
-                  title="Open CodeChef Profile"
-                >
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </a>
-              )}
+              {isCodeChefLinked ? (
+                <div className="flex items-center gap-1.5">
+                  <a
+                    href={
+                      codechefStats?.username
+                        ? (codechefStats.username.startsWith('http')
+                            ? codechefStats.username
+                            : `https://www.codechef.com/users/${codechefStats.username}`)
+                        : (user?.codechefUrl?.startsWith('http')
+                            ? user.codechefUrl
+                            : `https://www.codechef.com/users/${user?.codechefUrl}`)
+                    }
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-1.5 rounded-lg bg-zinc-200/80 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-amber-600 transition-colors"
+                    title="Open CodeChef Profile"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                </div>
+              ) : null}
             </div>
 
             <div className="space-y-3">
               <div className="flex items-baseline justify-between">
                 <span className="text-3xl font-extrabold text-zinc-900 dark:text-white">
-                  {codechefStats?.fullySolved || 0}
+                  {isCodeChefLinked ? (codechefStats?.fullySolved || 0) : '--'}
                 </span>
                 <span className="text-xs font-semibold text-zinc-400 uppercase font-mono">
                   Solved Questions
                 </span>
               </div>
 
-              {/* Star Rating Badge */}
-              <div className="p-3 rounded-xl bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
-                <div className="flex items-center gap-1.5">
-                  <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-                  <span className="font-bold text-sm text-zinc-900 dark:text-white">
-                    {codechefStats?.stars || '3★'} Star Coder
+              {/* Star Rating Badge (Only after CodeChef account is linked) or Quick Link Form */}
+              {!isCodeChefLinked ? (
+                <div className="p-3.5 rounded-xl bg-amber-500/5 dark:bg-amber-950/20 border border-dashed border-amber-500/30 text-center space-y-2">
+                  <div className="flex items-center justify-center gap-1.5 text-amber-700 dark:text-amber-400 font-bold text-xs">
+                    <Star className="w-3.5 h-3.5 text-amber-500" />
+                    <span>No Account Linked</span>
+                  </div>
+                  <p className="text-[11px] text-zinc-500 dark:text-zinc-400 leading-snug">
+                    Enter your CodeChef handle to display live star rating, points &amp; questions solved.
+                  </p>
+                  <form onSubmit={handleLinkCodeChef} className="flex items-center gap-1.5 pt-0.5">
+                    <input
+                      type="text"
+                      placeholder="e.g. tourist or handle"
+                      value={inlineCodechefInput}
+                      onChange={(e) => setInlineCodechefInput(e.target.value)}
+                      className="flex-1 min-w-0 px-2.5 py-1.5 rounded-lg bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-zinc-700 text-xs font-mono text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                    />
+                    <button
+                      type="submit"
+                      disabled={isLinkingCodechef || !inlineCodechefInput.trim()}
+                      className="px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-500 disabled:opacity-40 text-white text-xs font-bold transition-all cursor-pointer shrink-0 shadow-xs"
+                    >
+                      {isLinkingCodechef ? 'Linking...' : 'Link'}
+                    </button>
+                  </form>
+                </div>
+              ) : (
+                <div className="p-3 rounded-xl bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
+                  <div className="flex items-center gap-1.5">
+                    <Star className={`w-4 h-4 ${getCodeChefStarClass(codechefStats?.stars)}`} />
+                    <span className="font-bold text-sm text-zinc-900 dark:text-white">
+                      {codechefStats?.stars || '1★'} Star Coder
+                    </span>
+                  </div>
+                  <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 font-mono text-xs font-bold">
+                    {codechefStats?.rating ? `${codechefStats.rating} pts` : 'Active'}
                   </span>
                 </div>
-                <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 font-mono text-xs font-bold">
-                  {codechefStats?.rating || 1640} pts
-                </span>
-              </div>
+              )}
 
               <div className="grid grid-cols-2 gap-2 text-[11px] pt-1 font-mono">
                 <div className="p-2 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-center">
                   <span className="text-zinc-400 block text-[9px] uppercase">Fully Solved</span>
-                  <span className="font-bold text-zinc-900 dark:text-white">{codechefStats?.fullySolved || 0}</span>
+                  <span className={`font-bold ${isCodeChefLinked ? 'text-zinc-900 dark:text-white' : 'text-zinc-400 dark:text-zinc-600'}`}>
+                    {isCodeChefLinked ? (codechefStats?.fullySolved || 0) : '--'}
+                  </span>
                 </div>
                 <div className="p-2 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-center">
                   <span className="text-zinc-400 block text-[9px] uppercase">Partially</span>
-                  <span className="font-bold text-zinc-900 dark:text-white">{codechefStats?.partiallySolved || 0}</span>
+                  <span className={`font-bold ${isCodeChefLinked ? 'text-zinc-900 dark:text-white' : 'text-zinc-400 dark:text-zinc-600'}`}>
+                    {isCodeChefLinked ? (codechefStats?.partiallySolved || 0) : '--'}
+                  </span>
                 </div>
               </div>
             </div>
@@ -370,7 +456,13 @@ export const CodingPlatformsCard: React.FC<CodingPlatformsCardProps> = ({
           <div className="pt-2 border-t border-zinc-200 dark:border-zinc-800/80 flex items-center justify-between text-[11px] font-mono text-zinc-500">
             <span>Division Rank:</span>
             <span className="font-bold text-zinc-800 dark:text-zinc-200">
-              {codechefStats?.globalRank ? `#${codechefStats.globalRank.toLocaleString()}` : 'Div 2'}
+              {!isCodeChefLinked
+                ? 'Not linked'
+                : codechefStats?.globalRank
+                ? `#${codechefStats.globalRank.toLocaleString()}`
+                : codechefStats?.rating
+                ? (codechefStats.rating >= 2000 ? 'Div 1' : codechefStats.rating >= 1600 ? 'Div 2' : codechefStats.rating >= 1400 ? 'Div 3' : 'Div 4')
+                : 'Unrated'}
             </span>
           </div>
         </div>

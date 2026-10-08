@@ -238,7 +238,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ navigate }) 
             <div className="p-3 rounded-2xl bg-zinc-900/90 border border-zinc-800 text-center">
               <div className="flex items-center justify-center gap-1 text-amber-500 mb-0.5">
                 <Star className="w-4 h-4 fill-amber-500" />
-                <span className="text-lg font-black">{codechefStats?.rating || 1640}</span>
+                <span className="text-lg font-black">{codechefStats?.rating ? codechefStats.rating : '--'}</span>
               </div>
               <span className="text-[10px] uppercase font-mono tracking-wider text-zinc-400">CodeChef</span>
             </div>
@@ -410,7 +410,9 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ navigate }) 
                     </div>
                     <div>
                       <span className="text-[10px] font-mono text-zinc-400 uppercase block">CodeChef Rating</span>
-                      <span className="font-bold text-white text-sm">{codechefStats?.rating || 1640} ({codechefStats?.stars || '3★'})</span>
+                      <span className="font-bold text-white text-sm">
+                        {codechefStats?.rating ? `${codechefStats.rating} pts (${codechefStats.stars || '1★'})` : user.codechefUrl ? 'Profile Linked' : 'Not Linked'}
+                      </span>
                     </div>
                   </div>
                   {user.codechefUrl && (
