@@ -1,10 +1,15 @@
-import { describe, it, expect } from 'vitest';
+import { afterEach, describe, it, expect, vi } from 'vitest';
 import {
   cleanUsername,
   computeCodeChefStars,
   getCodeChefStarClass,
   fetchCodeChefStats,
 } from '../src/services/codingProfilesService';
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+  vi.restoreAllMocks();
+});
 
 describe('codingProfilesService Unit Tests', () => {
   describe('cleanUsername', () => {
@@ -75,13 +80,18 @@ describe('codingProfilesService Unit Tests', () => {
       await expect(fetchCodeChefStats('   ')).rejects.toThrow('Please enter a valid CodeChef username or URL.');
     });
 
-    it('returns deterministic stats with stars and rating for any valid username', async () => {
+    it('parses valid provider data without relying on a live API', async () => {
+      vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response(JSON.stringify({
+        currentRating: 1865,
+        fullySolved: 42,
+        partiallySolved: 3,
+      }), { status: 200 })));
       const stats = await fetchCodeChefStats('testcoder');
       expect(stats.username).toBe('testcoder');
-      expect(stats.rating).toBeGreaterThan(0);
-      expect(stats.stars).toMatch(/^[1-7]★$/);
-      expect(typeof stats.fullySolved).toBe('number');
-      expect(typeof stats.partiallySolved).toBe('number');
+      expect(stats.rating).toBe(1865);
+      expect(stats.stars).toBe('4★');
+      expect(stats.fullySolved).toBe(42);
+      expect(stats.partiallySolved).toBe(3);
     });
   });
 });

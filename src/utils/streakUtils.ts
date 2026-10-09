@@ -21,8 +21,19 @@ export const isValidPracticeDate = (dateStr: string, refDate = new Date()): bool
   if (!dateStr || !/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return false;
   const [y, m, d] = dateStr.split('-').map(Number);
   const target = new Date(y, m - 1, d);
+
+  // Date constructors normalize invalid dates (for example, Feb 30 -> Mar 2).
+  // Round-trip the components so impossible calendar dates are rejected.
+  if (
+    target.getFullYear() !== y ||
+    target.getMonth() !== m - 1 ||
+    target.getDate() !== d
+  ) {
+    return false;
+  }
+
   const today = new Date(refDate.getFullYear(), refDate.getMonth(), refDate.getDate());
-  // Date must not be in the future
+  // Date must not be in the future.
   return target.getTime() <= today.getTime();
 };
 
@@ -43,7 +54,7 @@ export const calculateStreakMetrics = (
 
   // Deduplicate and filter valid YYYY-MM-DD dates, sorted ascending
   const validDates = Array.from(new Set(activityDates))
-    .filter((d) => /^\d{4}-\d{2}-\d{2}$/.test(d))
+    .filter((date) => isValidPracticeDate(date, refDate))
     .sort();
 
   if (validDates.length === 0) {

@@ -102,15 +102,17 @@ const saveToStorage = (
     customDataMap: Record<string, any>;
     activityDates: string[];
   }
-) => {
+): boolean => {
   try {
     localStorage.setItem(getStorageKey(uid, 'solved'), JSON.stringify(data.solvedMap));
     localStorage.setItem(getStorageKey(uid, 'bookmarks'), JSON.stringify(data.bookmarksMap));
     localStorage.setItem(getStorageKey(uid, 'notes'), JSON.stringify(data.notesMap));
     localStorage.setItem(getStorageKey(uid, 'custom'), JSON.stringify(data.customDataMap));
     localStorage.setItem(getStorageKey(uid, 'activity'), JSON.stringify(data.activityDates));
+    return true;
   } catch (err) {
     console.warn('saveToStorage error:', err);
+    return false;
   }
 };
 
@@ -121,6 +123,8 @@ const migrateLegacyKeysOnce = (): {
   notes: Record<string, string>;
   custom: Record<string, any>;
   dates: string[];
+  keysToRemove: string[];
+  migrationFlag: string;
 } | null => {
   const MIGRATION_FLAG = 'hp:legacy_migrated';
   if (localStorage.getItem(MIGRATION_FLAG) === 'true') {
@@ -202,27 +206,26 @@ const migrateLegacyKeysOnce = (): {
       }
     }
 
-    // Delete legacy keys immediately
-    keysToRemove.forEach((k) => localStorage.removeItem(k));
+    return {
+      solved: legacySolved,
+      bookmarks: legacyBookmarks,
+      notes: legacyNotes,
+      custom: legacyCustom,
+      dates: legacyDates,
+      keysToRemove,
+      migrationFlag: MIGRATION_FLAG,
+    };
   } catch (err) {
     console.warn('Legacy migration reading notice:', err);
+    return null;
   }
-
-  // Mark migration as completed so it never runs again
-  localStorage.setItem(MIGRATION_FLAG, 'true');
-
-  return {
-    solved: legacySolved,
-    bookmarks: legacyBookmarks,
-    notes: legacyNotes,
-    custom: legacyCustom,
-    dates: legacyDates,
-  };
 };
 
 export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentUid, setCurrentUid] = useState<string | null>(null);
   const [isSyncing, setIsSyncing] = useState<boolean>(false);
+  const activeUidRef = useRef<string | null>(null);
+  const inFlightWritesRef = useRef(0);
 
   // Initialize with guest namespace data
   const initialGuestData = loadFromStorage(null);
@@ -258,6 +261,10 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   // Robust flush function to Firestore
   const flushToFirestore = useCallback(async (uid: string, dataToSave = progressRef.current) => {
     if (!uid) return;
+    if (activeUidRef.current && activeUidRef.current !== uid) {
+      throw new Error('Refusing to sync progress for an inactive account.');
+    }
+    inFlightWritesRef.current += 1;
     setIsSyncing(true);
     try {
       const solvedCount = Object.values(dataToSave.solvedMap).filter(Boolean).length;
@@ -298,9 +305,12 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         ),
       ]);
     } catch (err) {
+      // Propagate failures so callers can retain unsynced data and show a truthful status.
       console.warn('Firestore progress sync error:', err);
+      throw err;
     } finally {
-      setIsSyncing(false);
+      inFlightWritesRef.current = Math.max(0, inFlightWritesRef.current - 1);
+      setIsSyncing(inFlightWritesRef.current > 0);
     }
   }, []);
 
@@ -313,12 +323,18 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         syncTimeoutRef.current = null;
       }
 
+      const uidAtSchedule = currentUid;
+      const flushSafely = () => {
+        if (activeUidRef.current !== uidAtSchedule) return;
+        void flushToFirestore(uidAtSchedule, progressRef.current).catch((error) => {
+          console.warn('Progress remains saved locally but cloud sync failed:', error);
+        });
+      };
+
       if (immediate) {
-        flushToFirestore(currentUid, progressRef.current);
+        flushSafely();
       } else {
-        syncTimeoutRef.current = setTimeout(() => {
-          flushToFirestore(currentUid, progressRef.current);
-        }, 300);
+        syncTimeoutRef.current = setTimeout(flushSafely, 300);
       }
     },
     [currentUid, flushToFirestore]
@@ -328,6 +344,7 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (fbUser) => {
       const nextUid = fbUser ? fbUser.uid : null;
+      activeUidRef.current = nextUid;
 
       // When switching users or signing out: cancel any pending sync timeout immediately
       if (syncTimeoutRef.current) {
@@ -439,7 +456,16 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
         // If legacy data was migrated or new merged keys exist, flush to Firestore
         if (legacyData || !snap.exists()) {
+          // Preserve the legacy source until both local backup and cloud persistence finish.
+          if (!saveToStorage(currentUid, mergedData)) {
+            throw new Error('Could not persist the migrated progress locally; legacy keys were retained.');
+          }
+          // flushToFirestore throws on Firestore failures so the legacy source remains intact.
           await flushToFirestore(currentUid, mergedData);
+          if (legacyData) {
+            legacyData.keysToRemove.forEach((key) => localStorage.removeItem(key));
+            localStorage.setItem(legacyData.migrationFlag, 'true');
+          }
         }
       } catch (err) {
         console.warn('Reconcile user data notice:', err);
@@ -642,9 +668,8 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const isActiveToday = streakMetrics.isActiveToday;
 
   const forceSyncToCloud = async () => {
-    if (currentUid) {
-      await flushToFirestore(currentUid, progressRef.current);
-    }
+    if (!currentUid) return;
+    await flushToFirestore(currentUid, progressRef.current);
   };
 
   return (
