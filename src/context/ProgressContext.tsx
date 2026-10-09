@@ -121,6 +121,8 @@ const migrateLegacyKeysOnce = (): {
   notes: Record<string, string>;
   custom: Record<string, any>;
   dates: string[];
+  keysToRemove: string[];
+  migrationFlag: string;
 } | null => {
   const MIGRATION_FLAG = 'hp:legacy_migrated';
   if (localStorage.getItem(MIGRATION_FLAG) === 'true') {
@@ -202,22 +204,19 @@ const migrateLegacyKeysOnce = (): {
       }
     }
 
-    // Delete legacy keys immediately
-    keysToRemove.forEach((k) => localStorage.removeItem(k));
+    return {
+      solved: legacySolved,
+      bookmarks: legacyBookmarks,
+      notes: legacyNotes,
+      custom: legacyCustom,
+      dates: legacyDates,
+      keysToRemove,
+      migrationFlag: MIGRATION_FLAG,
+    };
   } catch (err) {
     console.warn('Legacy migration reading notice:', err);
+    return null;
   }
-
-  // Mark migration as completed so it never runs again
-  localStorage.setItem(MIGRATION_FLAG, 'true');
-
-  return {
-    solved: legacySolved,
-    bookmarks: legacyBookmarks,
-    notes: legacyNotes,
-    custom: legacyCustom,
-    dates: legacyDates,
-  };
 };
 
 export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -439,7 +438,15 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
         // If legacy data was migrated or new merged keys exist, flush to Firestore
         if (legacyData || !snap.exists()) {
+          // Preserve the legacy source until both local backup and cloud persistence finish.
+          if (!saveToStorage(currentUid, mergedData)) {
+            throw new Error('Could not persist the migrated progress locally; legacy keys were retained.');
+          }
           await flushToFirestore(currentUid, mergedData);
+          if (legacyData) {
+            legacyData.keysToRemove.forEach((key) => localStorage.removeItem(key));
+            localStorage.setItem(legacyData.migrationFlag, 'true');
+          }
         }
       } catch (err) {
         console.warn('Reconcile user data notice:', err);
