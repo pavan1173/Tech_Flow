@@ -419,37 +419,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const syncCodingPlatforms = async (handles: { leetcode?: string; codechef?: string; github?: string }): Promise<CodingProfiles> => {
     const currentProfiles = user?.codingProfiles || {};
     const updatedProfiles: CodingProfiles = { ...currentProfiles };
-
-    const promises = [];
+    const requests: Promise<void>[] = [];
 
     if (handles.leetcode) {
-      promises.push(
-        fetchLeetCodeStats(handles.leetcode)
-          .then(stats => { updatedProfiles.leetcode = stats; })
-          .catch(err => console.warn('LeetCode sync notice:', err))
-      );
+      requests.push(fetchLeetCodeStats(handles.leetcode).then((stats) => { updatedProfiles.leetcode = stats; }));
     }
-
     if (handles.codechef) {
-      promises.push(
-        fetchCodeChefStats(handles.codechef)
-          .then(stats => { updatedProfiles.codechef = stats; })
-          .catch(err => console.warn('CodeChef sync notice:', err))
-      );
+      requests.push(fetchCodeChefStats(handles.codechef).then((stats) => { updatedProfiles.codechef = stats; }));
     }
-
     if (handles.github) {
-      promises.push(
-        fetchGitHubStats(handles.github)
-          .then(stats => { updatedProfiles.github = stats; })
-          .catch(err => console.warn('GitHub sync notice:', err))
-      );
+      requests.push(fetchGitHubStats(handles.github).then((stats) => { updatedProfiles.github = stats; }));
     }
 
-    await Promise.all(promises);
+    // A failed provider request must fail the sync instead of showing stale or fabricated data as fresh.
+    await Promise.all(requests);
 
     const email = firebaseUser?.email || user?.email || 'developer@example.com';
-    const baseUser = user || createDefaultUserForEmail(email, firebaseUser?.displayName || undefined, firebaseUser?.photoURL || undefined, firebaseUser?.uid);
+    const baseUser = user || createDefaultUserForEmail(
+      email,
+      firebaseUser?.displayName || undefined,
+      firebaseUser?.photoURL || undefined,
+      firebaseUser?.uid
+    );
 
     const updatedUser: User = {
       ...baseUser,
@@ -460,25 +451,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       updatedAt: new Date().toISOString(),
     };
 
-    setUser(updatedUser);
-    localStorage.setItem('hackpath_user', JSON.stringify(updatedUser));
-    localStorage.setItem('teachflow_user', JSON.stringify(updatedUser));
-
+    // Persist the primary profile before presenting the sync as successful.
     if (firebaseUser) {
+      const userDocRef = doc(db, 'users', firebaseUser.uid);
+      await setDoc(userDocRef, updatedUser, { merge: true });
+
+      // Progress has a separate document; a failure here should not hide a successfully saved profile.
       try {
-        const userDocRef = doc(db, 'users', firebaseUser.uid);
-        await setDoc(userDocRef, updatedUser, { merge: true });
-        
         const progressDocRef = doc(db, 'progress', firebaseUser.uid);
         await setDoc(progressDocRef, {
           codingProfiles: updatedProfiles,
           lastActiveAt: new Date().toISOString(),
         }, { merge: true });
       } catch (err) {
-        console.warn('Firestore sync coding platforms write notice:', err);
+        console.warn('Coding profile saved, but progress metadata sync failed:', err);
       }
     }
 
+    setUser(updatedUser);
+    localStorage.setItem('hackpath_user', JSON.stringify(updatedUser));
+    localStorage.setItem('teachflow_user', JSON.stringify(updatedUser));
     return updatedProfiles;
   };
 
