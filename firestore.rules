@@ -1,8 +1,7 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    
-    // Default-deny catch-all safety net
+    // Default-deny catch-all safety net.
     match /{document=**} {
       allow read, write: if false;
     }
@@ -10,7 +9,7 @@ service cloud.firestore {
     function isAuthenticated() {
       return request.auth != null;
     }
-    
+
     function isOwner(userId) {
       return isAuthenticated() && request.auth.uid == userId;
     }
@@ -47,16 +46,31 @@ service cloud.firestore {
         && (!('createdAt' in request.resource.data) || (request.resource.data.createdAt is string && request.resource.data.createdAt.size() <= 500))
         && (!('updatedAt' in request.resource.data) || (request.resource.data.updatedAt is string && request.resource.data.updatedAt.size() <= 500))
         && (!('lastActiveAt' in request.resource.data) || (request.resource.data.lastActiveAt is string && request.resource.data.lastActiveAt.size() <= 500))
-        && (!('totalSolved' in request.resource.data) || (request.resource.data.totalSolved is number))
-        && (!('totalBookmarks' in request.resource.data) || (request.resource.data.totalBookmarks is number))
-        && (!('loginCount' in request.resource.data) || (request.resource.data.loginCount is number))
+        && (!('totalSolved' in request.resource.data) || (request.resource.data.totalSolved is number && request.resource.data.totalSolved >= 0))
+        && (!('totalBookmarks' in request.resource.data) || (request.resource.data.totalBookmarks is number && request.resource.data.totalBookmarks >= 0))
+        && (!('loginCount' in request.resource.data) || (request.resource.data.loginCount is number && request.resource.data.loginCount >= 0))
         && (!('loginHistory' in request.resource.data) || (request.resource.data.loginHistory is list && request.resource.data.loginHistory.size() <= 50))
-        && (!('codingProfiles' in request.resource.data) || (request.resource.data.codingProfiles is map));
+        && (!('codingProfiles' in request.resource.data) || request.resource.data.codingProfiles is map);
     }
 
     function isValidProgressDoc(userId) {
-      return request.resource.data.size() <= 30
-        && (!('uid' in request.resource.data) || request.resource.data.uid == userId);
+      return request.resource.data.keys().hasOnly([
+          'uid', 'solvedMap', 'totalSolved', 'bookmarksMap', 'notesMap',
+          'customDataMap', 'activityDates', 'streakDays', 'longestStreak',
+          'lastActiveAt', 'lastSyncedAt', 'codingProfiles'
+        ])
+        && (!('uid' in request.resource.data) || request.resource.data.uid == userId)
+        && (!('solvedMap' in request.resource.data) || (request.resource.data.solvedMap is map && request.resource.data.solvedMap.size() <= 10000))
+        && (!('bookmarksMap' in request.resource.data) || (request.resource.data.bookmarksMap is map && request.resource.data.bookmarksMap.size() <= 10000))
+        && (!('notesMap' in request.resource.data) || (request.resource.data.notesMap is map && request.resource.data.notesMap.size() <= 5000))
+        && (!('customDataMap' in request.resource.data) || (request.resource.data.customDataMap is map && request.resource.data.customDataMap.size() <= 2000))
+        && (!('activityDates' in request.resource.data) || (request.resource.data.activityDates is list && request.resource.data.activityDates.size() <= 4000))
+        && (!('totalSolved' in request.resource.data) || (request.resource.data.totalSolved is number && request.resource.data.totalSolved >= 0))
+        && (!('streakDays' in request.resource.data) || (request.resource.data.streakDays is number && request.resource.data.streakDays >= 0))
+        && (!('longestStreak' in request.resource.data) || (request.resource.data.longestStreak is number && request.resource.data.longestStreak >= 0))
+        && (!('lastActiveAt' in request.resource.data) || (request.resource.data.lastActiveAt is string && request.resource.data.lastActiveAt.size() <= 50))
+        && (!('lastSyncedAt' in request.resource.data) || (request.resource.data.lastSyncedAt is string && request.resource.data.lastSyncedAt.size() <= 50))
+        && (!('codingProfiles' in request.resource.data) || request.resource.data.codingProfiles is map);
     }
 
     function isValidMessageDoc() {
@@ -67,30 +81,27 @@ service cloud.firestore {
         && (request.resource.data.message is string && request.resource.data.message.size() >= 10 && request.resource.data.message.size() <= 2000)
         && (request.resource.data.createdAt is timestamp || request.resource.data.createdAt == request.time);
     }
-    
+
     // Connection test document
     match /test/connection {
       allow read: if true;
     }
 
-    // Contact messages: create-only with exact keys and bounded sizes; no read, update or delete
+    // Public contact form can create validated messages; no public read/update/delete.
     match /messages/{id} {
       allow create: if isValidMessageDoc();
       allow read, update, delete: if false;
     }
 
-    // User profile documents & recorded stats (owner-only with strict validation)
     match /users/{userId} {
       allow read: if isOwner(userId);
       allow write: if isOwner(userId) && isValidUserDoc(userId);
 
-      // Nested login history subcollection (owner-only)
       match /login_history/{loginId} {
         allow read, write: if isOwner(userId);
       }
     }
 
-    // User progress and problem-solving metrics (owner-only with size sanity check)
     match /progress/{userId} {
       allow read: if isOwner(userId);
       allow write: if isOwner(userId) && isValidProgressDoc(userId);
