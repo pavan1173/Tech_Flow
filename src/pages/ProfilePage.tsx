@@ -38,7 +38,7 @@ interface ProfilePageProps {
 
 export const ProfilePage: React.FC<ProfilePageProps> = ({ navigate }) => {
   const { user, updateProfile, logout, openAuthModal, isAuthenticated, authReady } = useAuth();
-  const { totalSolved, streakDays, bookmarksMap, notesMap } = useProgress();
+  const { totalSolved, streakDays, longestStreak, isActiveToday, bookmarksMap, notesMap } = useProgress();
 
   const [activeTab, setActiveTab] = useState<'overview' | 'platforms' | 'edit' | 'bookmarks'>('overview');
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -366,14 +366,18 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ navigate }) => {
         <div className="p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#0c1017] shadow-xs">
           <div className="flex items-center justify-between text-xs text-zinc-500 font-mono uppercase mb-2">
             <span>Daily Streak</span>
-            <Flame className="w-4 h-4 text-amber-500 fill-amber-500" />
+            <Flame className="w-4 h-4 text-orange-500 fill-orange-500" />
           </div>
-          <div className="text-3xl font-extrabold text-zinc-900 dark:text-white">
-            {streakDays} <span className="text-base font-normal text-zinc-400">days</span>
+          <div className="text-3xl font-extrabold text-zinc-900 dark:text-white flex items-baseline gap-2">
+            <span>{streakDays}</span>
+            <span className="text-base font-normal text-zinc-400">days</span>
           </div>
-          <span className="text-[11px] text-amber-600 dark:text-amber-400 font-medium mt-1 block">
-            Active streak tracker
-          </span>
+          <div className="flex items-center justify-between text-[11px] text-zinc-400 mt-1 font-mono">
+            <span>Best: {longestStreak}d</span>
+            <span className={isActiveToday ? 'text-emerald-500 font-semibold' : 'text-amber-500'}>
+              {isActiveToday ? 'Active Today' : 'Practice Today'}
+            </span>
+          </div>
         </div>
 
         {/* Stat 3: LeetCode & CodeChef */}

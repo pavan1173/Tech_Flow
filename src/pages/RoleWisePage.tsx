@@ -152,7 +152,7 @@ export const RoleWisePage: React.FC<RoleWisePageProps> = ({ roleSlug, navigate }
   const solvedCount = useMemo(() => {
     if (!selectedRole) return 0;
     return roleQuestions.filter((q: any, idx: number) =>
-      isSolved(`role_${selectedRole.slug}_${q.index || idx}`)
+      isSolved(`role_${selectedRole.slug}_${q.index || idx + 1}`)
     ).length;
   }, [selectedRole, roleQuestions, isSolved]);
 

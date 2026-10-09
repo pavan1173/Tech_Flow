@@ -28,7 +28,7 @@ export const CodingPlatformsCard: React.FC<CodingPlatformsCardProps> = ({
   navigate,
   showEditToggle = true,
 }) => {
-  const { user, syncCodingPlatforms, isAuthenticated, openAuthModal } = useAuth();
+  const { user, syncCodingPlatforms, isAuthenticated, openAuthModal, openCodingHandlesModal } = useAuth();
   
   const [isSyncing, setIsSyncing] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -145,13 +145,23 @@ export const CodingPlatformsCard: React.FC<CodingPlatformsCardProps> = ({
           </div>
         </div>
 
-        <div className="flex items-center gap-2 self-stretch sm:self-auto justify-end">
+        <div className="flex items-center gap-2 self-stretch sm:self-auto justify-end flex-wrap">
+          <button
+            type="button"
+            onClick={openCodingHandlesModal}
+            className="px-3 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/20 text-xs font-semibold transition-colors cursor-pointer flex items-center gap-1.5"
+            title="Open LeetCode, CodeChef, and GitHub linking popup"
+          >
+            <Edit3 className="w-3.5 h-3.5" />
+            <span>Connect Handles</span>
+          </button>
+
           {showEditToggle && (
             <button
               onClick={() => setIsEditing(!isEditing)}
               className="px-3 py-1.5 rounded-xl bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 text-xs font-semibold transition-colors cursor-pointer"
             >
-              {isEditing ? 'Cancel Edit' : 'Edit Handles'}
+              {isEditing ? 'Cancel Edit' : 'Quick Edit'}
             </button>
           )}
 

@@ -357,7 +357,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate }) => {
               </a>
 
               <a
-                href="https://x.com/TeachFlow_in"
+                href="https://x.com/HackPath_in"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-between p-4 rounded-xl bg-zinc-100 dark:bg-zinc-800/80 hover:bg-zinc-200 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 transition-all group"

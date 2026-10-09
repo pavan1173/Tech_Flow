@@ -103,10 +103,13 @@ interface AuthContextType {
   authReady: boolean;
   isAuthModalOpen: boolean;
   isProfileModalOpen: boolean;
+  isCodingHandlesModalOpen: boolean;
   openAuthModal: () => void;
   closeAuthModal: () => void;
   openProfileModal: () => void;
   closeProfileModal: () => void;
+  openCodingHandlesModal: () => void;
+  closeCodingHandlesModal: () => void;
   loginWithGoogle: () => Promise<void>;
   loginWithEmail: (email: string, password: string) => Promise<void>;
   signupWithEmail: (email: string, password: string, name: string) => Promise<void>;
@@ -136,6 +139,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [isCodingHandlesModalOpen, setIsCodingHandlesModalOpen] = useState(false);
+
+  const checkAndPromptCodingHandles = (userData: User, uid: string) => {
+    try {
+      const skippedKey = `hp_handles_skipped_${uid}`;
+      if (localStorage.getItem(skippedKey)) return;
+      const hasAny = Boolean(
+        (userData.leetcodeUrl && userData.leetcodeUrl.trim()) ||
+        (userData.codechefUrl && userData.codechefUrl.trim()) ||
+        (userData.githubUrl && userData.githubUrl.trim()) ||
+        (userData.codingProfiles?.leetcode?.username && userData.codingProfiles.leetcode.username.trim()) ||
+        (userData.codingProfiles?.codechef?.username && userData.codingProfiles.codechef.username.trim()) ||
+        (userData.codingProfiles?.github?.username && userData.codingProfiles.github.username.trim())
+      );
+      if (!hasAny) {
+        setTimeout(() => {
+          setIsCodingHandlesModalOpen(true);
+        }, 400);
+      }
+    } catch {}
+  };
 
   // Helper to record user login session, audit history, and sync profile metrics in Firestore.
   // Runs ONLY inside explicit sign-in calls (loginWithGoogle, loginWithEmail, signupWithEmail).
@@ -243,7 +267,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           const userDocRef = doc(db, 'users', fbUser.uid);
           const snap = await getDoc(userDocRef);
           if (snap.exists()) {
-            setUser(snap.data() as User);
+            const loadedUser = snap.data() as User;
+            setUser(loadedUser);
+            checkAndPromptCodingHandles(loadedUser, fbUser.uid);
           } else {
             // Document does not exist yet: provide default user representation without audit writes
             const fallbackUser = createDefaultUserForEmail(
@@ -253,6 +279,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               fbUser.uid
             );
             setUser(fallbackUser);
+            checkAndPromptCodingHandles(fallbackUser, fbUser.uid);
           }
         } catch (err) {
           console.warn('Firestore user load notice:', err);
@@ -285,6 +312,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const recorded = await recordUserLoginInFirestore(fbUser);
     setUser(recorded);
     setIsAuthModalOpen(false);
+    checkAndPromptCodingHandles(recorded, fbUser.uid);
   };
 
   const loginWithEmail = async (email: string, password: string) => {
@@ -293,6 +321,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const recorded = await recordUserLoginInFirestore(fbUser);
     setUser(recorded);
     setIsAuthModalOpen(false);
+    checkAndPromptCodingHandles(recorded, fbUser.uid);
   };
 
   const signupWithEmail = async (email: string, password: string, name: string) => {
@@ -306,6 +335,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const recorded = await recordUserLoginInFirestore(fbUser, name);
     setUser(recorded);
     setIsAuthModalOpen(false);
+    checkAndPromptCodingHandles(recorded, fbUser.uid);
   };
 
   const resetPassword = async (email: string) => {
@@ -435,6 +465,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const closeAuthModal = () => setIsAuthModalOpen(false);
   const openProfileModal = () => setIsProfileModalOpen(true);
   const closeProfileModal = () => setIsProfileModalOpen(false);
+  const openCodingHandlesModal = () => setIsCodingHandlesModalOpen(true);
+  const closeCodingHandlesModal = () => setIsCodingHandlesModalOpen(false);
 
   return (
     <AuthContext.Provider
@@ -445,10 +477,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         authReady,
         isAuthModalOpen,
         isProfileModalOpen,
+        isCodingHandlesModalOpen,
         openAuthModal,
         closeAuthModal,
         openProfileModal,
         closeProfileModal,
+        openCodingHandlesModal,
+        closeCodingHandlesModal,
         loginWithGoogle,
         loginWithEmail,
         signupWithEmail,

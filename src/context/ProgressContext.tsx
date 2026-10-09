@@ -1,7 +1,13 @@
-import React, { createContext, useContext, useEffect, useState, useRef, useCallback } from 'react';
+import React, { createContext, useContext, useEffect, useState, useRef, useCallback, useMemo } from 'react';
 import { doc, getDoc, onSnapshot, setDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 import { onAuthStateChanged } from 'firebase/auth';
+import {
+  formatDateYMD,
+  getDefaultActivityDates,
+  isValidPracticeDate,
+  calculateStreakMetrics,
+} from '../utils/streakUtils';
 
 interface ProgressContextType {
   solvedMap: Record<string, boolean>;
@@ -18,7 +24,11 @@ interface ProgressContextType {
   getCustomData: (key: string, defaultValue?: any) => any;
   totalSolved: number;
   streakDays: number;
+  longestStreak: number;
+  isActiveToday: boolean;
   activityDates: string[];
+  logActivity: (date?: string) => void;
+  toggleActivityDate: (date: string) => void;
   isSyncing: boolean;
   forceSyncToCloud: () => Promise<void>;
 }
@@ -37,8 +47,12 @@ const ProgressContext = createContext<ProgressContextType>({
   setCustomData: () => {},
   getCustomData: () => null,
   totalSolved: 0,
-  streakDays: 3,
+  streakDays: 0,
+  longestStreak: 0,
+  isActiveToday: false,
   activityDates: [],
+  logActivity: () => {},
+  toggleActivityDate: () => {},
   isSyncing: false,
   forceSyncToCloud: async () => {},
 });
@@ -65,7 +79,7 @@ const loadFromStorage = (uid: string | null) => {
       bookmarksMap: bookmarksRaw ? (JSON.parse(bookmarksRaw) as Record<string, boolean>) : {},
       notesMap: notesRaw ? (JSON.parse(notesRaw) as Record<string, string>) : {},
       customDataMap: customRaw ? (JSON.parse(customRaw) as Record<string, any>) : {},
-      activityDates: activityRaw ? (JSON.parse(activityRaw) as string[]) : ['2026-09-24', '2026-09-25', '2026-09-26'],
+      activityDates: activityRaw ? (JSON.parse(activityRaw) as string[]) : getDefaultActivityDates(),
     };
   } catch (err) {
     console.warn('loadFromStorage error:', err);
@@ -74,7 +88,7 @@ const loadFromStorage = (uid: string | null) => {
       bookmarksMap: {},
       notesMap: {},
       customDataMap: {},
-      activityDates: ['2026-09-24', '2026-09-25', '2026-09-26'],
+      activityDates: getDefaultActivityDates(),
     };
   }
 };
@@ -248,6 +262,7 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     try {
       const solvedCount = Object.values(dataToSave.solvedMap).filter(Boolean).length;
       const bookmarksCount = Object.values(dataToSave.bookmarksMap).filter(Boolean).length;
+      const streakMetrics = calculateStreakMetrics(dataToSave.activityDates);
       const now = new Date().toISOString();
 
       const progressDocRef = doc(db, 'progress', uid);
@@ -264,7 +279,8 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
             notesMap: dataToSave.notesMap,
             customDataMap: dataToSave.customDataMap,
             activityDates: dataToSave.activityDates,
-            streakDays: Math.max(1, dataToSave.activityDates.length),
+            streakDays: streakMetrics.currentStreak,
+            longestStreak: streakMetrics.longestStreak,
             lastActiveAt: now,
             lastSyncedAt: now,
           },
@@ -487,21 +503,87 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     const isNowSolved = !prev[id];
     const nextSolved = { ...prev, [id]: isNowSolved };
 
-    const today = new Date().toISOString().split('T')[0];
+    const today = formatDateYMD(new Date());
     let nextDates = progressRef.current.activityDates;
     if (isNowSolved && !nextDates.includes(today)) {
       nextDates = [...nextDates, today];
       setActivityDates(nextDates);
     }
 
+    // Record daily solve count in customDataMap
+    const currentCounts = { ...(progressRef.current.customDataMap?.activityCounts || {}) };
+    const todayCount = (currentCounts[today] || 0) + (isNowSolved ? 1 : -1);
+    const updatedCustom = {
+      ...progressRef.current.customDataMap,
+      activityCounts: {
+        ...currentCounts,
+        [today]: Math.max(0, todayCount),
+      },
+    };
+
     progressRef.current = {
       ...progressRef.current,
       solvedMap: nextSolved,
       activityDates: nextDates,
+      customDataMap: updatedCustom,
     };
 
     setSolvedMap(nextSolved);
+    setCustomDataMap(updatedCustom);
     scheduleSync(true); // Immediate sync on problem solve
+  };
+
+  const logActivity = (targetDate?: string) => {
+    const dateStr = targetDate || formatDateYMD(new Date());
+    if (!isValidPracticeDate(dateStr)) return;
+    const prevDates = progressRef.current.activityDates;
+    if (!prevDates.includes(dateStr)) {
+      const nextDates = [...prevDates, dateStr];
+      const currentCounts = { ...(progressRef.current.customDataMap?.activityCounts || {}) };
+      const updatedCustom = {
+        ...progressRef.current.customDataMap,
+        activityCounts: {
+          ...currentCounts,
+          [dateStr]: (currentCounts[dateStr] || 0) + 1,
+        },
+      };
+
+      progressRef.current = {
+        ...progressRef.current,
+        activityDates: nextDates,
+        customDataMap: updatedCustom,
+      };
+
+      setActivityDates(nextDates);
+      setCustomDataMap(updatedCustom);
+      scheduleSync(true);
+    }
+  };
+
+  const toggleActivityDate = (dateStr: string) => {
+    if (!dateStr || !isValidPracticeDate(dateStr)) return;
+    const prevDates = progressRef.current.activityDates;
+    const exists = prevDates.includes(dateStr);
+    const nextDates = exists ? prevDates.filter((d) => d !== dateStr) : [...prevDates, dateStr];
+
+    const currentCounts = { ...(progressRef.current.customDataMap?.activityCounts || {}) };
+    const updatedCustom = {
+      ...progressRef.current.customDataMap,
+      activityCounts: {
+        ...currentCounts,
+        [dateStr]: exists ? 0 : Math.max(1, currentCounts[dateStr] || 1),
+      },
+    };
+
+    progressRef.current = {
+      ...progressRef.current,
+      activityDates: nextDates,
+      customDataMap: updatedCustom,
+    };
+
+    setActivityDates(nextDates);
+    setCustomDataMap(updatedCustom);
+    scheduleSync(true);
   };
 
   const isSolved = (id: string) => !!solvedMap[id];
@@ -554,7 +636,10 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   };
 
   const totalSolved = Object.values(solvedMap).filter(Boolean).length;
-  const streakDays = Math.max(1, activityDates.length);
+  const streakMetrics = useMemo(() => calculateStreakMetrics(activityDates), [activityDates]);
+  const streakDays = streakMetrics.currentStreak;
+  const longestStreak = streakMetrics.longestStreak;
+  const isActiveToday = streakMetrics.isActiveToday;
 
   const forceSyncToCloud = async () => {
     if (currentUid) {
@@ -579,7 +664,11 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         getCustomData,
         totalSolved,
         streakDays,
+        longestStreak,
+        isActiveToday,
         activityDates,
+        logActivity,
+        toggleActivityDate,
         isSyncing,
         forceSyncToCloud,
       }}

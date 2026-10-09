@@ -118,12 +118,12 @@ export const ContactPage: React.FC<ContactPageProps> = () => {
                 → Join Community
               </a>
               <a
-                href="https://x.com/TeachFlow_in"
+                href="https://x.com/HackPath_in"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:underline"
               >
-                → Follow @TeachFlow_in on X
+                → Follow @HackPath_in on X
               </a>
             </div>
           </div>

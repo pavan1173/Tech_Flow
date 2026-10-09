@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useProgress } from '../context/ProgressContext';
 import { useAuth } from '../context/AuthContext';
 import { CodingPlatformsCard } from '../components/CodingPlatformsCard';
+import { formatDateYMD } from '../utils/streakUtils';
 import {
   Flame,
   ChevronLeft,
@@ -25,7 +26,12 @@ import {
   Award,
   Activity,
   Star,
-  Database
+  Database,
+  Trophy,
+  Calendar,
+  X,
+  Clock,
+  AlertCircle
 } from 'lucide-react';
 
 interface PrepDashboardProps {
@@ -33,14 +39,34 @@ interface PrepDashboardProps {
 }
 
 export const PreparationDashboardPage: React.FC<PrepDashboardProps> = ({ navigate }) => {
-  const { solvedMap, streakDays, bookmarksMap, activityDates } = useProgress();
+  const {
+    solvedMap,
+    streakDays,
+    longestStreak,
+    isActiveToday,
+    bookmarksMap,
+    activityDates,
+    logActivity,
+    toggleActivityDate,
+    customDataMap
+  } = useProgress();
   const { user, isAuthenticated, openAuthModal, openProfileModal, authReady } = useAuth();
 
+  const now = new Date();
   const [timeRange, setTimeRange] = useState<'6m' | '3m' | '30d' | '7d'>('30d');
-  const [calendarMonth, setCalendarMonth] = useState<number>(9); // 0-indexed: 9 = October
-  const [calendarYear, setCalendarYear] = useState<number>(2026);
-  const [hoveredDataPoint, setHoveredDataPoint] = useState<{ date: string; value: number; x: number; y: number } | null>(null);
+  const [calendarMonth, setCalendarMonth] = useState<number>(now.getMonth());
+  const [calendarYear, setCalendarYear] = useState<number>(now.getFullYear());
+  const [hoveredDataPoint, setHoveredDataPoint] = useState<{ date: string; fullDate?: string; value: number; x: number; y: number } | null>(null);
   const [mapMode, setMapMode] = useState<'all' | 'platforms' | 'domains'>('all');
+  const [inspectedDay, setInspectedDay] = useState<{
+    dateStr: string;
+    displayDate: string;
+    isActive: boolean;
+    isToday: boolean;
+    isFuture: boolean;
+    problemsCount: number;
+  } | null>(null);
+  const [todayLogSuccess, setTodayLogSuccess] = useState(false);
 
   const leetcodeStats = user?.codingProfiles?.leetcode;
   const codechefStats = user?.codingProfiles?.codechef;
@@ -100,61 +126,151 @@ export const PreparationDashboardPage: React.FC<PrepDashboardProps> = ({ navigat
 
   const totalBookmarksCount = Object.values(bookmarksMap).filter(Boolean).length;
 
-  // Activity Timeline Data Generator
+  // Dynamic Activity Timeline Data Generator based on real dates & user progress
   const activityData = useMemo(() => {
-    const totalToday = totalHackPathSolved;
+    const today = new Date();
+    const countsMap: Record<string, number> = customDataMap?.activityCounts || {};
+
+    const getCountForDate = (dateStr: string) => {
+      if (countsMap[dateStr] !== undefined) return countsMap[dateStr];
+      return activityDates.includes(dateStr) ? 2 : 0;
+    };
+
     if (timeRange === '7d') {
-      const dates = ['Sep 26', 'Sep 27', 'Sep 28', 'Sep 29', 'Sep 30', 'Oct 1', 'Oct 2'];
-      const values = [0, 0, 0, 0, 0, 1, Math.max(totalToday, 1)];
-      return dates.map((d, i) => ({ date: d, count: values[i] }));
+      const points = [];
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date(today);
+        d.setDate(today.getDate() - i);
+        const ymd = formatDateYMD(d);
+        const label = d.toLocaleDateString('en-US', { weekday: 'short', day: 'numeric' });
+        points.push({
+          date: label,
+          fullDate: ymd,
+          count: getCountForDate(ymd),
+        });
+      }
+      return points;
     }
 
     if (timeRange === '3m') {
-      const dates = ['Jul 15', 'Jul 30', 'Aug 15', 'Aug 30', 'Sep 15', 'Sep 29', 'Oct 2'];
-      const values = [0, 0, 0, 0, 0, 1, Math.max(totalToday, 1)];
-      return dates.map((d, i) => ({ date: d, count: values[i] }));
+      // 8 sample milestone points across 90 days
+      const points = [];
+      for (let i = 7; i >= 0; i--) {
+        const d = new Date(today);
+        d.setDate(today.getDate() - i * 11);
+        const ymd = formatDateYMD(d);
+        const label = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        let sum = 0;
+        for (let w = 0; w < 11; w++) {
+          const subD = new Date(d);
+          subD.setDate(d.getDate() - w);
+          sum += getCountForDate(formatDateYMD(subD));
+        }
+        points.push({
+          date: label,
+          fullDate: ymd,
+          count: sum,
+        });
+      }
+      return points;
     }
 
     if (timeRange === '6m') {
-      const dates = ['May 1', 'Jun 1', 'Jul 1', 'Aug 1', 'Sep 1', 'Oct 1', 'Oct 2'];
-      const values = [0, 0, 0, 0, 0, 1, Math.max(totalToday, 1)];
-      return dates.map((d, i) => ({ date: d, count: values[i] }));
+      // 7 sample milestone points across 180 days
+      const points = [];
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date(today);
+        d.setDate(today.getDate() - i * 26);
+        const ymd = formatDateYMD(d);
+        const label = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        let sum = 0;
+        for (let w = 0; w < 26; w++) {
+          const subD = new Date(d);
+          subD.setDate(d.getDate() - w);
+          sum += getCountForDate(formatDateYMD(subD));
+        }
+        points.push({
+          date: label,
+          fullDate: ymd,
+          count: sum,
+        });
+      }
+      return points;
     }
 
-    // Default: 30 Days
-    const dates = [
-      'Sep 5',
-      'Sep 8',
-      'Sep 11',
-      'Sep 14',
-      'Sep 17',
-      'Sep 20',
-      'Sep 23',
-      'Sep 26',
-      'Sep 29',
-      'Oct 2'
-    ];
-    const values = [0, 0, 0, 0, 0, 0, 0, 0, 0.4, Math.max(totalToday, 1)];
-    return dates.map((d, i) => ({ date: d, count: values[i] }));
-  }, [timeRange, totalHackPathSolved]);
+    // Default: 30 Days (10 interval points across 30 days)
+    const points = [];
+    for (let i = 9; i >= 0; i--) {
+      const d = new Date(today);
+      d.setDate(today.getDate() - i * 3);
+      const ymd = formatDateYMD(d);
+      const label = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      let sum = 0;
+      for (let w = 0; w < 3; w++) {
+        const subD = new Date(d);
+        subD.setDate(d.getDate() - w);
+        sum += getCountForDate(formatDateYMD(subD));
+      }
+      points.push({
+        date: label,
+        fullDate: ymd,
+        count: sum,
+      });
+    }
+    return points;
+  }, [timeRange, activityDates, customDataMap]);
+
+  // Dynamic Consistency and Activity Summary Metrics
+  const consistencyMetrics = useMemo(() => {
+    const totalActivities = activityData.reduce((acc, curr) => acc + curr.count, 0);
+    const totalDays = timeRange === '7d' ? 7 : timeRange === '3m' ? 90 : timeRange === '6m' ? 180 : 30;
+
+    const today = new Date();
+    let activeDaysCount = 0;
+    for (let i = 0; i < totalDays; i++) {
+      const d = new Date(today);
+      d.setDate(today.getDate() - i);
+      const ymd = formatDateYMD(d);
+      if (
+        activityDates.includes(ymd) ||
+        (customDataMap?.activityCounts?.[ymd] && customDataMap.activityCounts[ymd] > 0)
+      ) {
+        activeDaysCount++;
+      }
+    }
+    const rate = Math.round((activeDaysCount / totalDays) * 100);
+    const avgDaily = (totalActivities / totalDays).toFixed(1);
+
+    return {
+      totalActivities,
+      totalDays,
+      activeDaysCount,
+      rate,
+      avgDaily,
+    };
+  }, [activityData, timeRange, activityDates, customDataMap]);
 
   // SVG Area Chart Coordinates
   const chartWidth = 720;
   const chartHeight = 220;
-  const paddingX = 30;
-  const paddingY = 20;
+  const paddingX = 42;
+  const paddingY = 24;
+
+  const chartMaxVal = useMemo(() => {
+    const rawMax = Math.max(...activityData.map((d) => d.count), 0);
+    return rawMax > 0 ? Math.max(rawMax, 3) : 3;
+  }, [activityData]);
 
   const chartPoints = useMemo(() => {
-    const maxVal = Math.max(...activityData.map((d) => d.count), 2.5);
     const stepX = (chartWidth - paddingX * 2) / Math.max(activityData.length - 1, 1);
 
     return activityData.map((d, i) => {
       const x = paddingX + i * stepX;
-      const normY = d.count / maxVal;
+      const normY = d.count / chartMaxVal;
       const y = chartHeight - paddingY - normY * (chartHeight - paddingY * 2);
-      return { x, y, date: d.date, value: d.count };
+      return { x, y, date: d.date, fullDate: d.fullDate, value: d.count };
     });
-  }, [activityData, chartWidth, chartHeight, paddingX, paddingY]);
+  }, [activityData, chartWidth, chartHeight, paddingX, paddingY, chartMaxVal]);
 
   // Smooth Bezier Curve Path
   const { pathD, areaD } = useMemo(() => {
@@ -435,17 +551,27 @@ export const PreparationDashboardPage: React.FC<PrepDashboardProps> = ({ navigat
         <div className="lg:col-span-8 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#0c1017] p-5 sm:p-6 shadow-xs flex flex-col justify-between">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
             <div>
-              <h2 className="text-base sm:text-lg font-bold text-zinc-900 dark:text-white">
-                Activity &amp; Consistency
-              </h2>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400">
+              <div className="flex flex-wrap items-center gap-2">
+                <h2 className="text-base sm:text-lg font-bold text-zinc-900 dark:text-white">
+                  Activity &amp; Consistency
+                </h2>
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 font-mono text-[11px] font-bold border border-blue-500/20">
+                  <Activity className="w-3 h-3" />
+                  <span>{consistencyMetrics.rate}% Consistency</span>
+                </span>
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-mono text-[11px] font-bold border border-emerald-500/20">
+                  <CheckCircle2 className="w-3 h-3" />
+                  <span>{consistencyMetrics.activeDaysCount} of {consistencyMetrics.totalDays} Days Active</span>
+                </span>
+              </div>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
                 {timeRange === '7d'
-                  ? 'Total of last 7 days'
+                  ? `Past 7 days • ${consistencyMetrics.totalActivities} problems/activities • Avg ${consistencyMetrics.avgDaily}/day`
                   : timeRange === '3m'
-                  ? 'Total of last 3 months'
+                  ? `Past 3 months • ${consistencyMetrics.totalActivities} problems/activities • Avg ${consistencyMetrics.avgDaily}/day`
                   : timeRange === '6m'
-                  ? 'Total of last 6 months'
-                  : 'Total of last 30 days'}
+                  ? `Past 6 months • ${consistencyMetrics.totalActivities} problems/activities • Avg ${consistencyMetrics.avgDaily}/day`
+                  : `Past 30 days • ${consistencyMetrics.totalActivities} problems/activities • Avg ${consistencyMetrics.avgDaily}/day`}
               </p>
             </div>
 
@@ -480,11 +606,20 @@ export const PreparationDashboardPage: React.FC<PrepDashboardProps> = ({ navigat
             >
               <defs>
                 <linearGradient id="activityGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.25" />
+                  <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.3" />
                   <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.0" />
                 </linearGradient>
               </defs>
 
+              {/* Y-Axis Value Labels & Reference Guidelines */}
+              <text
+                x={paddingX - 10}
+                y={paddingY + 3}
+                textAnchor="end"
+                className="text-[10px] font-mono fill-zinc-400 dark:fill-zinc-500 font-semibold"
+              >
+                {chartMaxVal}
+              </text>
               <line
                 x1={paddingX}
                 y1={paddingY}
@@ -494,6 +629,15 @@ export const PreparationDashboardPage: React.FC<PrepDashboardProps> = ({ navigat
                 strokeDasharray="4 4"
                 strokeWidth="1"
               />
+
+              <text
+                x={paddingX - 10}
+                y={chartHeight / 2 + 3}
+                textAnchor="end"
+                className="text-[10px] font-mono fill-zinc-400 dark:fill-zinc-500 font-semibold"
+              >
+                {Math.round(chartMaxVal / 2)}
+              </text>
               <line
                 x1={paddingX}
                 y1={chartHeight / 2}
@@ -503,6 +647,15 @@ export const PreparationDashboardPage: React.FC<PrepDashboardProps> = ({ navigat
                 strokeDasharray="4 4"
                 strokeWidth="1"
               />
+
+              <text
+                x={paddingX - 10}
+                y={chartHeight - paddingY + 3}
+                textAnchor="end"
+                className="text-[10px] font-mono fill-zinc-400 dark:fill-zinc-500 font-semibold"
+              >
+                0
+              </text>
               <line
                 x1={paddingX}
                 y1={chartHeight - paddingY}
@@ -530,7 +683,7 @@ export const PreparationDashboardPage: React.FC<PrepDashboardProps> = ({ navigat
                   <circle
                     cx={pt.x}
                     cy={pt.y}
-                    r="4"
+                    r="4.5"
                     className="fill-blue-600 dark:fill-blue-400 stroke-2 stroke-white dark:stroke-zinc-900 transition-all cursor-pointer hover:r-6"
                     onMouseEnter={() => setHoveredDataPoint(pt)}
                     onMouseLeave={() => setHoveredDataPoint(null)}
@@ -553,46 +706,75 @@ export const PreparationDashboardPage: React.FC<PrepDashboardProps> = ({ navigat
 
             {hoveredDataPoint && (
               <div
-                className="absolute pointer-events-none -translate-x-1/2 -translate-y-full px-2.5 py-1 rounded-lg bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-xs font-mono font-bold shadow-lg"
+                className="absolute pointer-events-none -translate-x-1/2 -translate-y-full px-3 py-1.5 rounded-xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-xs font-mono font-bold shadow-xl border border-zinc-700/50 dark:border-zinc-300 z-20"
                 style={{
-                  left: `${(hoveredDataPoint.x / chartWidth) * 100}%`,
-                  top: `${(hoveredDataPoint.y / chartHeight) * 100 - 8}%`,
+                  left: `${Math.min(Math.max((hoveredDataPoint.x / chartWidth) * 100, 10), 90)}%`,
+                  top: `${Math.max((hoveredDataPoint.y / chartHeight) * 100 - 15, 10)}%`,
                 }}
               >
-                {hoveredDataPoint.value} solved
+                <div className="flex items-center gap-1.5">
+                  <Flame className="w-3.5 h-3.5 text-amber-500 fill-amber-500 shrink-0" />
+                  <span>{hoveredDataPoint.value} {hoveredDataPoint.value === 1 ? 'problem/activity' : 'problems/activities'}</span>
+                </div>
+                <div className="text-[10px] text-zinc-400 dark:text-zinc-500 font-sans font-normal mt-0.5">
+                  {hoveredDataPoint.fullDate || hoveredDataPoint.date}
+                </div>
               </div>
             )}
           </div>
         </div>
 
         {/* Right: Streak & Monthly Calendar Card (Col 4) */}
-        <div className="lg:col-span-4 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#0c1017] p-5 sm:p-6 shadow-xs flex flex-col justify-between">
-          <div className="space-y-1.5 pb-3">
-            <div className="flex items-center justify-center gap-1.5 text-xs font-extrabold uppercase tracking-wider text-[#f97316]">
-              <Flame className="w-3.5 h-3.5 fill-[#f97316] text-[#f97316]" />
-              <span>STREAK</span>
+        <div className="lg:col-span-4 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#0c1017] p-5 sm:p-6 shadow-xs flex flex-col justify-between space-y-4">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-wider text-orange-500">
+                <Flame className="w-4 h-4 fill-orange-500 text-orange-500" />
+                <span>Coding Streak</span>
+              </div>
+              <div className="flex items-center gap-1 text-[11px] font-bold font-mono px-2 py-0.5 rounded-full bg-orange-500/10 text-orange-500">
+                <span>{streakDays} Day{streakDays === 1 ? '' : 's'}</span>
+              </div>
             </div>
 
             <div className="flex items-center justify-between pt-1">
               <button
+                type="button"
                 onClick={handlePrevMonth}
                 className="p-1 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors cursor-pointer"
+                title="Previous Month"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
-              <span className="font-bold text-sm sm:text-base text-zinc-900 dark:text-white">
-                {monthNames[calendarMonth]} {calendarYear}
-              </span>
+              <div className="flex items-center gap-1.5">
+                <span className="font-bold text-sm sm:text-base text-zinc-900 dark:text-white">
+                  {monthNames[calendarMonth]} {calendarYear}
+                </span>
+                {(calendarMonth !== now.getMonth() || calendarYear !== now.getFullYear()) && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCalendarMonth(now.getMonth());
+                      setCalendarYear(now.getFullYear());
+                    }}
+                    className="text-[10px] font-mono font-semibold text-blue-500 hover:underline cursor-pointer"
+                  >
+                    Today
+                  </button>
+                )}
+              </div>
               <button
+                type="button"
                 onClick={handleNextMonth}
                 className="p-1 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors cursor-pointer"
+                title="Next Month"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>
           </div>
 
-          <div className="grid grid-cols-7 text-center text-xs font-semibold text-zinc-400 dark:text-zinc-500 pb-2">
+          <div className="grid grid-cols-7 text-center text-xs font-semibold text-zinc-400 dark:text-zinc-500 pb-1">
             <div>Su</div>
             <div>Mo</div>
             <div>Tu</div>
@@ -608,29 +790,207 @@ export const PreparationDashboardPage: React.FC<PrepDashboardProps> = ({ navigat
                 return <div key={`empty-${idx}`} className="h-8 sm:h-9" />;
               }
 
-              const isToday = day === 2 && calendarMonth === 9 && calendarYear === 2026;
+              const todayMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+              const dayDate = new Date(calendarYear, calendarMonth, day);
+              const dayMidnight = dayDate.getTime();
+              const isFuture = dayMidnight > todayMidnight;
+              const isCurrentToday = dayMidnight === todayMidnight;
+              const dayKey = formatDateYMD(dayDate);
+              const isActive = activityDates.includes(dayKey);
+              const countsMap: Record<string, number> = customDataMap?.activityCounts || {};
+              const problemsCount = countsMap[dayKey] !== undefined ? countsMap[dayKey] : (isActive ? 1 : 0);
 
               return (
-                <div
+                <button
                   key={`day-${day}`}
-                  className={`relative h-8 sm:h-9 flex items-center justify-center rounded-xl text-xs transition-colors ${
-                    isToday
-                      ? 'border-2 border-[#f97316] bg-orange-50/80 dark:bg-orange-950/30 text-[#f97316] font-bold shadow-xs'
-                      : 'text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800/60'
-                  }`}
+                  type="button"
+                  disabled={isFuture}
+                  onClick={() => {
+                    if (isFuture) return;
+                    setInspectedDay({
+                      dateStr: dayKey,
+                      displayDate: dayDate.toLocaleDateString('en-US', {
+                        weekday: 'long',
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                      }),
+                      isActive,
+                      isToday: isCurrentToday,
+                      isFuture: false,
+                      problemsCount,
+                    });
+                  }}
+                  title={
+                    isFuture
+                      ? `${dayDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}: Upcoming date. Practice on this day to build your streak.`
+                      : `${dayDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}: ${isActive ? `${problemsCount} practice/activities verified!` : 'No practice recorded.'} Click to view verification.`
+                  }
+                  className={`relative h-8 sm:h-9 flex items-center justify-center rounded-xl text-xs font-semibold transition-all ${
+                    isFuture
+                      ? 'text-zinc-300 dark:text-zinc-700/60 cursor-not-allowed opacity-40'
+                      : isActive
+                      ? 'bg-gradient-to-tr from-amber-500/20 via-orange-500/25 to-rose-500/20 text-orange-600 dark:text-orange-400 border border-orange-500/40 shadow-xs cursor-pointer hover:scale-105'
+                      : isCurrentToday
+                      ? 'border-2 border-dashed border-blue-500 text-blue-600 dark:text-blue-400 hover:bg-blue-500/10 cursor-pointer animate-pulse'
+                      : 'text-zinc-700 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/60 cursor-pointer'
+                  } ${isCurrentToday ? 'ring-2 ring-orange-500/25 font-bold' : ''}`}
                 >
                   <span>{day}</span>
-                  {isToday && (
-                    <div className="absolute -top-1.5 -right-1 text-[#f97316]">
-                      <Flame className="w-3 h-3 fill-[#f97316]" />
-                    </div>
+                  {isActive && !isFuture && (
+                    <span className="absolute -top-1 -right-0.5">
+                      <Flame className="w-3 h-3 fill-orange-500 text-orange-500" />
+                    </span>
                   )}
-                </div>
+                </button>
               );
             })}
           </div>
+
+          {/* Streak Status & Action Footer */}
+          <div className="pt-3 border-t border-zinc-200 dark:border-zinc-800/80 space-y-2.5">
+            <div className="grid grid-cols-3 gap-2 text-center text-xs">
+              <div className="p-2 rounded-xl bg-orange-500/5 dark:bg-orange-950/20 border border-orange-500/20">
+                <span className="text-[10px] uppercase font-mono text-zinc-400 block">Current</span>
+                <span className="font-extrabold text-orange-500 flex items-center justify-center gap-1">
+                  <Flame className="w-3 h-3 fill-orange-500" />
+                  <span>{streakDays}d</span>
+                </span>
+              </div>
+              <div className="p-2 rounded-xl bg-amber-500/5 dark:bg-amber-950/20 border border-amber-500/20">
+                <span className="text-[10px] uppercase font-mono text-zinc-400 block">Best</span>
+                <span className="font-extrabold text-amber-500 flex items-center justify-center gap-1">
+                  <Trophy className="w-3 h-3" />
+                  <span>{longestStreak}d</span>
+                </span>
+              </div>
+              <div className="p-2 rounded-xl bg-blue-500/5 dark:bg-blue-950/20 border border-blue-500/20">
+                <span className="text-[10px] uppercase font-mono text-zinc-400 block">Total</span>
+                <span className="font-extrabold text-blue-500 flex items-center justify-center gap-1">
+                  <Calendar className="w-3 h-3" />
+                  <span>{activityDates.length}d</span>
+                </span>
+              </div>
+            </div>
+
+            {todayLogSuccess && (
+              <div className="py-2 px-3 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 text-xs font-semibold flex items-center justify-center gap-1.5 animate-in fade-in">
+                <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                <span>Today's practice verified and logged!</span>
+              </div>
+            )}
+
+            {isActiveToday ? (
+              <div className="py-2 px-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-bold flex items-center justify-center gap-1.5">
+                <CheckCircle2 className="w-4 h-4 shrink-0" />
+                <span>Streak Active Today! ({streakDays} {streakDays === 1 ? 'day' : 'days'})</span>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => {
+                  logActivity();
+                  setTodayLogSuccess(true);
+                  setTimeout(() => setTodayLogSuccess(false), 3000);
+                }}
+                className="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 hover:opacity-90 text-white text-xs font-bold shadow-md transition-all cursor-pointer flex items-center justify-center gap-1.5"
+              >
+                <Flame className="w-4 h-4 fill-white" />
+                <span>Log Practice Today (+1 Day Streak)</span>
+              </button>
+            )}
+          </div>
         </div>
       </div>
+
+      {/* ── DAY PRACTICE VERIFICATION MODAL ── */}
+      {inspectedDay && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-xs p-4 animate-in fade-in duration-150 font-lexend">
+          <div className="relative w-full max-w-md rounded-2xl bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-zinc-800 shadow-2xl p-6 text-zinc-900 dark:text-white space-y-5">
+            <button
+              onClick={() => setInspectedDay(null)}
+              className="absolute right-4 top-4 p-1.5 rounded-xl text-zinc-400 hover:text-zinc-600 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+              aria-label="Close dialog"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="space-y-1.5 pr-6">
+              <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[11px] font-mono font-bold">
+                <Calendar className="w-3 h-3" />
+                <span>Daily Practice Verification</span>
+              </div>
+              <h3 className="text-lg font-black text-zinc-900 dark:text-white">
+                {inspectedDay.displayDate}
+              </h3>
+            </div>
+
+            <div className="p-4 rounded-xl border space-y-3 bg-zinc-50 dark:bg-zinc-900/60 border-zinc-200 dark:border-zinc-800">
+              {inspectedDay.isActive ? (
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 text-xs font-bold">
+                    <CheckCircle2 className="w-4 h-4 shrink-0" />
+                    <span>Practice Session Verified</span>
+                  </div>
+                  <p className="text-xs text-zinc-600 dark:text-zinc-300">
+                    You recorded <strong>{inspectedDay.problemsCount} activity event{inspectedDay.problemsCount === 1 ? '' : 's'}</strong> on this day. This practice session has been validated and counted toward your coding streak.
+                  </p>
+                </div>
+              ) : inspectedDay.isToday ? (
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400 text-xs font-bold">
+                    <Clock className="w-4 h-4 shrink-0" />
+                    <span>Practice Not Recorded Yet Today</span>
+                  </div>
+                  <p className="text-xs text-zinc-600 dark:text-zinc-300">
+                    You have not logged your coding practice yet today. Practicing now will advance your streak to <strong>{streakDays + 1} day{streakDays === 0 ? '' : 's'}</strong>!
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 text-zinc-500 dark:text-zinc-400 text-xs font-bold">
+                    <AlertCircle className="w-4 h-4 shrink-0" />
+                    <span>No Practice Recorded</span>
+                  </div>
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                    No coding activity was recorded on this past date. Coding streaks represent honest, consecutive daily problem solving.
+                  </p>
+                </div>
+              )}
+            </div>
+
+            <div className="flex items-center justify-end gap-2 pt-2 border-t border-zinc-200 dark:border-zinc-800">
+              <button
+                type="button"
+                onClick={() => setInspectedDay(null)}
+                className="px-4 py-2 rounded-xl text-xs font-bold text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+              >
+                Close
+              </button>
+
+              {inspectedDay.isToday && !inspectedDay.isActive && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    logActivity();
+                    setInspectedDay({
+                      ...inspectedDay,
+                      isActive: true,
+                      problemsCount: (inspectedDay.problemsCount || 0) + 1,
+                    });
+                    setTodayLogSuccess(true);
+                    setTimeout(() => setTodayLogSuccess(false), 3000);
+                  }}
+                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 text-white text-xs font-bold shadow-md hover:opacity-90 transition-all cursor-pointer flex items-center gap-1.5"
+                >
+                  <Flame className="w-3.5 h-3.5 fill-white" />
+                  <span>Validate &amp; Log Today</span>
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── SKILL & PLATFORMS RADAR MAP & BREAKDOWN ── */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">

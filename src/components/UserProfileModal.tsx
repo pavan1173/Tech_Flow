@@ -218,13 +218,21 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ navigate }) 
           )}
 
           {/* Quick Stats Grid */}
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
             <div className="p-3 rounded-2xl bg-zinc-900/90 border border-zinc-800 text-center">
               <div className="flex items-center justify-center gap-1 text-emerald-400 mb-0.5">
                 <CheckCircle2 className="w-4 h-4" />
                 <span className="text-lg font-black">{totalCombinedSolved}</span>
               </div>
               <span className="text-[10px] uppercase font-mono tracking-wider text-zinc-400">Total Solved</span>
+            </div>
+
+            <div className="p-3 rounded-2xl bg-zinc-900/90 border border-zinc-800 text-center">
+              <div className="flex items-center justify-center gap-1 text-orange-400 mb-0.5">
+                <Flame className="w-4 h-4 fill-orange-400" />
+                <span className="text-lg font-black">{streakDays}d</span>
+              </div>
+              <span className="text-[10px] uppercase font-mono tracking-wider text-zinc-400">Streak</span>
             </div>
 
             <div className="p-3 rounded-2xl bg-zinc-900/90 border border-zinc-800 text-center">

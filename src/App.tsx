@@ -7,6 +7,8 @@ import { PreparationTopBar } from './components/PreparationTopBar';
 import { PreparationBottomBar } from './components/PreparationBottomBar';
 import { AuthModal } from './components/AuthModal';
 import { UserProfileModal } from './components/UserProfileModal';
+import { CodingHandlesModal } from './components/CodingHandlesModal';
+import { useAuth } from './context/AuthContext';
 
 // Preparation Hub Pages
 import { PreparationDashboardPage } from './pages/PreparationDashboardPage';
@@ -45,6 +47,7 @@ import { NotFoundPage } from './pages/NotFoundPage';
 
 export default function App() {
   const { currentPath, navigate } = useRouter();
+  const { isCodingHandlesModalOpen, closeCodingHandlesModal } = useAuth();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
@@ -392,6 +395,7 @@ export default function App() {
       {renderContent()}
       <AuthModal />
       <UserProfileModal navigate={navigate} />
+      <CodingHandlesModal isOpen={isCodingHandlesModalOpen} onClose={closeCodingHandlesModal} />
     </div>
   );
 }
