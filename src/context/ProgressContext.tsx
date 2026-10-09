@@ -377,7 +377,7 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         let remoteBookmarks: Record<string, boolean> = {};
         let remoteNotes: Record<string, string> = {};
         let remoteCustom: Record<string, any> = {};
-        let remoteDates: string[] = ['2026-09-24', '2026-09-25', '2026-09-26'];
+        let remoteDates: string[] = [];
 
         if (snap.exists()) {
           const dbData = snap.data();
@@ -463,7 +463,7 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
             bookmarksMap: data.bookmarksMap || {},
             notesMap: data.notesMap || {},
             customDataMap: data.customDataMap || {},
-            activityDates: data.activityDates || ['2026-09-24', '2026-09-25', '2026-09-26'],
+            activityDates: data.activityDates || [],
           };
 
           progressRef.current = updated;
