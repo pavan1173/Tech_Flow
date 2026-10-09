@@ -320,7 +320,7 @@ export const CodingPlatformsCard: React.FC<CodingPlatformsCardProps> = ({
           <div className="pt-2 border-t border-zinc-200 dark:border-zinc-800/80 flex items-center justify-between text-[11px] font-mono text-zinc-500">
             <span>Global Rank:</span>
             <span className="font-bold text-zinc-800 dark:text-zinc-200">
-              {leetcodeStats?.ranking ? `#${leetcodeStats.ranking.toLocaleString()}` : 'Top 5%'}
+              {leetcodeStats?.ranking ? `#${leetcodeStats.ranking.toLocaleString()}` : 'Unavailable'}
             </span>
           </div>
         </div>
@@ -531,10 +531,8 @@ export const CodingPlatformsCard: React.FC<CodingPlatformsCardProps> = ({
                   </div>
 
                   <div className="p-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800/70 flex items-center justify-between text-xs font-mono">
-                    <span className="text-zinc-500">Yearly Commits:</span>
-                    <span className="font-bold text-emerald-600 dark:text-emerald-400">
-                      {githubStats?.contributions || 240}+
-                    </span>
+                    <span className="text-zinc-500">Contributions:</span>
+                    <span className="font-bold text-emerald-600 dark:text-emerald-400">Not provided by this API</span>
                   </div>
                 </>
               )}
