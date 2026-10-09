@@ -89,7 +89,6 @@ const createDefaultUserForEmail = (email: string, name?: string, avatar?: string
         publicRepos: 0,
         totalStars: 0,
         followers: 0,
-        contributions: 0,
       },
     },
   };
