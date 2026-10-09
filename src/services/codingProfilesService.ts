@@ -1,5 +1,5 @@
 /**
- * Service to fetch and manage public coding stats for LeetCode, CodeChef, and GitHub
+ * Fetch public coding-profile statistics without inventing fallback values.
  */
 
 export interface LeetCodeStats {
@@ -29,7 +29,6 @@ export interface GitHubStats {
   publicRepos: number;
   totalStars: number;
   followers: number;
-  contributions?: number;
   lastSynced?: string;
 }
 
@@ -39,7 +38,6 @@ export interface CodingProfiles {
   github?: GitHubStats;
 }
 
-// Clean username extraction from full URL or bare username
 export const cleanUsername = (input: string): string => {
   if (!input) return '';
   let cleaned = input.trim();
@@ -49,76 +47,56 @@ export const cleanUsername = (input: string): string => {
   return cleaned;
 };
 
-/**
- * Fetch LeetCode stats via public API proxies with fallback heuristics
- */
+const fetchJson = async (url: string): Promise<any> => {
+  const response = await fetch(url, { signal: AbortSignal.timeout(8000) });
+  if (!response.ok) {
+    throw new Error(`Statistics provider returned HTTP ${response.status}.`);
+  }
+  return response.json();
+};
+
+const asNonNegativeNumber = (value: unknown, field: string): number => {
+  const number = Number(value);
+  if (value === null || value === undefined || value === '' || !Number.isFinite(number) || number < 0) {
+    throw new Error(`Statistics provider returned invalid ${field} data.`);
+  }
+  return number;
+};
+
 export async function fetchLeetCodeStats(rawInput: string): Promise<LeetCodeStats> {
   const username = cleanUsername(rawInput);
-  if (!username) {
-    throw new Error('Please enter a valid LeetCode username or URL.');
-  }
+  if (!username) throw new Error('Please enter a valid LeetCode username or URL.');
 
-  const now = new Date().toISOString();
+  const endpoints = [
+    `https://alfa-leetcode-api.onrender.com/userProfile/${encodeURIComponent(username)}`,
+    `https://leetcode-stats-api.herokuapp.com/${encodeURIComponent(username)}`,
+  ];
+  let lastError: unknown;
 
-  // Try Primary Proxy: Alfa LeetCode API
-  try {
-    const res = await fetch(`https://alfa-leetcode-api.onrender.com/userProfile/${username}`, {
-      signal: AbortSignal.timeout(4000)
-    });
-    if (res.ok) {
-      const data = await res.json();
-      if (data && data.totalSolved !== undefined) {
-        return {
-          username,
-          totalSolved: Number(data.totalSolved) || 0,
-          easySolved: Number(data.easySolved) || 0,
-          mediumSolved: Number(data.mediumSolved) || 0,
-          hardSolved: Number(data.hardSolved) || 0,
-          ranking: Number(data.ranking) || undefined,
-          acceptanceRate: Number(data.acceptanceRate) || undefined,
-          lastSynced: now,
-        };
+  for (const endpoint of endpoints) {
+    try {
+      const data = await fetchJson(endpoint);
+      if (!data || data.totalSolved === undefined) {
+        throw new Error('Statistics provider returned an unexpected LeetCode response.');
       }
+      return {
+        username,
+        totalSolved: asNonNegativeNumber(data.totalSolved, 'total solved'),
+        easySolved: asNonNegativeNumber(data.easySolved, 'easy solved'),
+        mediumSolved: asNonNegativeNumber(data.mediumSolved, 'medium solved'),
+        hardSolved: asNonNegativeNumber(data.hardSolved, 'hard solved'),
+        ranking: data.ranking == null ? undefined : asNonNegativeNumber(data.ranking, 'ranking'),
+        acceptanceRate: data.acceptanceRate == null ? undefined : asNonNegativeNumber(data.acceptanceRate, 'acceptance rate'),
+        lastSynced: new Date().toISOString(),
+      };
+    } catch (error) {
+      lastError = error;
     }
-  } catch (err) {
-    // Fallback to secondary endpoint
   }
 
-  // Try Secondary Proxy: leetcode-stats-api
-  try {
-    const res = await fetch(`https://leetcode-stats-api.herokuapp.com/${username}`, {
-      signal: AbortSignal.timeout(4000)
-    });
-    if (res.ok) {
-      const data = await res.json();
-      if (data.status === 'success' || data.totalSolved !== undefined) {
-        return {
-          username,
-          totalSolved: Number(data.totalSolved) || 0,
-          easySolved: Number(data.easySolved) || 0,
-          mediumSolved: Number(data.mediumSolved) || 0,
-          hardSolved: Number(data.hardSolved) || 0,
-          ranking: Number(data.ranking) || undefined,
-          acceptanceRate: Number(data.acceptanceRate) || undefined,
-          lastSynced: now,
-        };
-      }
-    }
-  } catch (err) {
-    // Continue to fallback
-  }
-
-  // Default calibrated baseline if external proxy is rate-limited
-  return {
-    username,
-    totalSolved: 145,
-    easySolved: 65,
-    mediumSolved: 68,
-    hardSolved: 12,
-    ranking: 184520,
-    acceptanceRate: 64.5,
-    lastSynced: now,
-  };
+  throw new Error(`Unable to fetch live LeetCode statistics for "${username}". Please verify the username and try again.`, {
+    cause: lastError,
+  });
 }
 
 export const computeCodeChefStars = (rating: number): string => {
@@ -141,113 +119,64 @@ export const getCodeChefStarClass = (stars?: string): string => {
   return 'text-amber-700 fill-amber-700';
 };
 
-/**
- * Fetch CodeChef stats via public proxies
- */
 export async function fetchCodeChefStats(rawInput: string): Promise<CodeChefStats> {
   const username = cleanUsername(rawInput);
-  if (!username) {
-    throw new Error('Please enter a valid CodeChef username or URL.');
-  }
-
-  const now = new Date().toISOString();
+  if (!username) throw new Error('Please enter a valid CodeChef username or URL.');
 
   try {
-    const res = await fetch(`https://codechef-api.vercel.app/handle/${username}`, {
-      signal: AbortSignal.timeout(4000)
-    });
-    if (res.ok) {
-      const data = await res.json();
-      if (data && (data.rating || data.stars || data.fullySolved !== undefined || data.currentRating)) {
-        const rating = Number(data.currentRating || data.rating) || 1640;
-        const stars = data.stars || computeCodeChefStars(rating);
-        return {
-          username,
-          rating,
-          stars,
-          globalRank: Number(data.globalRank) || undefined,
-          countryRank: Number(data.countryRank) || undefined,
-          fullySolved: Number(data.fullySolved || data.totalProblemsSolved) || 84,
-          partiallySolved: Number(data.partiallySolved) || 12,
-          lastSynced: now,
-        };
-      }
+    const data = await fetchJson(`https://codechef-api.vercel.app/handle/${encodeURIComponent(username)}`);
+    if (!data || (data.currentRating == null && data.rating == null)) {
+      throw new Error('Statistics provider returned an unexpected CodeChef response.');
     }
-  } catch (err) {
-    // Continue to secondary attempt
-  }
 
-  // Consistent realistic baseline based on user handle
-  let hash = 0;
-  for (let i = 0; i < username.length; i++) {
-    hash = (hash << 5) - hash + username.charCodeAt(i);
-    hash |= 0;
+    const rating = asNonNegativeNumber(data.currentRating ?? data.rating, 'rating');
+    const solvedValue = data.fullySolved ?? data.totalProblemsSolved;
+    return {
+      username,
+      rating,
+      stars: typeof data.stars === 'string' && data.stars ? data.stars : computeCodeChefStars(rating),
+      globalRank: data.globalRank == null ? undefined : asNonNegativeNumber(data.globalRank, 'global rank'),
+      countryRank: data.countryRank == null ? undefined : asNonNegativeNumber(data.countryRank, 'country rank'),
+      fullySolved: solvedValue == null ? 0 : asNonNegativeNumber(solvedValue, 'fully solved'),
+      partiallySolved: data.partiallySolved == null ? 0 : asNonNegativeNumber(data.partiallySolved, 'partially solved'),
+      lastSynced: new Date().toISOString(),
+    };
+  } catch (error) {
+    throw new Error(`Unable to fetch live CodeChef statistics for "${username}". Please verify the handle and try again.`, {
+      cause: error,
+    });
   }
-  const positiveHash = Math.abs(hash);
-  const rating = 1420 + (positiveHash % 560);
-  const stars = computeCodeChefStars(rating);
-  const fullySolved = 48 + (positiveHash % 110);
-  const partiallySolved = 6 + (positiveHash % 20);
-  const globalRank = 12000 + (positiveHash % 35000);
-
-  return {
-    username,
-    rating,
-    stars,
-    globalRank,
-    countryRank: Math.floor(globalRank / 3),
-    fullySolved,
-    partiallySolved,
-    lastSynced: now,
-  };
 }
 
-/**
- * Fetch GitHub stats via GitHub Public API
- */
 export async function fetchGitHubStats(rawInput: string): Promise<GitHubStats> {
   const username = cleanUsername(rawInput);
-  if (!username) {
-    throw new Error('Please enter a valid GitHub username or URL.');
-  }
-
-  const now = new Date().toISOString();
+  if (!username) throw new Error('Please enter a valid GitHub username or URL.');
 
   try {
-    const [userRes, reposRes] = await Promise.all([
-      fetch(`https://api.github.com/users/${username}`, { signal: AbortSignal.timeout(4000) }),
-      fetch(`https://api.github.com/users/${username}/repos?per_page=100`, { signal: AbortSignal.timeout(4000) }),
+    const encodedUsername = encodeURIComponent(username);
+    const [userData, reposData] = await Promise.all([
+      fetchJson(`https://api.github.com/users/${encodedUsername}`),
+      fetchJson(`https://api.github.com/users/${encodedUsername}/repos?per_page=100&sort=updated`),
     ]);
 
-    if (userRes.ok) {
-      const userData = await userRes.json();
-      let totalStars = 0;
-      if (reposRes.ok) {
-        const reposData = await reposRes.json();
-        if (Array.isArray(reposData)) {
-          totalStars = reposData.reduce((acc, r) => acc + (r.stargazers_count || 0), 0);
-        }
-      }
-
-      return {
-        username,
-        publicRepos: userData.public_repos || 0,
-        totalStars,
-        followers: userData.followers || 0,
-        contributions: (userData.public_repos || 0) * 18 + totalStars * 4 + 45,
-        lastSynced: now,
-      };
+    if (!Array.isArray(reposData)) {
+      throw new Error('GitHub returned an unexpected repository response.');
     }
-  } catch (err) {
-    // Continue to fallback
-  }
 
-  return {
-    username,
-    publicRepos: 24,
-    totalStars: 48,
-    followers: 86,
-    contributions: 340,
-    lastSynced: now,
-  };
+    const totalStars = reposData.reduce((total: number, repo: { stargazers_count?: number }) => {
+      return total + asNonNegativeNumber(repo.stargazers_count ?? 0, 'repository stars');
+    }, 0);
+
+    return {
+      username,
+      publicRepos: asNonNegativeNumber(userData.public_repos, 'public repositories'),
+      totalStars,
+      followers: asNonNegativeNumber(userData.followers, 'followers'),
+      lastSynced: new Date().toISOString(),
+    };
+  } catch (error) {
+    throw new Error(`Unable to fetch live GitHub statistics for "${username}". Please verify the username or retry later.`, {
+      cause: error,
+    });
+  }
 }
