@@ -222,6 +222,8 @@ const migrateLegacyKeysOnce = (): {
 export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentUid, setCurrentUid] = useState<string | null>(null);
   const [isSyncing, setIsSyncing] = useState<boolean>(false);
+  const activeUidRef = useRef<string | null>(null);
+  const inFlightWritesRef = useRef(0);
 
   // Initialize with guest namespace data
   const initialGuestData = loadFromStorage(null);
@@ -257,6 +259,10 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   // Robust flush function to Firestore
   const flushToFirestore = useCallback(async (uid: string, dataToSave = progressRef.current) => {
     if (!uid) return;
+    if (activeUidRef.current && activeUidRef.current !== uid) {
+      throw new Error('Refusing to sync progress for an inactive account.');
+    }
+    inFlightWritesRef.current += 1;
     setIsSyncing(true);
     try {
       const solvedCount = Object.values(dataToSave.solvedMap).filter(Boolean).length;
@@ -297,9 +303,12 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         ),
       ]);
     } catch (err) {
+      // Propagate failures so callers can retain unsynced data and show a truthful status.
       console.warn('Firestore progress sync error:', err);
+      throw err;
     } finally {
-      setIsSyncing(false);
+      inFlightWritesRef.current = Math.max(0, inFlightWritesRef.current - 1);
+      setIsSyncing(inFlightWritesRef.current > 0);
     }
   }, []);
 
@@ -312,12 +321,18 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         syncTimeoutRef.current = null;
       }
 
+      const uidAtSchedule = currentUid;
+      const flushSafely = () => {
+        if (activeUidRef.current !== uidAtSchedule) return;
+        void flushToFirestore(uidAtSchedule, progressRef.current).catch((error) => {
+          console.warn('Progress remains saved locally but cloud sync failed:', error);
+        });
+      };
+
       if (immediate) {
-        flushToFirestore(currentUid, progressRef.current);
+        flushSafely();
       } else {
-        syncTimeoutRef.current = setTimeout(() => {
-          flushToFirestore(currentUid, progressRef.current);
-        }, 300);
+        syncTimeoutRef.current = setTimeout(flushSafely, 300);
       }
     },
     [currentUid, flushToFirestore]
@@ -327,6 +342,7 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (fbUser) => {
       const nextUid = fbUser ? fbUser.uid : null;
+      activeUidRef.current = nextUid;
 
       // When switching users or signing out: cancel any pending sync timeout immediately
       if (syncTimeoutRef.current) {
@@ -649,9 +665,8 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const isActiveToday = streakMetrics.isActiveToday;
 
   const forceSyncToCloud = async () => {
-    if (currentUid) {
-      await flushToFirestore(currentUid, progressRef.current);
-    }
+    if (!currentUid) return;
+    await flushToFirestore(currentUid, progressRef.current);
   };
 
   return (
