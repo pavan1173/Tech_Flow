@@ -102,15 +102,17 @@ const saveToStorage = (
     customDataMap: Record<string, any>;
     activityDates: string[];
   }
-) => {
+): boolean => {
   try {
     localStorage.setItem(getStorageKey(uid, 'solved'), JSON.stringify(data.solvedMap));
     localStorage.setItem(getStorageKey(uid, 'bookmarks'), JSON.stringify(data.bookmarksMap));
     localStorage.setItem(getStorageKey(uid, 'notes'), JSON.stringify(data.notesMap));
     localStorage.setItem(getStorageKey(uid, 'custom'), JSON.stringify(data.customDataMap));
     localStorage.setItem(getStorageKey(uid, 'activity'), JSON.stringify(data.activityDates));
+    return true;
   } catch (err) {
     console.warn('saveToStorage error:', err);
+    return false;
   }
 };
 
