@@ -458,6 +458,7 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           if (!saveToStorage(currentUid, mergedData)) {
             throw new Error('Could not persist the migrated progress locally; legacy keys were retained.');
           }
+          // flushToFirestore throws on Firestore failures so the legacy source remains intact.
           await flushToFirestore(currentUid, mergedData);
           if (legacyData) {
             legacyData.keysToRemove.forEach((key) => localStorage.removeItem(key));
