@@ -313,10 +313,22 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ navigate }) 
                   <label className="block text-zinc-400 uppercase font-mono text-[10px] mb-1 font-bold">Full Name</label>
                   <input
                     type="text"
+                    placeholder="Enter your full name"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-700 text-white focus:outline-none focus:border-blue-500"
+                    className="w-full px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-700 text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500"
                     required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-zinc-400 uppercase font-mono text-[10px] mb-1 font-bold">Username / Handle</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. @alex"
+                    value={formData.handle}
+                    onChange={(e) => setFormData({ ...formData, handle: e.target.value })}
+                    className="w-full px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-700 text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 font-mono"
                   />
                 </div>
 

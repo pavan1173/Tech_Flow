@@ -44,29 +44,28 @@ export interface User {
 }
 
 const createDefaultUserForEmail = (email: string, name?: string, avatar?: string, uid?: string): User => {
-  const isPavan = email.toLowerCase().includes('pavan') || email.toLowerCase() === 'mpavankumar110405@gmail.com';
-  const username = isPavan ? 'tech_by.pavan' : (email.split('@')[0] || 'developer');
+  const emailPrefix = (email.split('@')[0] || '').trim();
+  const displayName = (name && name.trim()) || '';
+  const username = emailPrefix || 'user';
 
   return {
     uid,
-    name: name || (isPavan ? 'Pavan Kumar' : username.charAt(0).toUpperCase() + username.slice(1)),
+    name: displayName,
     email,
-    avatar: avatar || (isPavan ? '/pavan_img.png' : ''),
-    handle: `@${username}`,
-    role: isPavan ? 'Founder & Lead Developer' : 'Software Developer',
-    bio: isPavan
-      ? 'Developer & Creator of HackPath. Building free, world-class resources for software engineers to crack top tech placements.'
-      : 'Software engineer preparing for top product companies, mastering DSA patterns, system design, and SQL.',
-    targetCompany: 'Google / Amazon / Microsoft / Uber',
-    targetPackage: '35+ LPA',
+    avatar: avatar || '',
+    handle: username ? `@${username}` : '',
+    role: 'Software Developer',
+    bio: '',
+    targetCompany: '',
+    targetPackage: '',
     college: '',
-    graduationYear: '2026',
+    graduationYear: '',
     githubUrl: '',
     linkedinUrl: '',
     leetcodeUrl: '',
     codechefUrl: '',
     portfolioUrl: '',
-    instagramUrl: isPavan ? 'https://www.instagram.com/tech_by.pavan/' : '',
+    instagramUrl: '',
     phone: '',
     codingProfiles: {
       leetcode: {
@@ -171,14 +170,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const userDocRef = doc(db, 'users', fbUser.uid);
     const progressDocRef = doc(db, 'progress', fbUser.uid);
 
-    const [userDocSnap, progressDocSnap] = await Promise.all([
-      getDoc(userDocRef),
-      getDoc(progressDocRef),
-    ]);
+    let userDocSnap: any = null;
+    let progressDocSnap: any = null;
+
+    try {
+      const results = await Promise.all([
+        getDoc(userDocRef),
+        getDoc(progressDocRef),
+      ]);
+      userDocSnap = results[0];
+      progressDocSnap = results[1];
+    } catch (err) {
+      console.warn('Notice loading Firestore user/progress documents:', err);
+    }
 
     let totalSolvedCount = 0;
     let totalBookmarksCount = 0;
-    if (progressDocSnap.exists()) {
+    if (progressDocSnap && progressDocSnap.exists()) {
       const pData = progressDocSnap.data();
       if (pData.solvedMap) {
         totalSolvedCount = Object.values(pData.solvedMap).filter(Boolean).length;
@@ -196,7 +204,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : '',
     };
 
-    if (userDocSnap.exists()) {
+    if (userDocSnap && userDocSnap.exists()) {
       const existing = userDocSnap.data() as User;
       const newLoginCount = (existing.loginCount || 0) + 1;
       const history = [loginEntry, ...(existing.loginHistory || []).slice(0, 19)];
@@ -205,7 +213,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         ...existing,
         uid: fbUser.uid,
         email: fbUser.email || existing.email,
-        name: existing.name || fbUser.displayName || customName || 'Developer',
+        name: existing.name || fbUser.displayName || customName || '',
         avatar: existing.avatar || fbUser.photoURL || customAvatar || '',
         authProvider: provider,
         lastLoginAt: now,
@@ -216,19 +224,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         updatedAt: now,
       };
 
-      await setDoc(userDocRef, {
-        uid: fbUser.uid,
-        email: updatedUser.email,
-        name: updatedUser.name,
-        avatar: updatedUser.avatar,
-        authProvider: provider,
-        lastLoginAt: now,
-        loginCount: newLoginCount,
-        loginHistory: history,
-        totalSolved: updatedUser.totalSolved,
-        totalBookmarks: updatedUser.totalBookmarks,
-        updatedAt: now,
-      }, { merge: true });
+      try {
+        await setDoc(userDocRef, {
+          uid: fbUser.uid,
+          email: updatedUser.email,
+          name: updatedUser.name,
+          avatar: updatedUser.avatar,
+          authProvider: provider,
+          lastLoginAt: now,
+          loginCount: newLoginCount,
+          loginHistory: history,
+          totalSolved: updatedUser.totalSolved,
+          totalBookmarks: updatedUser.totalBookmarks,
+          updatedAt: now,
+        }, { merge: true });
+      } catch (writeErr) {
+        console.warn('Notice saving login record to Firestore:', writeErr);
+      }
 
       return updatedUser;
     } else {
@@ -252,7 +264,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         updatedAt: now,
       };
 
-      await setDoc(userDocRef, newUserRecord);
+      try {
+        await setDoc(userDocRef, newUserRecord);
+      } catch (writeErr) {
+        console.warn('Notice creating user record in Firestore:', writeErr);
+      }
       return newUserRecord;
     }
   };
@@ -283,6 +299,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           }
         } catch (err) {
           console.warn('Firestore user load notice:', err);
+          const fallbackUser = createDefaultUserForEmail(
+            fbUser.email || 'developer@example.com',
+            fbUser.displayName || undefined,
+            fbUser.photoURL || undefined,
+            fbUser.uid
+          );
+          setUser(fallbackUser);
+          checkAndPromptCodingHandles(fallbackUser, fbUser.uid);
         }
       } else {
         setUser(null);
@@ -309,7 +333,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const loginWithGoogle = async () => {
     const result = await signInWithPopup(auth, googleProvider);
     const fbUser = result.user;
-    const recorded = await recordUserLoginInFirestore(fbUser);
+    let recorded: User;
+    try {
+      recorded = await recordUserLoginInFirestore(fbUser);
+    } catch {
+      recorded = createDefaultUserForEmail(
+        fbUser.email || 'developer@example.com',
+        fbUser.displayName || undefined,
+        fbUser.photoURL || undefined,
+        fbUser.uid
+      );
+    }
     setUser(recorded);
     setIsAuthModalOpen(false);
     checkAndPromptCodingHandles(recorded, fbUser.uid);
@@ -318,7 +352,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const loginWithEmail = async (email: string, password: string) => {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const fbUser = userCredential.user;
-    const recorded = await recordUserLoginInFirestore(fbUser);
+    let recorded: User;
+    try {
+      recorded = await recordUserLoginInFirestore(fbUser);
+    } catch {
+      recorded = createDefaultUserForEmail(
+        fbUser.email || email,
+        fbUser.displayName || undefined,
+        undefined,
+        fbUser.uid
+      );
+    }
     setUser(recorded);
     setIsAuthModalOpen(false);
     checkAndPromptCodingHandles(recorded, fbUser.uid);
@@ -328,11 +372,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const fbUser = userCredential.user;
 
-    await updateFirebaseProfile(fbUser, {
-      displayName: name,
-    });
+    try {
+      await updateFirebaseProfile(fbUser, {
+        displayName: name,
+      });
+    } catch {}
 
-    const recorded = await recordUserLoginInFirestore(fbUser, name);
+    let recorded: User;
+    try {
+      recorded = await recordUserLoginInFirestore(fbUser, name);
+    } catch {
+      recorded = createDefaultUserForEmail(
+        fbUser.email || email,
+        name,
+        undefined,
+        fbUser.uid
+      );
+    }
     setUser(recorded);
     setIsAuthModalOpen(false);
     checkAndPromptCodingHandles(recorded, fbUser.uid);

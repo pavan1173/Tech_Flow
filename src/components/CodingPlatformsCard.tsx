@@ -26,35 +26,15 @@ interface CodingPlatformsCardProps {
 
 export const CodingPlatformsCard: React.FC<CodingPlatformsCardProps> = ({
   navigate,
-  showEditToggle = true,
+  showEditToggle = false,
 }) => {
   const { user, syncCodingPlatforms, isAuthenticated, openAuthModal, openCodingHandlesModal } = useAuth();
   
   const [isSyncing, setIsSyncing] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
   const [syncSuccess, setSyncSuccess] = useState(false);
+  const [syncError, setSyncError] = useState<string | null>(null);
   const [inlineCodechefInput, setInlineCodechefInput] = useState('');
   const [isLinkingCodechef, setIsLinkingCodechef] = useState(false);
-
-  const [leetcodeInput, setLeetcodeInput] = useState(
-    user?.leetcodeUrl || user?.codingProfiles?.leetcode?.username || ''
-  );
-  const [codechefInput, setCodechefInput] = useState(
-    user?.codechefUrl || user?.codingProfiles?.codechef?.username || ''
-  );
-  const [githubInput, setGithubInput] = useState(
-    user?.githubUrl || user?.codingProfiles?.github?.username || ''
-  );
-
-  useEffect(() => {
-    if (user) {
-      if (!isEditing) {
-        setLeetcodeInput(user.leetcodeUrl || user.codingProfiles?.leetcode?.username || '');
-        setCodechefInput(user.codechefUrl || user.codingProfiles?.codechef?.username || '');
-        setGithubInput(user.githubUrl || user.codingProfiles?.github?.username || '');
-      }
-    }
-  }, [user, isEditing]);
 
   const leetcodeStats = user?.codingProfiles?.leetcode;
   const codechefStats = user?.codingProfiles?.codechef;
@@ -65,48 +45,6 @@ export const CodingPlatformsCard: React.FC<CodingPlatformsCardProps> = ({
     (user?.codechefUrl && user.codechefUrl.trim() !== '')
   );
 
-  const handleLinkCodeChef = async (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    const handle = inlineCodechefInput.trim();
-    if (!handle) return;
-    setIsLinkingCodechef(true);
-    setSyncSuccess(false);
-
-    try {
-      await syncCodingPlatforms({
-        codechef: handle,
-      });
-      setInlineCodechefInput('');
-      setSyncSuccess(true);
-      setTimeout(() => setSyncSuccess(false), 3500);
-    } catch (err) {
-      console.error('Failed to link CodeChef handle:', err);
-    } finally {
-      setIsLinkingCodechef(false);
-    }
-  };
-
-  const handleSync = async (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    setIsSyncing(true);
-    setSyncSuccess(false);
-
-    try {
-      await syncCodingPlatforms({
-        leetcode: leetcodeInput || user?.leetcodeUrl,
-        codechef: codechefInput || user?.codechefUrl,
-        github: githubInput || user?.githubUrl,
-      });
-      setSyncSuccess(true);
-      setIsEditing(false);
-      setTimeout(() => setSyncSuccess(false), 3000);
-    } catch (err) {
-      console.error('Failed to sync coding stats:', err);
-    } finally {
-      setIsSyncing(false);
-    }
-  };
-
   const isLeetCodeLinked = Boolean(
     (leetcodeStats?.username && leetcodeStats.username.trim() !== '') ||
     (user?.leetcodeUrl && user.leetcodeUrl.trim() !== '')
@@ -116,6 +54,70 @@ export const CodingPlatformsCard: React.FC<CodingPlatformsCardProps> = ({
     (githubStats?.username && githubStats.username.trim() !== '') ||
     (user?.githubUrl && user.githubUrl.trim() !== '')
   );
+
+  const handleLinkCodeChef = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    const handle = inlineCodechefInput.trim();
+    if (!handle) return;
+    setIsLinkingCodechef(true);
+    setSyncSuccess(false);
+    setSyncError(null);
+
+    try {
+      await syncCodingPlatforms({
+        codechef: handle,
+      });
+      setInlineCodechefInput('');
+      setSyncSuccess(true);
+      setTimeout(() => setSyncSuccess(false), 3500);
+    } catch (err: any) {
+      console.error('Failed to link CodeChef handle:', err);
+      setSyncError(err?.message || 'Failed to link CodeChef handle');
+    } finally {
+      setIsLinkingCodechef(false);
+    }
+  };
+
+  const handleSync = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    setSyncError(null);
+    setSyncSuccess(false);
+
+    if (!isAuthenticated || !user) {
+      setSyncError('Please sign in to save and sync competitive coding profiles to your personal account.');
+      openAuthModal();
+      return;
+    }
+
+    // Strictly sync the authenticated user's handles
+    const userLeetCode = user.leetcodeUrl || user.codingProfiles?.leetcode?.username || '';
+    const userCodeChef = user.codechefUrl || user.codingProfiles?.codechef?.username || '';
+    const userGitHub = user.githubUrl || user.codingProfiles?.github?.username || '';
+
+    if (!userLeetCode && !userCodeChef && !userGitHub) {
+      setSyncError('No coding profiles linked yet. Click "Connect Handles" to link your LeetCode, CodeChef, or GitHub accounts.');
+      openCodingHandlesModal();
+      return;
+    }
+
+    setIsSyncing(true);
+
+    try {
+      await syncCodingPlatforms({
+        leetcode: userLeetCode,
+        codechef: userCodeChef,
+        github: userGitHub,
+      });
+      setSyncSuccess(true);
+      setTimeout(() => setSyncSuccess(false), 4500);
+    } catch (err: any) {
+      console.error('Failed to sync coding stats:', err);
+      setSyncError(err?.message || 'Failed to sync live statistics. Please verify that your handles exist.');
+      setTimeout(() => setSyncError(null), 5000);
+    } finally {
+      setIsSyncing(false);
+    }
+  };
 
   const totalPlatformProblems =
     (isLeetCodeLinked ? (leetcodeStats?.totalSolved || 0) : 0) +
@@ -145,106 +147,60 @@ export const CodingPlatformsCard: React.FC<CodingPlatformsCardProps> = ({
           </div>
         </div>
 
-        <div className="flex items-center gap-2 self-stretch sm:self-auto justify-end flex-wrap">
+        <div className="flex items-center gap-2.5 self-stretch sm:self-auto justify-end flex-wrap">
           <button
             type="button"
             onClick={openCodingHandlesModal}
-            className="px-3 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/20 text-xs font-semibold transition-colors cursor-pointer flex items-center gap-1.5"
-            title="Open LeetCode, CodeChef, and GitHub linking popup"
+            className="px-3.5 py-2 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/25 text-xs font-bold transition-all cursor-pointer flex items-center gap-2 shadow-2xs hover:shadow-xs"
+            title="Connect or update LeetCode, CodeChef, and GitHub handles"
           >
             <Edit3 className="w-3.5 h-3.5" />
             <span>Connect Handles</span>
           </button>
 
-          {showEditToggle && (
-            <button
-              onClick={() => setIsEditing(!isEditing)}
-              className="px-3 py-1.5 rounded-xl bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 text-xs font-semibold transition-colors cursor-pointer"
-            >
-              {isEditing ? 'Cancel Edit' : 'Quick Edit'}
-            </button>
-          )}
-
           <button
+            type="button"
             onClick={() => handleSync()}
             disabled={isSyncing}
-            className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow-sm transition-all cursor-pointer disabled:opacity-50"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-bold shadow-md hover:shadow-lg transition-all cursor-pointer disabled:opacity-50"
+            title="Fetch live scores, ratings, and problem counts for your profile"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
-            <span>{isSyncing ? 'Syncing...' : 'Sync Live Stats'}</span>
+            <span>{isSyncing ? 'Syncing Profile...' : 'Sync Live Stats'}</span>
           </button>
         </div>
       </div>
 
       {/* Sync Success Toast */}
       {syncSuccess && (
-        <div className="p-3 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-800 dark:text-emerald-300 text-xs font-semibold flex items-center gap-2.5 animate-in fade-in">
-          <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
-          <span>Successfully synced all LeetCode, CodeChef, and GitHub statistics to your Firestore database!</span>
+        <div className="p-3.5 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-800 dark:text-emerald-300 text-xs font-semibold flex items-center justify-between gap-2.5 animate-in fade-in">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+            <span className="truncate">
+              Successfully synced live statistics for <strong>{user?.name || user?.email?.split('@')[0] || 'your profile'}</strong>!
+            </span>
+          </div>
+          <span className="text-[11px] font-mono text-emerald-600 dark:text-emerald-400 shrink-0">
+            {totalPlatformProblems} Solved / Repos
+          </span>
         </div>
       )}
 
-      {/* Editing Form */}
-      {isEditing && (
-        <form onSubmit={handleSync} className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-900/90 border border-zinc-200 dark:border-zinc-800 space-y-4 animate-in fade-in">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-            <div>
-              <label className="block text-zinc-600 dark:text-zinc-400 font-bold mb-1 uppercase font-mono text-[10px]">
-                LeetCode Username / URL
-              </label>
-              <input
-                type="text"
-                placeholder="e.g. tourist or leetcode.com/u/user"
-                value={leetcodeInput}
-                onChange={(e) => setLeetcodeInput(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
-              />
-            </div>
-
-            <div>
-              <label className="block text-zinc-600 dark:text-zinc-400 font-bold mb-1 uppercase font-mono text-[10px]">
-                CodeChef Handle / URL
-              </label>
-              <input
-                type="text"
-                placeholder="e.g. codechef.com/users/username"
-                value={codechefInput}
-                onChange={(e) => setCodechefInput(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
-              />
-            </div>
-
-            <div>
-              <label className="block text-zinc-600 dark:text-zinc-400 font-bold mb-1 uppercase font-mono text-[10px]">
-                GitHub Username / URL
-              </label>
-              <input
-                type="text"
-                placeholder="e.g. github.com/username"
-                value={githubInput}
-                onChange={(e) => setGithubInput(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
-              />
-            </div>
+      {/* Sync Error Toast */}
+      {syncError && (
+        <div className="p-3.5 rounded-2xl bg-rose-500/15 border border-rose-500/30 text-rose-800 dark:text-rose-300 text-xs font-semibold flex items-center justify-between gap-2.5 animate-in fade-in">
+          <div className="flex items-center gap-2.5">
+            <ShieldCheck className="w-4 h-4 text-rose-500 shrink-0" />
+            <span>{syncError}</span>
           </div>
-
-          <div className="flex justify-end gap-2 pt-2 border-t border-zinc-200 dark:border-zinc-800">
-            <button
-              type="button"
-              onClick={() => setIsEditing(false)}
-              className="px-3 py-1.5 rounded-xl text-xs text-zinc-500 hover:text-zinc-900 dark:hover:text-white cursor-pointer"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={isSyncing}
-              className="px-5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-sm cursor-pointer"
-            >
-              Save &amp; Fetch Stats
-            </button>
-          </div>
-        </form>
+          <button
+            type="button"
+            onClick={() => setSyncError(null)}
+            className="text-xs text-rose-600 dark:text-rose-400 hover:underline cursor-pointer"
+          >
+            Dismiss
+          </button>
+        </div>
       )}
 
       {/* 3 Main Platform Cards */}
@@ -285,60 +241,79 @@ export const CodingPlatformsCard: React.FC<CodingPlatformsCardProps> = ({
             <div className="space-y-3">
               <div className="flex items-baseline justify-between">
                 <span className="text-3xl font-extrabold text-zinc-900 dark:text-white">
-                  {leetcodeStats?.totalSolved || 0}
+                  {isLeetCodeLinked ? (leetcodeStats?.totalSolved || 0) : '--'}
                 </span>
                 <span className="text-xs font-semibold text-zinc-400 uppercase font-mono">
                   Problems Solved
                 </span>
               </div>
 
-              {/* Easy / Med / Hard breakdown bars */}
-              <div className="space-y-2 pt-1">
-                <div>
-                  <div className="flex justify-between text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 mb-0.5">
-                    <span>Easy</span>
-                    <span>{leetcodeStats?.easySolved || 0}</span>
+              {!isLeetCodeLinked ? (
+                <div className="p-3.5 rounded-xl bg-amber-500/5 dark:bg-amber-950/20 border border-dashed border-amber-500/30 text-center space-y-2">
+                  <div className="flex items-center justify-center gap-1.5 text-amber-700 dark:text-amber-400 font-bold text-xs">
+                    <Code2 className="w-3.5 h-3.5 text-amber-500" />
+                    <span>No Account Linked</span>
                   </div>
-                  <div className="w-full bg-zinc-200 dark:bg-zinc-800 h-1.5 rounded-full overflow-hidden">
-                    <div
-                      className="bg-emerald-500 h-full rounded-full"
-                      style={{
-                        width: `${Math.min(100, Math.round(((leetcodeStats?.easySolved || 0) / Math.max(leetcodeStats?.totalSolved || 1, 1)) * 100))}%`
-                      }}
-                    />
-                  </div>
+                  <p className="text-[11px] text-zinc-500 dark:text-zinc-400 leading-snug">
+                    Connect your LeetCode handle to track live solved problems &amp; difficulty breakdown.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={openCodingHandlesModal}
+                    className="w-full py-1.5 px-3 rounded-lg bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold transition-all cursor-pointer shadow-xs"
+                  >
+                    Connect LeetCode
+                  </button>
                 </div>
+              ) : (
+                /* Easy / Med / Hard breakdown bars */
+                <div className="space-y-2 pt-1">
+                  <div>
+                    <div className="flex justify-between text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 mb-0.5">
+                      <span>Easy</span>
+                      <span>{leetcodeStats?.easySolved || 0}</span>
+                    </div>
+                    <div className="w-full bg-zinc-200 dark:bg-zinc-800 h-1.5 rounded-full overflow-hidden">
+                      <div
+                        className="bg-emerald-500 h-full rounded-full"
+                        style={{
+                          width: `${Math.min(100, Math.round(((leetcodeStats?.easySolved || 0) / Math.max(leetcodeStats?.totalSolved || 1, 1)) * 100))}%`
+                        }}
+                      />
+                    </div>
+                  </div>
 
-                <div>
-                  <div className="flex justify-between text-[11px] font-semibold text-amber-600 dark:text-amber-400 mb-0.5">
-                    <span>Medium</span>
-                    <span>{leetcodeStats?.mediumSolved || 0}</span>
+                  <div>
+                    <div className="flex justify-between text-[11px] font-semibold text-amber-600 dark:text-amber-400 mb-0.5">
+                      <span>Medium</span>
+                      <span>{leetcodeStats?.mediumSolved || 0}</span>
+                    </div>
+                    <div className="w-full bg-zinc-200 dark:bg-zinc-800 h-1.5 rounded-full overflow-hidden">
+                      <div
+                        className="bg-amber-500 h-full rounded-full"
+                        style={{
+                          width: `${Math.min(100, Math.round(((leetcodeStats?.mediumSolved || 0) / Math.max(leetcodeStats?.totalSolved || 1, 1)) * 100))}%`
+                        }}
+                      />
+                    </div>
                   </div>
-                  <div className="w-full bg-zinc-200 dark:bg-zinc-800 h-1.5 rounded-full overflow-hidden">
-                    <div
-                      className="bg-amber-500 h-full rounded-full"
-                      style={{
-                        width: `${Math.min(100, Math.round(((leetcodeStats?.mediumSolved || 0) / Math.max(leetcodeStats?.totalSolved || 1, 1)) * 100))}%`
-                      }}
-                    />
-                  </div>
-                </div>
 
-                <div>
-                  <div className="flex justify-between text-[11px] font-semibold text-rose-600 dark:text-rose-400 mb-0.5">
-                    <span>Hard</span>
-                    <span>{leetcodeStats?.hardSolved || 0}</span>
-                  </div>
-                  <div className="w-full bg-zinc-200 dark:bg-zinc-800 h-1.5 rounded-full overflow-hidden">
-                    <div
-                      className="bg-rose-500 h-full rounded-full"
-                      style={{
-                        width: `${Math.min(100, Math.round(((leetcodeStats?.hardSolved || 0) / Math.max(leetcodeStats?.totalSolved || 1, 1)) * 100))}%`
-                      }}
-                    />
+                  <div>
+                    <div className="flex justify-between text-[11px] font-semibold text-rose-600 dark:text-rose-400 mb-0.5">
+                      <span>Hard</span>
+                      <span>{leetcodeStats?.hardSolved || 0}</span>
+                    </div>
+                    <div className="w-full bg-zinc-200 dark:bg-zinc-800 h-1.5 rounded-full overflow-hidden">
+                      <div
+                        className="bg-rose-500 h-full rounded-full"
+                        style={{
+                          width: `${Math.min(100, Math.round(((leetcodeStats?.hardSolved || 0) / Math.max(leetcodeStats?.totalSolved || 1, 1)) * 100))}%`
+                        }}
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
 
@@ -511,37 +486,58 @@ export const CodingPlatformsCard: React.FC<CodingPlatformsCardProps> = ({
             <div className="space-y-3">
               <div className="flex items-baseline justify-between">
                 <span className="text-3xl font-extrabold text-zinc-900 dark:text-white">
-                  {githubStats?.publicRepos || 0}
+                  {isGitHubLinked ? (githubStats?.publicRepos || 0) : '--'}
                 </span>
                 <span className="text-xs font-semibold text-zinc-400 uppercase font-mono">
                   Repositories
                 </span>
               </div>
 
-              <div className="grid grid-cols-2 gap-2 text-xs">
-                <div className="p-2.5 rounded-xl bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-zinc-800 flex items-center gap-2">
-                  <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500 shrink-0" />
-                  <div>
-                    <span className="text-[10px] text-zinc-400 block font-mono">Stars</span>
-                    <span className="font-bold text-zinc-900 dark:text-white">{githubStats?.totalStars || 0}</span>
+              {!isGitHubLinked ? (
+                <div className="p-3.5 rounded-xl bg-zinc-500/5 dark:bg-zinc-800/40 border border-dashed border-zinc-400/30 text-center space-y-2">
+                  <div className="flex items-center justify-center gap-1.5 text-zinc-700 dark:text-zinc-300 font-bold text-xs">
+                    <Github className="w-3.5 h-3.5 text-zinc-700 dark:text-zinc-300" />
+                    <span>No Account Linked</span>
                   </div>
+                  <p className="text-[11px] text-zinc-500 dark:text-zinc-400 leading-snug">
+                    Connect your GitHub handle to track public repos, total stars &amp; contribution stats.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={openCodingHandlesModal}
+                    className="w-full py-1.5 px-3 rounded-lg bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-white dark:text-zinc-900 text-white text-xs font-bold transition-all cursor-pointer shadow-xs"
+                  >
+                    Connect GitHub
+                  </button>
                 </div>
+              ) : (
+                <>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div className="p-2.5 rounded-xl bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-zinc-800 flex items-center gap-2">
+                      <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500 shrink-0" />
+                      <div>
+                        <span className="text-[10px] text-zinc-400 block font-mono">Stars</span>
+                        <span className="font-bold text-zinc-900 dark:text-white">{githubStats?.totalStars || 0}</span>
+                      </div>
+                    </div>
 
-                <div className="p-2.5 rounded-xl bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-zinc-800 flex items-center gap-2">
-                  <Zap className="w-3.5 h-3.5 text-blue-500 shrink-0" />
-                  <div>
-                    <span className="text-[10px] text-zinc-400 block font-mono">Followers</span>
-                    <span className="font-bold text-zinc-900 dark:text-white">{githubStats?.followers || 0}</span>
+                    <div className="p-2.5 rounded-xl bg-white dark:bg-[#0c1017] border border-zinc-200 dark:border-zinc-800 flex items-center gap-2">
+                      <Zap className="w-3.5 h-3.5 text-blue-500 shrink-0" />
+                      <div>
+                        <span className="text-[10px] text-zinc-400 block font-mono">Followers</span>
+                        <span className="font-bold text-zinc-900 dark:text-white">{githubStats?.followers || 0}</span>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
 
-              <div className="p-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800/70 flex items-center justify-between text-xs font-mono">
-                <span className="text-zinc-500">Yearly Commits:</span>
-                <span className="font-bold text-emerald-600 dark:text-emerald-400">
-                  {githubStats?.contributions || 240}+
-                </span>
-              </div>
+                  <div className="p-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800/70 flex items-center justify-between text-xs font-mono">
+                    <span className="text-zinc-500">Yearly Commits:</span>
+                    <span className="font-bold text-emerald-600 dark:text-emerald-400">
+                      {githubStats?.contributions || 240}+
+                    </span>
+                  </div>
+                </>
+              )}
             </div>
           </div>
 

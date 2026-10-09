@@ -620,13 +620,6 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ navigate }) => {
                   <div className="flex flex-wrap gap-2 text-[11px]">
                     <button
                       type="button"
-                      onClick={() => setFormData({ ...formData, avatar: '/pavan_img.png' })}
-                      className="px-2.5 py-1 rounded-lg bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
-                    >
-                      Pavan Kumar Avatar
-                    </button>
-                    <button
-                      type="button"
                       onClick={() => setFormData({ ...formData, avatar: '' })}
                       className="px-2.5 py-1 rounded-lg bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
                     >
@@ -685,9 +678,10 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ navigate }) => {
                 <label className="block text-zinc-500 uppercase font-mono text-[11px] mb-1.5 font-bold">Full Name</label>
                 <input
                   type="text"
+                  placeholder="Enter your full name"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
               </div>

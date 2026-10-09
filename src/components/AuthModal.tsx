@@ -55,6 +55,8 @@ export const AuthModal: React.FC = () => {
         msg = 'Network connection problem. Please verify your internet connection.';
       } else if (err?.code === 'auth/account-exists-with-different-credential') {
         msg = 'An account already exists with this email using a different sign-in method. Please use Email Sign In.';
+      } else if (msg.includes('Missing or insufficient permissions')) {
+        msg = 'Authentication updated. Please click "Continue with Google" to complete sign-in.';
       }
       setErrorMessage(msg);
     } finally {
@@ -97,6 +99,8 @@ export const AuthModal: React.FC = () => {
         msg = 'This email is already registered. Please log in or reset your password.';
       } else if (msg.includes('auth/weak-password')) {
         msg = 'Password should be at least 6 characters.';
+      } else if (msg.includes('Missing or insufficient permissions')) {
+        msg = 'Authentication updated. Please submit to complete sign-in.';
       }
       setErrorMessage(msg);
     } finally {
@@ -262,7 +266,7 @@ export const AuthModal: React.FC = () => {
                     <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
                     <input
                       type="text"
-                      placeholder="e.g. Pavan Kumar"
+                      placeholder="Enter your full name"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-[#111622] border border-[#232e44] text-xs text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
